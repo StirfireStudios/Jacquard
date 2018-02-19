@@ -1,0 +1,61 @@
+## Git ignore based partially on:
+##   https://github.com/github/gitignore
+##
+## See https://help.github.com/ignore-files/ for more about ignoring files
+
+## JAVASCRIPT
+## --
+
+# dependencies
+/node_modules
+/jspm_packages
+
+# coverage (e.g. jscoverage/JSCover, Istanbul, and NYC)
+/lib-cov
+/coverage
+.nyc_output
+
+# production
+/build
+
+# runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# node-waf configuration
+.lock-wscript
+
+# compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+
+# typescript declaration files
+typings/
+
+# npm cache directory
+.npm
+
+# eslint cache
+.eslintcache
+
+# node REPL history
+.node_repl_history
+
+# yarn integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
