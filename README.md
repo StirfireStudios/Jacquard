@@ -20,3 +20,4 @@ Jacquard requires the following dependencies be pre-installed:
 
 * NodeJS (https://nodejs.org).
 * Yarn package manager (https://yarnpkg.com).
+# Jacquard
