@@ -11,7 +11,12 @@ class NodeEditor extends React.Component {
 	render() {
 		console.log(`rendering the form. Open is ${this.props.open}`);
 		return (
-			<ModalForm close={this.props.close} title="Node Editor" description="Allows you to edit the node" open={this.props.open}>
+			<ModalForm
+				close={this.props.close}
+				title="Node Editor"
+				description="Allows you to edit the node"
+				open={this.props.open}
+			>
 				<div>This is some content for the form</div>
 			</ModalForm>
 		);
