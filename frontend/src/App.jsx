@@ -17,20 +17,29 @@ const theme = createMuiTheme();
 
 class App extends Component {
 	render() {
+		const homePage = () => <Page title="Home"><Default /></Page>;
+		const characterPage = () => <Page title="Characters"><Characters /></Page>;
+		const functionPage = () => <Page title="Functions"><Functions /></Page>;
+		const nodePage = () => <Page title="Nodes"><Nodes /></Page>;
+		const variablePage = () => <Page title="Variables"><Variables /></Page>;
+
 		return (
 			<MuiThemeProvider theme={theme}>
 				<Router>
-					<Page>
-						<Route exact path="/" component={Default} />
-						<Route path="/characters" component={Characters} />
-						<Route path="/functions" component={Functions} />
-						<Route path="/nodes" component={Nodes} />
-						<Route path="/variables" component={Variables} />
-					</Page>
+					<div>
+						<Route exact path="/" component={homePage} />
+						<Route path="/characters" component={characterPage} />
+						<Route path="/functions" component={functionPage} />
+						<Route path="/nodes" component={nodePage} />
+						<Route path="/variables" component={variablePage} />
+					</div>
 				</Router>
 			</MuiThemeProvider>
 		);
 	}
 }
+/*
+
+*/
 
 export default App;

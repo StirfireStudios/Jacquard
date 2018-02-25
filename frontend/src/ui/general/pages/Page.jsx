@@ -12,20 +12,18 @@ class Page extends React.Component {
 	render() {
 		const { classes } = this.props;
 		return (
-			<div className={classes.root}>
-				<div className={classes.appFrame}>
-					<AppBar className={classNames(classes.appBar)}>
-						<Toolbar>
-							<Typography variant="title" color="inherit" noWrap>
-						Nodes
-							</Typography>
-						</Toolbar>
-					</AppBar>
-					<MainMenu />
-					<main className={classes.content}>
-						{ this.props.children }
-					</main>
-				</div>
+			<div className={classes.appFrame}>
+				<AppBar className={classNames(classes.appBar)}>
+					<Toolbar>
+						<Typography variant="title" color="inherit" noWrap>
+							{this.props.title}
+						</Typography>
+					</Toolbar>
+				</AppBar>
+				<MainMenu />
+				<main className={classes.content}>
+					{ this.props.children }
+				</main>
 			</div>
 		);
 	}

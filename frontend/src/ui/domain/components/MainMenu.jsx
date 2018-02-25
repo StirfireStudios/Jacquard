@@ -19,7 +19,7 @@ class MainMenu extends React.Component {
 				}}
 			>
 				<div className={classes.drawerHeader}>
-				Jacquard v0.0.1
+					<h2>Jacquard v0.0.1</h2>
 				</div>
 				<Divider />
 				<MenuList>
@@ -28,6 +28,13 @@ class MainMenu extends React.Component {
 					<Link to="/characters"><MenuItem button><ListItemText primary="Characters" /></MenuItem></Link>
 					<Link to="/functions"><MenuItem button><ListItemText primary="Functions" /></MenuItem></Link>
 					<Link to="/variables"><MenuItem button><ListItemText primary="Variables" /></MenuItem></Link>
+				</MenuList>
+				<Divider />
+				<MenuList>
+					<MenuItem button><ListItemText primary="Save Project" /></MenuItem>
+					<MenuItem button><ListItemText primary="Save Project As..." /></MenuItem>
+					<MenuItem button><ListItemText primary="Create New Project" /></MenuItem>
+					<MenuItem button><ListItemText primary="Open Existing Project" /></MenuItem>
 				</MenuList>
 			</Drawer>
 		);

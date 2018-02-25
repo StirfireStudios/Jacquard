@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Dialog from 'material-ui/Dialog';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Divider from 'material-ui/Divider';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
@@ -26,26 +24,18 @@ function Transition(props) {
 }
 
 class FullScreenDialog extends React.Component {
-	state = {
-		open: false,
-	};
-
-	handleClickOpen = () => {
-		this.setState({ open: true });
-	};
-
-	handleClose = () => {
-		this.setState({ open: false });
-	};
+	constructor(props) {
+		super(props);
+		this.handleClose = props.handleClose;
+	}
 
 	render() {
 		const { classes } = this.props;
 		return (
 			<div>
-				<Button onClick={this.handleClickOpen}>Open full-screen dialog</Button>
 				<Dialog
 					fullScreen
-					open={this.state.open}
+					open={this.props.open}
 					onClose={this.handleClose}
 					transition={Transition}
 				>
@@ -55,22 +45,16 @@ class FullScreenDialog extends React.Component {
 								<CloseIcon />
 							</IconButton>
 							<Typography variant="title" color="inherit" className={classes.flex}>
-						Sound
+								{this.props.title}
 							</Typography>
 							<Button color="inherit" onClick={this.handleClose}>
-						save
+								save
 							</Button>
 						</Toolbar>
 					</AppBar>
-					<List>
-						<ListItem button>
-							<ListItemText primary="Phone ringtone" secondary="Titania" />
-						</ListItem>
-						<Divider />
-						<ListItem button>
-							<ListItemText primary="Default notification ringtone" secondary="Tethys" />
-						</ListItem>
-					</List>
+					<div style={{ flex: 1, width: '100%' }}>
+						{ this.props.children }
+					</div>
 				</Dialog>
 			</div>
 		);

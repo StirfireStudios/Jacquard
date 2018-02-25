@@ -4,7 +4,6 @@ import Button from 'material-ui/Button';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import NodeEditor from '../modals/NodeEditor';
 import themes from '../themes';
-import FullScreenDialog from '../../general/components/FullScreenDialog';
 
 class Nodes extends React.Component {
 	constructor(props) {
@@ -30,11 +29,10 @@ class Nodes extends React.Component {
 	render() {
 		return (
 			<div>
-				<NodeEditor open={this.state.nodeEditorOpen} close={this.hideNodeEditor} />
+				<NodeEditor open={this.state.nodeEditorOpen} handleClose={this.hideNodeEditor} />
 				<Button size="large" onClick={this.showNodeEditor}>Add Node</Button>
 				<Button size="large" onClick={this.showNodeEditor}>Edit Node</Button>
 				<Button size="large" onClick={this.showNodeEditor}>Delete Selected Nodes</Button>
-				<FullScreenDialog />
 				<Table>
 					<TableHead>
 						<TableRow>
