@@ -34,8 +34,6 @@ class MainMenu extends React.Component {
 	}
 }
 
-console.log(withStyles);
-
 const styleFunc = withStyles(themes.defaultTheme);
 
 
