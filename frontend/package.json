@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "babel-eslint": "^8.2.2",
     "classnames": "^2.2.5",
     "eslint": "^4.18.1",
     "material-ui": "^1.0.0-beta.34",
+    "material-ui-icons": "^1.0.0-beta.17",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
