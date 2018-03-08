@@ -10,7 +10,8 @@ class InsertConditionalIntoNode extends React.Component {
 			<ModalDialog
 				title="Insert Conditional"
 				open={this.props.open}
-				handleClose={this.props.handleClose}
+				handleCancel={this.props.handleCancel}
+				handleOk={this.props.handleOk}
 			>
 				<div>Do we need variable lookups for any of these fields?</div>
 				<TextField

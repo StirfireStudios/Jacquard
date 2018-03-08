@@ -7,7 +7,7 @@ import { withStyles } from 'material-ui/styles';
 
 import themes from '../themes';
 
-class Default extends React.Component {
+class DefaultPage extends React.Component {
 	render() {
 		return (
 			<div>
@@ -21,4 +21,4 @@ class Default extends React.Component {
 	}
 }
 
-export default withStyles(themes.defaultTheme)(Default);
+export default withStyles(themes.defaultTheme)(DefaultPage);

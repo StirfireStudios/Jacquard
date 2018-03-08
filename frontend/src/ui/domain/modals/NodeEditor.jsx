@@ -25,22 +25,22 @@ class NodeEditor extends React.Component {
 		};
 
 		this.handleInsertCharacterIntoNodeModalOpen = this.handleInsertCharacterIntoNodeModalOpen.bind(this);
-		this.handleInsertCharacterIntoNodeModalClose = this.handleInsertCharacterIntoNodeModalClose.bind(this);
+		this.handleInsertCharacterIntoNodeModalCancel = this.handleInsertCharacterIntoNodeModalCancel.bind(this);
 		this.handleInsertConditionalIntoNodeModalOpen = this.handleInsertConditionalIntoNodeModalOpen.bind(this);
-		this.handleInsertConditionalIntoNodeModalClose = this.handleInsertConditionalIntoNodeModalClose.bind(this);
+		this.handleInsertConditionalIntoNodeModalCancel = this.handleInsertConditionalIntoNodeModalCancel.bind(this);
 		this.handleInsertFunctionCallIntoNodeModalOpen = this.handleInsertFunctionCallIntoNodeModalOpen.bind(this);
-		this.handleInsertFunctionCallIntoNodeModalClose = this.handleInsertFunctionCallIntoNodeModalClose.bind(this);
+		this.handleInsertFunctionCallIntoNodeModalCancel = this.handleInsertFunctionCallIntoNodeModalCancel.bind(this);
 		this.handleInsertNodeIntoNodeModalOpen = this.handleInsertNodeIntoNodeModalOpen.bind(this);
-		this.handleInsertNodeIntoNodeModalClose = this.handleInsertNodeIntoNodeModalClose.bind(this);
+		this.handleInsertNodeIntoNodeModalCancel = this.handleInsertNodeIntoNodeModalCancel.bind(this);
 		this.handleInsertVariableIntoNodeModalOpen = this.handleInsertVariableIntoNodeModalOpen.bind(this);
-		this.handleInsertVariableIntoNodeModalClose = this.handleInsertVariableIntoNodeModalClose.bind(this);
+		this.handleInsertVariableIntoNodeModalCancel = this.handleInsertVariableIntoNodeModalCancel.bind(this);
 	}
 
 	handleInsertCharacterIntoNodeModalOpen() {
 		this.setState({ insertCharacterIntoNodeModalOpen: true });
 	}
 
-	handleInsertCharacterIntoNodeModalClose() {
+	handleInsertCharacterIntoNodeModalCancel() {
 		this.setState({ insertCharacterIntoNodeModalOpen: false });
 	}
 
@@ -48,7 +48,7 @@ class NodeEditor extends React.Component {
 		this.setState({ insertConditionalIntoNodeModalOpen: true });
 	}
 
-	handleInsertConditionalIntoNodeModalClose() {
+	handleInsertConditionalIntoNodeModalCancel() {
 		this.setState({ insertConditionalIntoNodeModalOpen: false });
 	}
 
@@ -56,7 +56,7 @@ class NodeEditor extends React.Component {
 		this.setState({ insertFunctionCallIntoNodeModalOpen: true });
 	}
 
-	handleInsertFunctionCallIntoNodeModalClose() {
+	handleInsertFunctionCallIntoNodeModalCancel() {
 		this.setState({ insertFunctionCallIntoNodeModalOpen: false });
 	}
 
@@ -64,7 +64,7 @@ class NodeEditor extends React.Component {
 		this.setState({ insertNodeIntoNodeModalOpen: true });
 	}
 
-	handleInsertNodeIntoNodeModalClose() {
+	handleInsertNodeIntoNodeModalCancel() {
 		this.setState({ insertNodeIntoNodeModalOpen: false });
 	}
 
@@ -72,7 +72,7 @@ class NodeEditor extends React.Component {
 		this.setState({ insertVariableIntoNodeModalOpen: true });
 	}
 
-	handleInsertVariableIntoNodeModalClose() {
+	handleInsertVariableIntoNodeModalCancel() {
 		this.setState({ insertVariableIntoNodeModalOpen: false });
 	}
 
@@ -80,29 +80,29 @@ class NodeEditor extends React.Component {
 		return (
 			<FullScreenDialog
 				open={this.props.open}
-				handleClose={this.props.handleClose}
+				handleCancel={this.props.handleCancel}
 				title="Node Editor"
 				description="Allows you to edit the node"
 			>
 				<InsertCharacterIntoNode
 					open={this.state.insertCharacterIntoNodeModalOpen}
-					handleClose={this.handleInsertCharacterIntoNodeModalClose}
+					handleCancel={this.handleInsertCharacterIntoNodeModalCancel}
 				/>
 				<InsertConditionalIntoNode
 					open={this.state.insertConditionalIntoNodeModalOpen}
-					handleClose={this.handleInsertConditionalIntoNodeModalClose}
+					handleCancel={this.handleInsertConditionalIntoNodeModalCancel}
 				/>
 				<InsertFunctionCallIntoNode
 					open={this.state.insertFunctionCallIntoNodeModalOpen}
-					handleClose={this.handleInsertFunctionCallIntoNodeModalClose}
+					handleCancel={this.handleInsertFunctionCallIntoNodeModalCancel}
 				/>
 				<InsertNodeIntoNode
 					open={this.state.insertNodeIntoNodeModalOpen}
-					handleClose={this.handleInsertNodeIntoNodeModalClose}
+					handleCancel={this.handleInsertNodeIntoNodeModalCancel}
 				/>
 				<InsertVariableIntoNode
 					open={this.state.insertVariableIntoNodeModalOpen}
-					handleClose={this.handleInsertVariableIntoNodeModalClose}
+					handleCancel={this.handleInsertVariableIntoNodeModalCancel}
 				/>
 				<div>
 					<div><Button>Test From Here</Button></div>

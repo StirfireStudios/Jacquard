@@ -5,15 +5,51 @@ import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Ta
 import NodeEditor from '../modals/NodeEditor';
 import themes from '../themes';
 
-class Nodes extends React.Component {
+class NodePage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { nodeEditorOpen: false };
+		this.state = {
+			nodeEditorOpen: false,
+			nodes: [
+				{
+					id: 1,
+					name: 'StartRoom',
+					section: 'Easy',
+					tags: 'Easy, Name',
+				},
+				{
+					id: 2,
+					name: 'StartRoom',
+					section: 'Easy',
+					tags: 'Easy, Name',
+				},
+				{
+					id: 3,
+					name: 'StartRoom',
+					section: 'Easy',
+					tags: 'Easy, Name',
+				},
+			],
+		};
 
 		// Bind our events
 		this.showNodeEditor = this.showNodeEditor.bind(this);
 		this.hideNodeEditor = this.hideNodeEditor.bind(this);
+	}
+
+	getNodeRows() {
+		let rows = [];
+
+		if (this.state.nodes) {
+			rows = this.state.nodes.map(node => (<TableRow key={node.name}>
+				<TableCell>{node.section}</TableCell>
+				<TableCell>{node.name}</TableCell>
+				<TableCell>{node.tags}</TableCell>
+			</TableRow>));
+		}
+
+		return (rows);
 	}
 
 	showNodeEditor() {
@@ -36,32 +72,13 @@ class Nodes extends React.Component {
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell>Section</TableCell>
+							<TableCell>Kris</TableCell>
 							<TableCell>Name</TableCell>
 							<TableCell>Tags</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						<TableRow>
-							<TableCell>Easy</TableCell>
-							<TableCell>StartRoom</TableCell>
-							<TableCell>Easy, Start</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell>Easy</TableCell>
-							<TableCell>Name-Paul</TableCell>
-							<TableCell>Easy, Name</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell>Easy</TableCell>
-							<TableCell>Name-George</TableCell>
-							<TableCell>Easy, Name</TableCell>
-						</TableRow>
-						<TableRow>
-							<TableCell>Easy</TableCell>
-							<TableCell>Name-Dolores</TableCell>
-							<TableCell>Easy, Name</TableCell>
-						</TableRow>
+						{ this.getNodeRows() }
 					</TableBody>
 				</Table>
 			</div>
@@ -69,4 +86,4 @@ class Nodes extends React.Component {
 	}
 }
 
-export default withStyles(themes.defaultTheme)(Nodes);
+export default withStyles(themes.defaultTheme)(NodePage);

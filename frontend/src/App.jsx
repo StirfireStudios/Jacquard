@@ -7,31 +7,117 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 // General Component Imports
 import Page from './ui/general/pages/Page';
 // Page Imports
-import Characters from './ui/domain/pages/Characters';
-import Default from './ui/domain/pages/Default';
-import Functions from './ui/domain/pages/Functions';
-import Nodes from './ui/domain/pages/Nodes';
-import Variables from './ui/domain/pages/Variables';
+import CharacterPage from './ui/domain/pages/CharacterPage';
+import DefaultPage from './ui/domain/pages/DefaultPage';
+import FunctionPage from './ui/domain/pages/FunctionPage';
+import NodePage from './ui/domain/pages/NodePage';
+import VariablePage from './ui/domain/pages/VariablePage';
+import MainMenu from './ui/domain/components/MainMenu';
+
+import currentProjectService from './services/currentProjectService';
 
 const theme = createMuiTheme();
 
 class App extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			hasCurrentProject: false,
+		};
+
+		this.onSaveProject = this.onSaveProject.bind(this);
+		this.onSaveProjectAs = this.onSaveProjectAs.bind(this);
+		this.onCreateNewProject = this.onCreateNewProject.bind(this);
+		this.onOpenExistingProject = this.onOpenExistingProject.bind(this);
+		this.onCloseProject = this.onCloseProject.bind(this);
+	}
+
+	onSaveProject() {
+		console.log('Saving Project');
+	}
+
+	onSaveProjectAs() {
+		console.log('Saving Project As...');
+	}
+
+	onCreateNewProject() {
+		currentProjectService.set({
+			name: 'New Project',
+			nodes: [],
+			characters: [],
+			functions: [],
+			variables: [],
+		});
+
+		this.setState({ hasCurrentProject: true });
+	}
+
+	onCloseProject() {
+		currentProjectService.clear();
+		this.setState({ hasCurrentProject: false });
+	}
+
+	onOpenExistingProject() {
+		currentProjectService.set({
+			name: 'My New Project',
+			nodes: [
+				{
+					name: 'Node1',
+					section: 'Section1',
+					tags: [
+						'Tag1', 'Tag2',
+					],
+				},
+			],
+			characters: [
+				{
+					name: 'Character1',
+					description: 'This is a description',
+				},
+			],
+			functions: [
+				{
+					name: 'Funtion1',
+					description: 'This is a description',
+				},
+			],
+			variables: [
+				{
+					name: 'Variable1',
+					description: 'This is a description',
+				},
+			],
+		});
+
+		this.setState({ hasCurrentProject: true });
+	}
+
 	render() {
-		const homePage = () => <Page title="Home"><Default /></Page>;
-		const characterPage = () => <Page title="Characters"><Characters /></Page>;
-		const functionPage = () => <Page title="Functions"><Functions /></Page>;
-		const nodePage = () => <Page title="Nodes"><Nodes /></Page>;
-		const variablePage = () => <Page title="Variables"><Variables /></Page>;
+		const Menu = () =>	(<MainMenu
+			hasCurrentProject={this.state.hasCurrentProject}
+			onCreateNewProject={this.onCreateNewProject}
+			onSaveProject={this.onSaveProject}
+			onSaveProjectAs={this.onSaveProjectAs}
+			onOpenExistingProject={this.onOpenExistingProject}
+			onCloseProject={this.onCloseProject}
+		/>);
+
+		const BasePage = props => <Page mainMenu={Menu} title={props.title}>{props.children}</Page>;
+		const HomePageComplete = () => <BasePage title="Home"><DefaultPage currentProject={this.state.currentProject} /></BasePage>;
+		const CharacterPageComplete = () => <BasePage title="Characters"><CharacterPage currentProject={this.state.currentProject} /></BasePage>;
+		const FunctionPageComplete = () => <BasePage title="Functions"><FunctionPage currentProject={this.state.currentProject} /></BasePage>;
+		const NodePageComplete = () => <BasePage title="Nodes"><NodePage currentProject={this.state.currentProject} /></BasePage>;
+		const VariablePageComplete = () => <BasePage title="Variables"><VariablePage currentProject={this.state.currentProject} /></BasePage>;
 
 		return (
 			<MuiThemeProvider theme={theme}>
 				<Router>
 					<div>
-						<Route exact path="/" component={homePage} />
-						<Route path="/characters" component={characterPage} />
-						<Route path="/functions" component={functionPage} />
-						<Route path="/nodes" component={nodePage} />
-						<Route path="/variables" component={variablePage} />
+						<Route exact path="/" component={HomePageComplete} />
+						<Route path="/characters" component={CharacterPageComplete} />
+						<Route path="/functions" component={FunctionPageComplete} />
+						<Route path="/nodes" component={NodePageComplete} />
+						<Route path="/variables" component={VariablePageComplete} />
 					</div>
 				</Router>
 			</MuiThemeProvider>

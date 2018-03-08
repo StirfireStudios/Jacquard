@@ -11,7 +11,8 @@ class InsertVariableIntoNode extends React.Component {
 			<ModalDialog
 				title="Insert Variable"
 				open={this.props.open}
-				handleClose={this.props.handleClose}
+				handleCancel={this.props.handleCancel}
+				handleOk={this.props.handleOk}
 			>
 				<div>Need to do some sort of lookup for this</div>
 				<TextField
