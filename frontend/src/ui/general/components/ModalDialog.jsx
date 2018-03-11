@@ -12,7 +12,7 @@ class ModalDialog extends React.Component {
 			<div>
 				<Dialog
 					open={this.props.open}
-					onClose={this.handleClose}
+					onClose={this.props.onCancel}
 					aria-labelledby="form-dialog-title"
 				>
 					<DialogTitle id="form-dialog-title">

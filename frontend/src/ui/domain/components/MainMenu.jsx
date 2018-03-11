@@ -38,7 +38,6 @@ class MainMenu extends React.Component {
 		if (this.props.hasCurrentProject) {
 			returnValue = (<MenuList>
 				<Link to="/nodes"><MenuItem button><ListItemText primary="Nodes" /></MenuItem></Link>
-				<Link to="/nodeList"><MenuItem button><ListItemText primary="Node List" /></MenuItem></Link>
 				<Link to="/characters"><MenuItem button><ListItemText primary="Characters" /></MenuItem></Link>
 				<Link to="/functions"><MenuItem button><ListItemText primary="Functions" /></MenuItem></Link>
 				<Link to="/variables"><MenuItem button><ListItemText primary="Variables" /></MenuItem></Link>

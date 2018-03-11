@@ -99,6 +99,7 @@ class ListPage extends React.Component {
 
 	onAddEditFormCancel = () => {
 		this.closeAddEditForm();
+		console.log('Clicked Cancel');
 	}
 
 	setFieldsBasedOnFormSchema = (source, dest) => {

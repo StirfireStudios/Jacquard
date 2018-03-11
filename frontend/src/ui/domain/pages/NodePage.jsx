@@ -2,14 +2,14 @@ import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import ListPage from '../../general/pages/ListPage';
 import themes from '../themes';
-import FieldListForm from '../../general/components/FieldListForm';
+import NodeEditor from '../modals/NodeEditor';
 
 class NodeListPage extends React.Component {
 	render() {
 		const fieldNames = ['section', 'title', 'tag'];
 		const displayNames = ['Section', 'Title', 'Tags'];
 
-		const addEditForm = props => (<FieldListForm {...props} />);
+		const addEditForm = props => (<NodeEditor {...props} />);
 
 		return (
 			<ListPage
@@ -17,8 +17,8 @@ class NodeListPage extends React.Component {
 				displayNames={displayNames}
 				keyName="title"
 				currentProjectPropName="nodes"
-				editFormTitle="Edit Function"
-				addFormTitle="Add Function"
+				editFormTitle="Edit Node"
+				addFormTitle="Add Node"
 				addEditForm={addEditForm}
 				formSchema={[
 					{
@@ -36,6 +36,12 @@ class NodeListPage extends React.Component {
 					{
 						fieldName: 'section',
 						label: 'Section',
+						readOnly: false,
+						multiline: false,
+					},
+					{
+						fieldName: 'content',
+						label: 'Content',
 						readOnly: false,
 						multiline: false,
 					},
