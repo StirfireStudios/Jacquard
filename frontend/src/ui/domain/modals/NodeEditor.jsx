@@ -23,56 +23,45 @@ class NodeEditor extends React.Component {
 			insertNodeIntoNodeModalOpen: false,
 			insertVariableIntoNodeModalOpen: false,
 		};
-
-		this.handleInsertCharacterIntoNodeModalOpen = this.handleInsertCharacterIntoNodeModalOpen.bind(this);
-		this.handleInsertCharacterIntoNodeModalCancel = this.handleInsertCharacterIntoNodeModalCancel.bind(this);
-		this.handleInsertConditionalIntoNodeModalOpen = this.handleInsertConditionalIntoNodeModalOpen.bind(this);
-		this.handleInsertConditionalIntoNodeModalCancel = this.handleInsertConditionalIntoNodeModalCancel.bind(this);
-		this.handleInsertFunctionCallIntoNodeModalOpen = this.handleInsertFunctionCallIntoNodeModalOpen.bind(this);
-		this.handleInsertFunctionCallIntoNodeModalCancel = this.handleInsertFunctionCallIntoNodeModalCancel.bind(this);
-		this.handleInsertNodeIntoNodeModalOpen = this.handleInsertNodeIntoNodeModalOpen.bind(this);
-		this.handleInsertNodeIntoNodeModalCancel = this.handleInsertNodeIntoNodeModalCancel.bind(this);
-		this.handleInsertVariableIntoNodeModalOpen = this.handleInsertVariableIntoNodeModalOpen.bind(this);
-		this.handleInsertVariableIntoNodeModalCancel = this.handleInsertVariableIntoNodeModalCancel.bind(this);
 	}
 
-	handleInsertCharacterIntoNodeModalOpen() {
+	handleInsertCharacterIntoNodeModalOpen = () => {
 		this.setState({ insertCharacterIntoNodeModalOpen: true });
 	}
 
-	handleInsertCharacterIntoNodeModalCancel() {
+	handleInsertCharacterIntoNodeModalCancel = () => {
 		this.setState({ insertCharacterIntoNodeModalOpen: false });
 	}
 
-	handleInsertConditionalIntoNodeModalOpen() {
+	handleInsertConditionalIntoNodeModalOpen = () => {
 		this.setState({ insertConditionalIntoNodeModalOpen: true });
 	}
 
-	handleInsertConditionalIntoNodeModalCancel() {
+	handleInsertConditionalIntoNodeModalCancel = () => {
 		this.setState({ insertConditionalIntoNodeModalOpen: false });
 	}
 
-	handleInsertFunctionCallIntoNodeModalOpen() {
+	handleInsertFunctionCallIntoNodeModalOpen = () => {
 		this.setState({ insertFunctionCallIntoNodeModalOpen: true });
 	}
 
-	handleInsertFunctionCallIntoNodeModalCancel() {
+	handleInsertFunctionCallIntoNodeModalCancel = () => {
 		this.setState({ insertFunctionCallIntoNodeModalOpen: false });
 	}
 
-	handleInsertNodeIntoNodeModalOpen() {
+	handleInsertNodeIntoNodeModalOpen = () => {
 		this.setState({ insertNodeIntoNodeModalOpen: true });
 	}
 
-	handleInsertNodeIntoNodeModalCancel() {
+	handleInsertNodeIntoNodeModalCancel = () => {
 		this.setState({ insertNodeIntoNodeModalOpen: false });
 	}
 
-	handleInsertVariableIntoNodeModalOpen() {
+	handleInsertVariableIntoNodeModalOpen = () => {
 		this.setState({ insertVariableIntoNodeModalOpen: true });
 	}
 
-	handleInsertVariableIntoNodeModalCancel() {
+	handleInsertVariableIntoNodeModalCancel = () => {
 		this.setState({ insertVariableIntoNodeModalOpen: false });
 	}
 
@@ -149,5 +138,4 @@ class NodeEditor extends React.Component {
 	}
 }
 
-export default withStyles(themes.defaultTheme)(NodeEditor);
-
+export default NodeEditor;
