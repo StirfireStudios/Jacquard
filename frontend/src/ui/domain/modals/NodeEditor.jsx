@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
+import Drawer from 'material-ui/Drawer';
+import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
 import List, { ListItem, ListSubheader } from 'material-ui/List';
@@ -11,6 +13,40 @@ import InsertNodeIntoNode from './InsertNodeIntoNode';
 import InsertVariableIntoNode from './InsertVariableIntoNode';
 
 import FullScreenDialog from '../../general/components/FullScreenDialog';
+
+const TagList = props => (<List
+	component="nav"
+	subheader={<ListSubheader component="div">Tags</ListSubheader>}
+>
+	{props.tag.split(',').map(t => (<ListItem key={t} button>{t}</ListItem>))}
+</List>);
+
+const styles = (theme) => {
+	const widthAmount = 240 + (theme.spacing.unit * 6);
+	return ({
+		drawerPaper: {
+			position: 'relative',
+			width: 240,
+			marginLeft: 240,
+			float: 'right',
+			flexGrow: 1,
+		},
+		toolbar: theme.mixins.toolbar,
+		content: {
+			backgroundColor: theme.palette.background.default,
+			padding: theme.spacing.unit * 3,
+			width: `calc(100% - ${widthAmount}px`,
+			overflow: 'hidden',
+			position: 'relative',
+			display: 'block',
+			clear: 'left',
+		},
+		textArea: {
+			padding: theme.spacing.unit * 3,
+			display: 'block',
+		},
+	});
+};
 
 class NodeEditor extends React.Component {
 	constructor(props) {
@@ -65,6 +101,8 @@ class NodeEditor extends React.Component {
 	}
 
 	render() {
+		const { classes } = this.props;
+
 		if (this.props.data) {
 			return (
 				<FullScreenDialog
@@ -94,25 +132,34 @@ class NodeEditor extends React.Component {
 						open={this.state.insertVariableIntoNodeModalOpen}
 						handleCancel={this.handleInsertVariableIntoNodeModalCancel}
 					/>
-					<div>
-						<div><Button>Test From Here</Button></div>
+					<Drawer
+						variant="permanent"
+						classes={{
+							paper: classes.drawerPaper,
+						}}
+						anchor="right"
+					>
+						<TagList tag={this.props.data.tag} />
+					</Drawer>
+					<main className={classes.content}>
+						<Button>Test From Here</Button>
 						<TextField
 							id="node-title"
 							label="Title"
-							fullWidth
+							className={classes.textArea}
 							value={this.props.data.title}
 							onChange={(e) => { this.props.onUpdateFormField(e, 'title'); }}
 						/>
 						<TextField
 							id="node-tags"
 							label="Tags"
-							fullWidth
+							className={classes.textArea}
 							value={this.props.data.tag}
 							onChange={(e) => { this.props.onUpdateFormField(e, 'tag'); }}
 						/>
 						<TextField
+							className={classes.textArea}
 							label="Section"
-							fullWidth
 							value={this.props.data.section}
 							onChange={(e) => { this.props.onUpdateFormField(e, 'section'); }}
 						/>
@@ -120,9 +167,8 @@ class NodeEditor extends React.Component {
 							label="Node Content"
 							multiline
 							rows="10"
-							defaultValue="Default Value"
 							margin="normal"
-							style={{ width: '100%', height: '300px' }}
+							style={{ height: '300px' }}
 							value={this.props.data.content}
 							onChange={(e) => { this.props.onUpdateFormField(e, 'content'); }}
 						/>
@@ -134,17 +180,7 @@ class NodeEditor extends React.Component {
 							<Button onClick={this.handleInsertNodeIntoNodeModalOpen}>Node...</Button>
 							<Button onClick={this.handleInsertConditionalIntoNodeModalOpen}>Conditional...</Button>
 						</Paper>
-					</div>
-					<List
-						component="nav"
-						subheader={<ListSubheader component="div">Tags</ListSubheader>}
-					>
-						<ListItem button>Tag One</ListItem>
-						<ListItem button>Tag One</ListItem>
-						<ListItem button>Tag One</ListItem>
-						<ListItem button>Tag One</ListItem>
-						<ListItem button>Tag One</ListItem>
-					</List>
+					</main>
 				</FullScreenDialog>
 			);
 		}
@@ -165,4 +201,4 @@ NodeEditor.propTypes = {
 	onCancel: PropTypes.func.isRequired,
 };
 
-export default NodeEditor;
+export default withStyles(styles)(NodeEditor);
