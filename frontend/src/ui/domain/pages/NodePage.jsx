@@ -72,7 +72,7 @@ class NodePage extends React.Component {
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell>Kris</TableCell>
+							<TableCell>Section</TableCell>
 							<TableCell>Name</TableCell>
 							<TableCell>Tags</TableCell>
 						</TableRow>

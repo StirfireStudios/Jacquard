@@ -8,6 +8,24 @@ import { ListItemText } from 'material-ui/List';
 
 import themes from '../themes';
 
+/* TODO: Change the links to use embedded components like so:
+class ListItemLink extends React.Component {
+  renderLink = itemProps => <Link to={this.props.to} {...itemProps} />;
+
+  render() {
+    const { icon, primary, secondary, to } = this.props;
+    return (
+      <li>
+        <ListItem button component={this.renderLink}>
+          {icon && <ListItemIcon>{icon}</ListItemIcon>}
+          <ListItemText inset primary={primary} secondary={secondary} />
+        </ListItem>
+      </li>
+    );
+  }
+}
+*/
+
 class MainMenu extends React.Component {
 	constructor(props) {
 		super(props);
@@ -20,6 +38,7 @@ class MainMenu extends React.Component {
 		if (this.props.hasCurrentProject) {
 			returnValue = (<MenuList>
 				<Link to="/nodes"><MenuItem button><ListItemText primary="Nodes" /></MenuItem></Link>
+				<Link to="/nodeList"><MenuItem button><ListItemText primary="Node List" /></MenuItem></Link>
 				<Link to="/characters"><MenuItem button><ListItemText primary="Characters" /></MenuItem></Link>
 				<Link to="/functions"><MenuItem button><ListItemText primary="Functions" /></MenuItem></Link>
 				<Link to="/variables"><MenuItem button><ListItemText primary="Variables" /></MenuItem></Link>
