@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 // import ListDeleteButton from '../../general/components/ListDeleteButton';
 import currentProjectService from '../../../services/currentProjectService';
 import FieldListTable from '../components/FieldListTable';
-import FieldListForm from '../components/FieldListForm';
 
 // @description State is stored at this level.
 // Assumes that you are going to have a list of some sort that you can edit.
@@ -133,6 +132,8 @@ class ListPage extends React.Component {
 	}
 
 	render() {
+		const AddEditForm = this.props.addEditForm;
+
 		return (
 			<div>
 				<Button
@@ -142,14 +143,14 @@ class ListPage extends React.Component {
 				>
 					Add
 				</Button>
-				<FieldListForm
+				<AddEditForm
 					data={this.state.formData}
-					formSchema={this.props.formSchema}
 					open={this.state.addEditFormOpen}
 					onUpdateFormField={this.onUpdateFormField}
 					onOk={this.onAddEditFormOk}
 					onCancel={this.onAddEditFormCancel}
 					title={this.state.formTitle}
+					formSchema={this.props.formSchema}
 				/>
 				<FieldListTable
 					rows={this.getRows()}
@@ -164,14 +165,17 @@ class ListPage extends React.Component {
 	}
 }
 
+ListPage.defaultProps = {};
+
 ListPage.propTypes = {
-	// editFormTitle: PropTypes.string.isRequired,
+	editFormTitle: PropTypes.string.isRequired,
 	addFormTitle: PropTypes.string.isRequired,
 	currentProjectPropName: PropTypes.string.isRequired,
 	keyName: PropTypes.string.isRequired,
 	fieldNames: PropTypes.array.isRequired,
 	displayNames: PropTypes.array.isRequired,
 	formSchema: PropTypes.array.isRequired,
+	addEditForm: PropTypes.func.isRequired,
 };
 
 export default ListPage;

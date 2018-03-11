@@ -11,7 +11,6 @@ import CharacterPage from './ui/domain/pages/CharacterPage';
 import DefaultPage from './ui/domain/pages/DefaultPage';
 import FunctionPage from './ui/domain/pages/FunctionPage';
 import NodePage from './ui/domain/pages/NodePage';
-import NodeListPage from './ui/domain/pages/NodeListPage';
 import VariablePage from './ui/domain/pages/VariablePage';
 import MainMenu from './ui/domain/components/MainMenu';
 
@@ -106,7 +105,6 @@ class App extends Component {
 		const CharacterPageComplete = () => <BasePage title="Characters"><CharacterPage currentProject={this.state.currentProject} /></BasePage>;
 		const FunctionPageComplete = () => <BasePage title="Functions"><FunctionPage currentProject={this.state.currentProject} /></BasePage>;
 		const NodePageComplete = () => <BasePage title="Nodes"><NodePage currentProject={this.state.currentProject} /></BasePage>;
-		const NodeListPageComplete = () => <BasePage title="Nodes (List)"><NodeListPage currentProject={this.state.currentProject} /></BasePage>;
 		const VariablePageComplete = () => <BasePage title="Variables"><VariablePage currentProject={this.state.currentProject} /></BasePage>;
 
 		return (
@@ -117,7 +115,6 @@ class App extends Component {
 						<Route path="/characters" component={CharacterPageComplete} />
 						<Route path="/functions" component={FunctionPageComplete} />
 						<Route path="/nodes" component={NodePageComplete} />
-						<Route path="/nodeList" component={NodeListPageComplete} />
 						<Route path="/variables" component={VariablePageComplete} />
 					</div>
 				</Router>

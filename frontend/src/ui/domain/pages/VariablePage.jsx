@@ -2,11 +2,13 @@ import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import ListPage from '../../general/pages/ListPage';
 import themes from '../themes';
+import FieldListForm from '../../general/components/FieldListForm';
 
 class VariablePage extends React.Component {
 	render() {
 		const fieldNames = ['name', 'description'];
 		const displayNames = ['Name', 'Description'];
+		const addEditForm = props => (<FieldListForm {...props} />);
 
 		return (
 			<ListPage
@@ -16,6 +18,7 @@ class VariablePage extends React.Component {
 				currentProjectPropName="variables"
 				editFormTitle="Edit Variables"
 				addFormTitle="Add Variables"
+				addEditForm={addEditForm}
 				formSchema={[
 					{
 						fieldName: 'name',

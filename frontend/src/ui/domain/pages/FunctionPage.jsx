@@ -2,9 +2,11 @@ import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import ListPage from '../../general/pages/ListPage';
 import themes from '../themes';
+import FieldListForm from '../../general/components/FieldListForm';
 
 class FunctionPage extends React.Component {
 	render() {
+		const addEditForm = props => (<FieldListForm {...props} />);
 		const fieldNames = ['name', 'description'];
 		const displayNames = ['Name', 'Description'];
 
@@ -16,6 +18,7 @@ class FunctionPage extends React.Component {
 				currentProjectPropName="functions"
 				editFormTitle="Edit Function"
 				addFormTitle="Add Function"
+				addEditForm={addEditForm}
 				formSchema={[
 					{
 						fieldName: 'name',
