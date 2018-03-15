@@ -13,8 +13,8 @@
     "electron-packager": "^11.1.0"
   },
   "scripts": {
-    "package-mac": "electron-packager ./src jaquard-viewer --overwrite --platform=darwin --arch=x64 --prune=true --out=dist",
-    "package-win": "electron-packager ./src jaquard-viewer --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=dist --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Jaquard\"",
-    "package-linux": "electron-packager ./src jaquard-viewer --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=dist"
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=dist",
+    "package-win": "electron-packager . jacquard-viewer --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=dist --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Jaquard\"",
+    "package-linux": "electron-packager . jacquard-viewer --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=dist"
   }
 }
