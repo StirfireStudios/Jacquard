@@ -1,4 +1,3 @@
-
 var yarnTextField;
 var displayArea;
 var dialogue;
@@ -6,7 +5,7 @@ var dialogueIterator;
 var optNum = 0;
 var iter;
 
-function runYarn(yarndata,node) {
+function runYarn(yarndata, node) {
 	displayArea.innerHTML = "";
 
 	dialogue = new bondage.Runner();
@@ -16,34 +15,34 @@ function runYarn(yarndata,node) {
 	step();
 }
 
-function setVar(name,val){
+function setVar(name, val) {
 	dialogue.variables.data[name] = val;
 	console.log(dialogue.variables.data);
 }
 
-function displayVars(){
+function displayVars() {
 	var vars = dialogue.variables.data;
 	var keys = Object.keys(vars);
 	$("#vardisplay").empty();
-	for(var i = 0; i<keys.length;i++){
+	for (var i = 0; i < keys.length; i++) {
 		var key = keys[i];
-		$("#vardisplay").append("<br>"+key+":<input class=\"varfield\" type=\"text\" name=\""+key+"\" value=\""+vars[key]+"\">");
+		$("#vardisplay").append("<br>" + key + ":<input class=\"varfield\" type=\"text\" name=\"" + key + "\" value=\"" + vars[key] + "\">");
 	}
-	$(".varfield").change(function(){
+	$(".varfield").change(function () {
 		var val = $(this).val().trim();
-		if(val.match(/^(true|false|[0-9.]+)$/)){
+		if (val.match(/^(true|false|[0-9.]+)$/)) {
 			val = JSON.parse($(this).val());
-		}		
-		setVar($(this).attr("name"),val);
+		}
+		setVar($(this).attr("name"), val);
 	});
 }
 
-function displayVisited(){
+function displayVisited() {
 	var visited = Object.keys(dialogue.visited);
 	$("#visiteddisplay").empty();
-	for(var i = 0; i<visited.length;i++){
+	for (var i = 0; i < visited.length; i++) {
 		var key = visited[i];
-		$("#visiteddisplay").append("<br>"+key);
+		$("#visiteddisplay").append("<br>" + key);
 	}
 }
 
@@ -53,7 +52,7 @@ function step() {
 
 	displayVars();
 	displayVisited();
-	while(!iter.done) {
+	while (!iter.done) {
 		var result = iter.value;
 		if (result instanceof bondage.OptionResult) {
 			showOptions(result);
@@ -66,7 +65,7 @@ function step() {
 	displayVars();
 }
 
-function selectOption(j,i){
+function selectOption(j, i) {
 	iter.value.select(i);
 	optNum++;
 	displayArea.innerHTML = "";
@@ -77,8 +76,8 @@ function selectOption(j,i){
 function showOptions(result) {
 	displayArea.innerHTML += "<br/>";
 	for (var i = 0; i < result.options.length; i++) {
-		var optionId = "opt"+optNum+"-"+i;
-		displayArea.innerHTML += "<a href=\"#\" id=\""+optionId+"\" onClick=\"selectOption("+optNum+","+i+");return false;\">" + result.options[i] + "</input><br/>";
+		var optionId = "opt" + optNum + "-" + i;
+		displayArea.innerHTML += "<a href=\"#\" id=\"" + optionId + "\" onClick=\"selectOption(" + optNum + "," + i + ");return false;\">" + result.options[i] + "</input><br/>";
 
 		var got = document.getElementById(optionId);
 
@@ -87,29 +86,29 @@ function showOptions(result) {
 
 }
 
-function loadFromField(){
+function loadFromField() {
 	var yarnData = jsonifyYarn(document.getElementById("input-area").value);
 	console.log(yarnData);
-	runYarn(yarnData,yarnData[0].title);
+	runYarn(yarnData, yarnData[0].title);
 }
 
 window.onload = function () {
 	displayArea = document.getElementById("display-area");
 };
 
-function jsonifyYarn(yarntext){
+function jsonifyYarn(yarntext) {
 	var nodes = [];
 	var w = yarntext.split("\n===\n");
-	for(var i = 0; i < w.length; i++){
+	for (var i = 0; i < w.length; i++) {
 		var node = {};
 		var x = w[i].split("\n---\n");
 		node["body"] = x[1];
 		var attrs = x[0].split("\n");
-		for(var j = 0; j<attrs.length;j++){
-			var bits = 	attrs[j].split(":");
-			if(bits.length == 2){
+		for (var j = 0; j < attrs.length; j++) {
+			var bits = attrs[j].split(":");
+			if (bits.length == 2) {
 				node[bits[0]] = bits[1].trim();
-			}else{
+			} else {
 				console.warn("node attributes in weird format:");
 			}
 		}
@@ -119,4 +118,6 @@ function jsonifyYarn(yarntext){
 }
 
 
-
+$(document).ready(function () {
+	$("#btnRun").click(loadFromField);
+ });

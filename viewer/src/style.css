@@ -1,6 +1,25 @@
 .statusbox{
-    position:fixed;
-    top:0;
-    right:0;
+    position:relative;
+    float: left;
     padding:2em;
+    width: 25%;
+}
+
+#container {
+    display: flex;
+}
+
+#main {
+    width: 75%;
+    padding:2em;
+}
+
+#input-area {
+    padding:0.5em;
+    min-height: 300px;
+    margin-bottom : 0.5em;
+}
+
+html, body {
+    height: 100%;
 }

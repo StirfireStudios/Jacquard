@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdn.rawgit.com/mblode/marx/master/css/marx.min.css">
@@ -12,19 +13,27 @@
     <script>if (window.module) module = window.module;</script>
     <title>Jacquard Yarn Viewer</title>
 </head>
-<body>
-<div id="display-area"></div>
-<textarea id="input-area"></textarea>
-<button onclick="loadFromField();">Run</button>
-<br>
 
-<div class="statusbox">
-    <h2>Variables</h2>
-<div id="vardisplay">
-</div>
-<h2>Visited</h2>
-<div id="visiteddisplay">
-</div>
-</div>
+<body>
+    <h1>Jacquard Viewer</h1>
+    <div id="container">
+        <div id="main">
+                <div id="display-area"></div>
+                <textarea id="input-area"></textarea>
+                <button id="btnRun">Run</button>
+                <button>Load</button>
+        </div>
+        <div class="statusbox">
+            <h2>Variables</h2>
+            <div id="vardisplay">
+            </div>
+            <h2>Visited</h2>
+            <div id="visiteddisplay">
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
 </body>
+
 </html>
