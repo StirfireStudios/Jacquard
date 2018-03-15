@@ -1,0 +1,20 @@
+{
+  "name": "jacquard-viewer",
+  "version": "0.1.0",
+  "description": "Allows users to view and step through Yarn files.",
+  "main": "src/electron.js",
+  "repository": "https://github.com/StirfireStudios/Jacquard",
+  "author": "Stirfire Studios",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^1.8.3"
+  },
+  "dependencies": {
+    "electron-packager": "^11.1.0"
+  },
+  "scripts": {
+    "package-mac": "electron-packager ./src jaquard-viewer --overwrite --platform=darwin --arch=x64 --prune=true --out=dist",
+    "package-win": "electron-packager ./src jaquard-viewer --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=dist --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Jaquard\"",
+    "package-linux": "electron-packager ./src jaquard-viewer --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=dist"
+  }
+}

@@ -8,6 +8,7 @@
 
 # dependencies
 /node_modules
+*/node_modules
 /jspm_packages
 
 # coverage (e.g. jscoverage/JSCover, Istanbul, and NYC)
