@@ -4,6 +4,9 @@ const { app, BrowserWindow } = electron;
 
 const path = require('path');
 const url = require('url');
+
+const {dialog} = require('electron').remote;
+
 let mainWindow;
 
 function createWindow() {

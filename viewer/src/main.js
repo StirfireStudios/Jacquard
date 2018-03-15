@@ -5,6 +5,10 @@ var dialogueIterator;
 var optNum = 0;
 var iter;
 
+var remote = require('electron').remote;
+var {dialog} = require('electron').remote;
+var fs = require('fs');
+
 function runYarn(yarndata, node) {
 	displayArea.innerHTML = "";
 
@@ -118,6 +122,57 @@ function jsonifyYarn(yarntext) {
 }
 
 
+function onSaveAsClick() {
+	// You can obviously give a direct path without use the dialog (C:/Program Files/path/myfileexample.txt)
+	dialog.showSaveDialog(
+		{
+			title: "Save Yarn File",
+			showTagsField: false,
+			
+		},
+		(fileName) => {
+		if (fileName === undefined){
+			console.log("You didn't save the file");
+			return;
+		}
+
+		content = $("#input-area").val();
+
+		// fileName is a string that contains the path and filename created in the save file dialog.  
+		fs.writeFile(fileName, content, (err) => {
+			if(err){
+				alert("An error ocurred creating the file "+ err.message)
+			}
+						
+			alert("The file has been succesfully saved");
+		});
+	});
+}
+
+function onOpenClick() {
+	dialog.showOpenDialog((fileNames) => {
+		// fileNames is an array that contains all the selected
+		if(fileNames === undefined || fileNames.length < 1){
+			console.log("No file selected");
+			return;
+		}
+
+		fs.readFile(fileNames[0], 'utf-8', (err, data) => {
+			if(err){
+				alert("An error ocurred reading the file :" + err.message);
+				return;
+			}
+	
+			// Change how to handle the file content
+			console.log("The file content is : " + data);
+
+			$("#input-area").val(data);
+		});
+	});
+}
+
 $(document).ready(function () {
 	$("#btnRun").click(loadFromField);
+	$("#btnOpen").click(onOpenClick);
+	$("#btnSaveAs").click(onSaveAsClick);
  });
