@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdn.rawgit.com/mblode/marx/master/css/marx.min.css">
     <link rel="stylesheet" href="style.css">
-    <script
-			  src="http://code.jquery.com/jquery-3.3.1.min.js"
-			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-			  crossorigin="anonymous"></script>
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="jquery-3.3.1.min.js"></script>
     <script src="https://rawgit.com/jhayley/bondage.js/master/dist/bondage.min.js"></script>
-    <script src="main.js"></script>
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
     <title>Jacquard Yarn Viewer</title>
 </head>
 <body>
