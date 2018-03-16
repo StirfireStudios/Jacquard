@@ -14,10 +14,14 @@
     padding:2em;
 }
 
-#input-area {
+#input-area, #log {
     padding:0.5em;
     min-height: 300px;
     margin-bottom : 0.5em;
+}
+
+button {
+    margin-bottom: 0.2em;
 }
 
 html, body {

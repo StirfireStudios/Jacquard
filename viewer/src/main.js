@@ -1,6 +1,5 @@
-var {ipcRenderer} = require('electron');
+var {ipcRenderer, remote} = require('electron');
 var fs = require('fs');
-
 var yarnTextField;
 var displayArea;
 var dialogue;
@@ -92,7 +91,6 @@ function showOptions(result) {
 
 function loadFromField() {
 	var yarnData = jsonifyYarn(document.getElementById("input-area").value);
-	console.log(yarnData);
 	runYarn(yarnData, yarnData[0].title);
 }
 
@@ -113,7 +111,7 @@ function jsonifyYarn(yarntext) {
 			if (bits.length == 2) {
 				node[bits[0]] = bits[1].trim();
 			} else {
-				console.warn("node attributes in weird format:");
+				log("Warning: node attributes in weird format. bits.length <> 2. Attribute: " + attrs[j]);
 			}
 		}
 		nodes.push(node);
@@ -132,8 +130,24 @@ function onSaveAsClick(){
 	ipcRenderer.send('saveAsClick', $('#input-area').val());	
 }
 
+function log(logText) {
+	var currentVal = $('#log').val('');
+
+	$('#log').val(currentVal + "\n" + logText);
+}
+
+function onClearLogClick() {
+	$('#log').val('');
+}
+
+function onToggleDevTools() {
+	remote.getCurrentWindow().toggleDevTools();
+}
+
 $(document).ready(function () {
 	$("#btnRun").click(loadFromField);
 	$("#btnOpen").click(onOpenClick);
 	$("#btnSaveAs").click(onSaveAsClick);
+	$("#btnToggleDevTools").click(onToggleDevTools);
+	$("#btnClearLog").click(onClearLogClick);
  });
