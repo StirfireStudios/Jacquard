@@ -26,26 +26,25 @@ Jacquard consists of two main tools
 
 ## Building
 
-### Git Configuration
-
-To configure Git, run the `./scripts/git/git_init.sh` script from the top-level project directory, passing in your username and email as the first and second parameters respectively. For example:
-
-`./scripts/git/git_init.sh "Name" "name@email.com"`
-
-If you need to specify a custom remote origin, you can pass one as the third parameter. For example:
-
-`./scripts/git/git_init.sh "Name" "name@email.com" "git@my-custom-remote-origin"`
-
 ### Dependencies
 
 Jacquard requires the following dependencies be pre-installed:
 
-* NodeJS (https://nodejs.org).
+* NodeJS 8.x.x (https://nodejs.org).
 * Yarn package manager (https://yarnpkg.com).
+
+You should clone the repo to your local machine.
 
 ## Front End 
 ## Viewer
 
+  1. Navigate to the `viewer/` directory where you cloned this repo
+  2. install the dependencies via a `yarn`
+  3. package it for your OS:
+    * windows: `yarn package-win` 
+    * macOS: `yarn package-mac`
+	* linux: `yarn package-linux`
+	
 ## Debugging
 ### Front End 
 ### Viewer
