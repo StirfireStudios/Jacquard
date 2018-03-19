@@ -10,13 +10,15 @@ Jacquard Viewer requires the following dependencies be pre-installed:
 
 First, you need to make sure that you have nodeJs and Yarn installed (see the dependencies section above and install the relevant version for your platform).
 
-Currenlty we're using `node v8.9.4` and `yarn v1.5.1`.
+Currently we're using `node v8.9.4` and `yarn v1.5.1`.
 
 ## Getting the additional files you need.
-From the Viewer directory, do a `yarn install`. This will download all the necessary libraries you need, including Electron and the Electron Packager.
+
+  1. Using the command line, navigate to the Viewer directory.
+  2. do a `yarn install`. This will download all the necessary libraries you need, including Electron and the Electron Packager.
 
 ## Running during development
-From the `viewer` directory, type `yarn start-local`. This will launch an instance of the application using Electron. 
+From the `viewer` directory, type `yarn start-local`. This will launch an instance of the application using Electron.
 
 Note that we are NOT using Webpack for this part of the project, as the goal is to merge it into the main Jacquard frontend application. This means that your changes do not automatically show up in the Electon application.
 
