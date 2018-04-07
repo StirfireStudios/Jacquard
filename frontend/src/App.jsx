@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
+// Electron Imports
+// import { ipcRenderer } from 'electron';
+
 // General Component Imports
 import Page from './ui/general/pages/Page';
 // Page Imports
@@ -34,6 +37,7 @@ class App extends Component {
 
 	onSaveProject() {
 		console.log('Saving Project');
+		// ipcRenderer.send('saveAsClick', currentProjectService.get());
 	}
 
 	onSaveProjectAs() {
@@ -58,36 +62,12 @@ class App extends Component {
 	}
 
 	onOpenExistingProject() {
-		currentProjectService.set({
-			name: 'My New Project',
-			nodes: [
-				{
-					title: 'Node1',
-					section: 'Section2',
-					tag: 'Tag1, Tag2',
-				},
-			],
-			characters: [
-				{
-					name: 'Character1',
-					description: 'This is a description',
-				},
-			],
-			functions: [
-				{
-					name: 'Funtion1',
-					description: 'This is a description',
-				},
-			],
-			variables: [
-				{
-					name: 'Variable1',
-					description: 'This is a description',
-				},
-			],
+		/* ipcRenderer.on('content-loaded', (event, arg) => {
+			currentProjectService.set(arg);
+			this.setState({ hasCurrentProject: true });
 		});
 
-		this.setState({ hasCurrentProject: true });
+		ipcRenderer.send('openClick');*/
 	}
 
 	render() {
@@ -122,8 +102,5 @@ class App extends Component {
 		);
 	}
 }
-/*
-
-*/
 
 export default App;
