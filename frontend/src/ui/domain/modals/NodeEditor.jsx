@@ -161,9 +161,9 @@ class NodeEditor extends React.Component {
 								<TextField
 									label="Node Content"
 									multiline
-									rows="10"
+									rows="20"
 									margin="normal"
-									style={{ height: '300px' }}
+									style={{ width: '100%' }}
 									value={this.props.data.content}
 									onChange={(e) => { this.props.onUpdateFormField(e, 'content'); }}
 								/>
