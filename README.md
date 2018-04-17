@@ -35,21 +35,10 @@ Jacquard requires the following dependencies be pre-installed:
 
 You should clone the repo to your local machine.
 
-## Front End 
+## Front End
+
+Instructions are [here](frontend/README.md)
+
 ## Viewer
 
-  1. Navigate to the `viewer/` directory where you cloned this repo
-  2. install the dependencies via a `yarn`
-  3. package it for your OS:
-    * windows: `yarn package-win` 
-    * macOS: `yarn package-mac`
-	* linux: `yarn package-linux`
-	
-## Debugging
-### Front End 
-### Viewer
-
-## Deploying
-### Front End
-### Viewer
-
+Instructions are [here](viewer/README.md)
