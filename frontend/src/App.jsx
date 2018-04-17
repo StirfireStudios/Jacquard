@@ -27,24 +27,18 @@ class App extends Component {
 		this.state = {
 			hasCurrentProject: false,
 		};
-
-		this.onSaveProject = this.onSaveProject.bind(this);
-		this.onSaveProjectAs = this.onSaveProjectAs.bind(this);
-		this.onCreateNewProject = this.onCreateNewProject.bind(this);
-		this.onOpenExistingProject = this.onOpenExistingProject.bind(this);
-		this.onCloseProject = this.onCloseProject.bind(this);
 	}
 
-	onSaveProject() {
+	onSaveProject = () => {
 		console.log('Saving Project');
 		ipcRenderer.send('saveAsClick', JSON.stringify(currentProjectService.get()));
-	}
+	};
 
-	onSaveProjectAs() {
+	onSaveProjectAs = () => {
 		console.log('Saving Project As...');
-	}
+	};
 
-	onCreateNewProject() {
+	onCreateNewProject = () => {
 		currentProjectService.set({
 			name: 'New Project',
 			nodes: [],
@@ -56,19 +50,31 @@ class App extends Component {
 		this.setState({ hasCurrentProject: true });
 	}
 
-	onCloseProject() {
+	onExportYarnFile = () => {
+		console.log('Exporting Yarn File');
+	};
+
+	onImportYarnFile = () => {
+		console.log('Importing Yarn File');
+	};
+
+	onRunProject = () => {
+		console.log('Running Project');
+	};
+
+	onCloseProject = () => {
 		currentProjectService.clear();
 		this.setState({ hasCurrentProject: false });
-	}
+	};
 
-	onOpenExistingProject() {
+	onOpenExistingProject = () => {
 		ipcRenderer.on('content-loaded', (event, arg) => {
 			currentProjectService.set(arg);
 			this.setState({ hasCurrentProject: true });
 		});
 
 		ipcRenderer.send('openClick');
-	}
+	};
 
 	render() {
 		const Menu = () =>	(<MainMenu
@@ -77,6 +83,9 @@ class App extends Component {
 			onSaveProject={this.onSaveProject}
 			onSaveProjectAs={this.onSaveProjectAs}
 			onOpenExistingProject={this.onOpenExistingProject}
+			onRunProject={this.onRunProject}
+			onImportYarnFile={this.onImportYarnFile}
+			onExportYarnFile={this.onExportYarnFile}
 			onCloseProject={this.onCloseProject}
 		/>);
 

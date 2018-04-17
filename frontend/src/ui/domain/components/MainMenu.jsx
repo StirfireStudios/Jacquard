@@ -41,6 +41,9 @@ class MainMenu extends React.Component {
 				<Link to="/characters"><MenuItem button><ListItemText primary="Characters" /></MenuItem></Link>
 				<Link to="/functions"><MenuItem button><ListItemText primary="Functions" /></MenuItem></Link>
 				<Link to="/variables"><MenuItem button><ListItemText primary="Variables" /></MenuItem></Link>
+				<MenuItem button onClick={this.props.onExportYarnFile}><ListItemText primary="Export Yarn File" /></MenuItem>
+				<MenuItem button onClick={this.props.onImportYarnFile}><ListItemText primary="Import Yarn File" /></MenuItem>
+				<MenuItem button onClick={this.props.onRunProject}><ListItemText primary="Run Project" /></MenuItem>
 				<MenuItem button onClick={this.props.onSaveProject}><ListItemText primary="Save Project" /></MenuItem>
 				<MenuItem button onClick={this.props.onSaveProjectAs}><ListItemText primary="Save Project As..." /></MenuItem>
 				<MenuItem button onClick={this.props.onCloseProject}><ListItemText primary="Close Project" /></MenuItem>
