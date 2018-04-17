@@ -54,43 +54,43 @@ class NodeEditor extends React.Component {
 		};
 	}
 
-	handleInsertCharacterIntoNodeModalOpen = () => {
+	onInsertCharacterIntoNodeModalOpen = () => {
 		this.setState({ insertCharacterIntoNodeModalOpen: true });
 	}
 
-	handleInsertCharacterIntoNodeModalCancel = () => {
+	onInsertCharacterIntoNodeModalCancel = () => {
 		this.setState({ insertCharacterIntoNodeModalOpen: false });
 	}
 
-	handleInsertConditionalIntoNodeModalOpen = () => {
+	onInsertConditionalIntoNodeModalOpen = () => {
 		this.setState({ insertConditionalIntoNodeModalOpen: true });
 	}
 
-	handleInsertConditionalIntoNodeModalCancel = () => {
+	onInsertConditionalIntoNodeModalCancel = () => {
 		this.setState({ insertConditionalIntoNodeModalOpen: false });
 	}
 
-	handleInsertFunctionCallIntoNodeModalOpen = () => {
+	onInsertFunctionCallIntoNodeModalOpen = () => {
 		this.setState({ insertFunctionCallIntoNodeModalOpen: true });
 	}
 
-	handleInsertFunctionCallIntoNodeModalCancel = () => {
+	onInsertFunctionCallIntoNodeModalCancel = () => {
 		this.setState({ insertFunctionCallIntoNodeModalOpen: false });
 	}
 
-	handleInsertNodeIntoNodeModalOpen = () => {
+	onInsertNodeIntoNodeModalOpen = () => {
 		this.setState({ insertNodeIntoNodeModalOpen: true });
 	}
 
-	handleInsertNodeIntoNodeModalCancel = () => {
+	onInsertNodeIntoNodeModalCancel = () => {
 		this.setState({ insertNodeIntoNodeModalOpen: false });
 	}
 
-	handleInsertVariableIntoNodeModalOpen = () => {
+	onInsertVariableIntoNodeModalOpen = () => {
 		this.setState({ insertVariableIntoNodeModalOpen: true });
 	}
 
-	handleInsertVariableIntoNodeModalCancel = () => {
+	onInsertVariableIntoNodeModalCancel = () => {
 		this.setState({ insertVariableIntoNodeModalOpen: false });
 	}
 
@@ -108,23 +108,23 @@ class NodeEditor extends React.Component {
 				>
 					<InsertCharacterIntoNode
 						open={this.state.insertCharacterIntoNodeModalOpen}
-						handleCancel={this.handleInsertCharacterIntoNodeModalCancel}
+						onCancel={this.onInsertCharacterIntoNodeModalCancel}
 					/>
 					<InsertConditionalIntoNode
 						open={this.state.insertConditionalIntoNodeModalOpen}
-						handleCancel={this.handleInsertConditionalIntoNodeModalCancel}
+						onCancel={this.onInsertConditionalIntoNodeModalCancel}
 					/>
 					<InsertFunctionCallIntoNode
 						open={this.state.insertFunctionCallIntoNodeModalOpen}
-						handleCancel={this.handleInsertFunctionCallIntoNodeModalCancel}
+						onCancel={this.onInsertFunctionCallIntoNodeModalCancel}
 					/>
 					<InsertNodeIntoNode
 						open={this.state.insertNodeIntoNodeModalOpen}
-						handleCancel={this.handleInsertNodeIntoNodeModalCancel}
+						onCancel={this.onInsertNodeIntoNodeModalCancel}
 					/>
 					<InsertVariableIntoNode
 						open={this.state.insertVariableIntoNodeModalOpen}
-						handleCancel={this.handleInsertVariableIntoNodeModalCancel}
+						onCancel={this.onInsertVariableIntoNodeModalCancel}
 					/>
 					<main className={classes.main}>
 						<div className={classes.parentContainer}>
@@ -152,11 +152,11 @@ class NodeEditor extends React.Component {
 								/>
 								<Paper>
 									<div>Insert at Cursor</div>
-									<Button onClick={this.handleInsertVariableIntoNodeModalOpen}>Variable...</Button>
-									<Button onClick={this.handleInsertFunctionCallIntoNodeModalOpen}>Function Call...</Button>
-									<Button onClick={this.handleInsertCharacterIntoNodeModalOpen}>Character...</Button>
-									<Button onClick={this.handleInsertNodeIntoNodeModalOpen}>Node...</Button>
-									<Button onClick={this.handleInsertConditionalIntoNodeModalOpen}>Conditional...</Button>
+									<Button onClick={this.onInsertVariableIntoNodeModalOpen}>Variable...</Button>
+									<Button onClick={this.onInsertFunctionCallIntoNodeModalOpen}>Function Call...</Button>
+									<Button onClick={this.onInsertCharacterIntoNodeModalOpen}>Character...</Button>
+									<Button onClick={this.onInsertNodeIntoNodeModalOpen}>Node...</Button>
+									<Button onClick={this.onInsertConditionalIntoNodeModalOpen}>Conditional...</Button>
 								</Paper>
 								<TextField
 									label="Node Content"

@@ -11,8 +11,8 @@ class InsertCharacterCallToNode extends React.Component {
 			<ModalDialog
 				title="Insert Character"
 				open={this.props.open}
-				handleCancel={this.props.handleCancel}
-				handleOk={this.props.handleOk}
+				onCancel={this.props.onCancel}
+				onOk={this.props.onOk}
 			>
 				<div>Need to do some sort of lookup for this</div>
 				<TextField
