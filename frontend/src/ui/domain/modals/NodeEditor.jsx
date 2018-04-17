@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
-import Drawer from 'material-ui/Drawer';
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
@@ -21,32 +20,27 @@ const TagList = props => (<List
 	{props.tag.split(',').map(t => (<ListItem key={t} button>{t}</ListItem>))}
 </List>);
 
-const styles = (theme) => {
-	const widthAmount = 240 + (theme.spacing.unit * 6);
-	return ({
-		drawerPaper: {
-			position: 'relative',
-			width: 240,
-			marginLeft: 240,
-			float: 'right',
-			flexGrow: 1,
-		},
-		toolbar: theme.mixins.toolbar,
-		content: {
-			backgroundColor: theme.palette.background.default,
-			padding: theme.spacing.unit * 3,
-			width: `calc(100% - ${widthAmount}px`,
-			overflow: 'hidden',
-			position: 'relative',
-			display: 'block',
-			clear: 'left',
-		},
-		textArea: {
-			padding: theme.spacing.unit * 3,
-			display: 'block',
-		},
-	});
-};
+const styles = theme => ({
+	drawerPaper: {
+		flexGrow: 1,
+	},
+	toolbar: theme.mixins.toolbar,
+	content: {
+		backgroundColor: theme.palette.background.default,
+		padding: theme.spacing.unit * 3,
+		flexGrow: 2,
+	},
+	textArea: {
+		padding: theme.spacing.unit * 3,
+	},
+	parentContainer: {
+		display: 'flex',
+		flexDirection: 'row',
+	},
+	main: {
+		height: '100%',
+	},
+});
 
 class NodeEditor extends React.Component {
 	constructor(props) {
@@ -132,54 +126,55 @@ class NodeEditor extends React.Component {
 						open={this.state.insertVariableIntoNodeModalOpen}
 						handleCancel={this.handleInsertVariableIntoNodeModalCancel}
 					/>
-					<Drawer
-						variant="permanent"
-						classes={{
-							paper: classes.drawerPaper,
-						}}
-						anchor="right"
-					>
-						<TagList tag={this.props.data.tag} />
-					</Drawer>
-					<main className={classes.content}>
-						<Button>Test From Here</Button>
-						<TextField
-							id="node-title"
-							label="Title"
-							className={classes.textArea}
-							value={this.props.data.title}
-							onChange={(e) => { this.props.onUpdateFormField(e, 'title'); }}
-						/>
-						<TextField
-							id="node-tags"
-							label="Tags"
-							className={classes.textArea}
-							value={this.props.data.tag}
-							onChange={(e) => { this.props.onUpdateFormField(e, 'tag'); }}
-						/>
-						<TextField
-							className={classes.textArea}
-							label="Section"
-							value={this.props.data.section}
-							onChange={(e) => { this.props.onUpdateFormField(e, 'section'); }}
-						/>
-						<TextField
-							label="Node Content"
-							multiline
-							rows="10"
-							margin="normal"
-							style={{ height: '300px' }}
-							value={this.props.data.content}
-							onChange={(e) => { this.props.onUpdateFormField(e, 'content'); }}
-						/>
-						<Paper>
-							<div>Insert at Cursor</div>
-							<Button onClick={this.handleInsertVariableIntoNodeModalOpen}>Variable...</Button>
-							<Button onClick={this.handleInsertFunctionCallIntoNodeModalOpen}>Function Call...</Button>
-							<Button onClick={this.handleInsertCharacterIntoNodeModalOpen}>Character...</Button>
-							<Button onClick={this.handleInsertNodeIntoNodeModalOpen}>Node...</Button>
-							<Button onClick={this.handleInsertConditionalIntoNodeModalOpen}>Conditional...</Button>
-						</Paper>
+					<main className={classes.main}>
+						<div className={classes.parentContainer}>
+							<div className={classes.content}>
+								<Button>Test From Here</Button>
+								<TextField
+									id="node-title"
+									label="Title"
+									className={classes.textArea}
+									value={this.props.data.title}
+									onChange={(e) => { this.props.onUpdateFormField(e, 'title'); }}
+								/>
+								<TextField
+									id="node-tags"
+									label="Tags"
+									className={classes.textArea}
+									value={this.props.data.tag}
+									onChange={(e) => { this.props.onUpdateFormField(e, 'tag'); }}
+								/>
+								<TextField
+									className={classes.textArea}
+									label="Section"
+									value={this.props.data.section}
+									onChange={(e) => { this.props.onUpdateFormField(e, 'section'); }}
+								/>
+								<Paper>
+									<div>Insert at Cursor</div>
+									<Button onClick={this.handleInsertVariableIntoNodeModalOpen}>Variable...</Button>
+									<Button onClick={this.handleInsertFunctionCallIntoNodeModalOpen}>Function Call...</Button>
+									<Button onClick={this.handleInsertCharacterIntoNodeModalOpen}>Character...</Button>
+									<Button onClick={this.handleInsertNodeIntoNodeModalOpen}>Node...</Button>
+									<Button onClick={this.handleInsertConditionalIntoNodeModalOpen}>Conditional...</Button>
+								</Paper>
+								<TextField
+									label="Node Content"
+									multiline
+									rows="10"
+									margin="normal"
+									style={{ height: '300px' }}
+									value={this.props.data.content}
+									onChange={(e) => { this.props.onUpdateFormField(e, 'content'); }}
+								/>
+							</div>
+							<div
+								className={classes.drawerPaper}
+							>
+								<TagList tag={this.props.data.tag} />
+							</div>
+						</div>
+
 					</main>
 				</FullScreenDialog>
 			);
