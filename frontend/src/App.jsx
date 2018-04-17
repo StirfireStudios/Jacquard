@@ -37,7 +37,7 @@ class App extends Component {
 
 	onSaveProject() {
 		console.log('Saving Project');
-		ipcRenderer.send('saveAsClick', currentProjectService.get());
+		ipcRenderer.send('saveAsClick', JSON.stringify(currentProjectService.get()));
 	}
 
 	onSaveProjectAs() {
