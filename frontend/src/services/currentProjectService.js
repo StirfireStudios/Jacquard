@@ -1,14 +1,25 @@
 const currentProjectKey = 'currentProject';
 
 function set(val) {
-	localStorage.setItem(currentProjectKey, JSON.stringify(val));
+	// Convert the value to a JSON string
+	const currentProjectJSON = JSON.stringify(val);
+
+	// Record the JSON in local storage
+	localStorage.setItem(currentProjectKey, currentProjectJSON);
 }
 
 function get() {
-	return JSON.parse(localStorage.getItem(currentProjectKey));
+	// Retrieve the current project JSON string from local storage
+	const currentProjectJSON = localStorage.getItem(currentProjectKey);
+
+	// Convert the JSON string to an object
+	const currentProject = JSON.parse(currentProjectJSON);
+
+	return currentProject;
 }
 
 function clear() {
+	// Clear the current project JSON by setting it to null
 	localStorage.setItem(currentProjectKey, null);
 }
 
