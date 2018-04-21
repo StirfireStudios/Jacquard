@@ -150,6 +150,18 @@ class NodeEditor extends React.Component {
 									value={this.props.data.section}
 									onChange={(e) => { this.props.onUpdateFormField(e, 'section'); }}
 								/>
+								<TextField
+									className={classes.textArea}
+									label="Color ID"
+									value={this.props.data.colorId}
+									onChange={(e) => { this.props.onUpdateFormField(e, 'colorId'); }}
+								/>
+								<TextField
+									className={classes.textArea}
+									label="Position"
+									value={this.props.data.position}
+									onChange={(e) => { this.props.onUpdateFormField(e, 'position'); }}
+								/>
 								<Paper>
 									<div>Insert at Cursor</div>
 									<Button onClick={this.onInsertVariableIntoNodeModalOpen}>Variable...</Button>

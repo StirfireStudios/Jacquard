@@ -45,6 +45,18 @@ class NodeListPage extends React.Component {
 						multiline: false,
 					},
 					{
+						fieldName: 'colorId',
+						label: 'Color ID',
+						readOnly: false,
+						multiline: false,
+					},
+					{
+						fieldName: 'position',
+						label: 'Position',
+						readOnly: false,
+						multiline: false,
+					},
+					{
 						fieldName: 'content',
 						label: 'Content',
 						readOnly: false,
