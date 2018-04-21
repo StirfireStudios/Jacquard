@@ -133,3 +133,7 @@ ipcMain.on('openClick', (event) => {
 		});
 	});
 });
+
+ipcMain.on('setWindowTitleInfo', (event, arg) => {
+	mainWindow.setTitle(`Jacquard - ${arg}`);
+});

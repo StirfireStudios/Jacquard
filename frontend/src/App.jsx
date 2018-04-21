@@ -36,6 +36,9 @@ class App extends Component {
 		ipcRenderer.on('project-file-path-changed', (event, arg) => {
 			// Update the current project file path
 			currentProjectService.setFilePath(arg);
+
+			// Set the window title info
+			ipcRenderer.send('setWindowTitleInfo', arg);
 		});
 
 		// Set up a handler for when the project is loaded
