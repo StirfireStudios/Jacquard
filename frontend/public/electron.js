@@ -56,7 +56,7 @@ const currentProjectSaveAs = (event, currentProjectJSON, currentProjectFilePath)
 			defaultPath: currentDirectoryPath,
 			filters: [
 				{ name: 'Jacquard Projects', extensions: ['json'] },
-				{ name: 'All Files', extensions: ['*'] }
+				{ name: 'All Files', extensions: ['*'] },
 			],
 		},
 		(fileName) => {
