@@ -28,7 +28,6 @@ class App extends Component {
 		// Set up the initial state
 		this.state = {
 			// We don't have a current project initially
-			hasCurrentProject: false,
 			currentProject: null,
 		};
 
@@ -52,7 +51,6 @@ class App extends Component {
 			// Record the loaded project in our state
 			this.setState(
 				{
-					hasCurrentProject: true,
 					currentProject,
 				},
 				// Navigate to the Nodes page
@@ -67,7 +65,6 @@ class App extends Component {
 
 		// Record the current project (if any) in our state
 		this.setState({
-			hasCurrentProject: !!currentProject,
 			currentProject,
 		});
 	}
@@ -122,7 +119,6 @@ class App extends Component {
 		// Record the new project in our state
 		this.setState(
 			{
-				hasCurrentProject: true,
 				currentProject: newProject,
 			},
 			// Navigate to the Nodes page
@@ -149,7 +145,6 @@ class App extends Component {
 		// Clear the project from our state
 		this.setState(
 			{
-				hasCurrentProject: false,
 				currentProject: null,
 			},
 			// Navigate back to the home page
@@ -168,7 +163,6 @@ class App extends Component {
 
 		// Record the updated project in our state
 		this.setState({
-			hasCurrentProject: true,
 			currentProject: updatedCurrentProject,
 		});
 	}
@@ -182,9 +176,12 @@ class App extends Component {
 	};
 
 	render() {
+		// Determine whether we have a current project
+		const hasCurrentProject = !!this.state.currentProject;
+
 		// Build the app components
 		const Menu = () =>	(<MainMenu
-			hasCurrentProject={this.state.hasCurrentProject}
+			hasCurrentProject={hasCurrentProject}
 			onCreateNewProject={this.onCreateNewProject}
 			onSaveProject={this.onSaveProject}
 			onSaveProjectAs={this.onSaveProjectAs}
