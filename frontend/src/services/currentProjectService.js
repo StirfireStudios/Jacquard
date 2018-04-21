@@ -1,31 +1,45 @@
-const currentProjectKey = 'currentProject';
+// The local storage key of the current projects JSON
+const currentProjectJSONKey = 'currentProjectJSON';
 
-function set(val) {
+// The local storage key of the current projects file path
+const currentProjectFilePathKey = 'currentProjectFilePath';
+
+const set = (currentProject) => {
 	// Convert the value to a JSON string
-	const currentProjectJSON = JSON.stringify(val);
+	const currentProjectJSON = JSON.stringify(currentProject);
 
 	// Record the JSON in local storage
-	localStorage.setItem(currentProjectKey, currentProjectJSON);
-}
+	localStorage.setItem(currentProjectJSONKey, currentProjectJSON);
+};
 
-function get() {
+const get = () => {
 	// Retrieve the current project JSON string from local storage
-	const currentProjectJSON = localStorage.getItem(currentProjectKey);
+	const currentProjectJSON = localStorage.getItem(currentProjectJSONKey);
 
 	// Convert the JSON string to an object
 	const currentProject = JSON.parse(currentProjectJSON);
 
 	return currentProject;
-}
+};
 
-function clear() {
-	// Clear the current project JSON by setting it to null
-	localStorage.setItem(currentProjectKey, null);
-}
+const setFilePath = (currentProjectFilePath) => {
+	// Record the file path in local storage
+	localStorage.setItem(currentProjectFilePathKey, currentProjectFilePath);
+};
+
+const getFilePath = () => localStorage.getItem(currentProjectFilePathKey);
+
+const clear = () => {
+	// Clear the current project values
+	localStorage.setItem(currentProjectJSONKey, '');
+	localStorage.setItem(currentProjectFilePathKey, '');
+};
 
 const currentProjectService = {
 	set,
 	get,
+	setFilePath,
+	getFilePath,
 	clear,
 };
 

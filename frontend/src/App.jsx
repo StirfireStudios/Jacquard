@@ -31,6 +31,34 @@ class App extends Component {
 			hasCurrentProject: false,
 			currentProject: null,
 		};
+
+		// Set up a handler for when the project file path changes
+		// The new project file path is passed as the "arg" parameter
+		ipcRenderer.on('project-file-path-changed', (event, arg) => {
+			// Update the current project file path
+			currentProjectService.setFilePath(arg);
+		});
+
+		// Set up a handler for when the project is loaded
+		// The loaded project will be passed as a JSON string in the "arg"
+		// parameter
+		ipcRenderer.on('content-loaded', (event, arg) => {
+			// Convert the JSON string to an object
+			const currentProject = JSON.parse(arg);
+
+			// Store the loaded project
+			currentProjectService.set(currentProject);
+
+			// Record the loaded project in our state
+			this.setState(
+				{
+					hasCurrentProject: true,
+					currentProject,
+				},
+				// Navigate to the Nodes page
+				() => this.navigateToNodes(),
+			);
+		});
 	}
 
 	componentWillMount() {
@@ -45,20 +73,37 @@ class App extends Component {
 	}
 
 	onSaveProject = () => {
-		console.log('Saving Project');
-	};
-
-	onSaveProjectAs = () => {
-		console.log('Saving Project As...');
-
 		// Get the current project
 		const currentProject = currentProjectService.get();
 
-		// Convert it to JSON
+		// Get the current project file path
+		const currentProjectFilePath = currentProjectService.getFilePath();
+
+		// Convert the project to JSON
+		const currentProjectJSON = JSON.stringify(currentProject);
+
+		// Save the current project to the current file path
+		ipcRenderer.send('saveClick', {
+			currentProjectJSON,
+			currentProjectFilePath,
+		});
+	};
+
+	onSaveProjectAs = () => {
+		// Get the current project
+		const currentProject = currentProjectService.get();
+
+		// Get the current project file path
+		const currentProjectFilePath = currentProjectService.getFilePath();
+
+		// Convert the project to JSON
 		const currentProjectJSON = JSON.stringify(currentProject);
 
 		// Save the current project under another name
-		ipcRenderer.send('saveAsClick', currentProjectJSON);
+		ipcRenderer.send('saveAsClick', {
+			currentProjectJSON,
+			currentProjectFilePath,
+		});
 	};
 
 	onCreateNewProject = () => {
@@ -113,27 +158,6 @@ class App extends Component {
 	};
 
 	onOpenExistingProject = () => {
-		// Set up a handler for when the project is loaded
-		// The loaded project will be passed as a JSON string in the "arg"
-		// parameter
-		ipcRenderer.on('content-loaded', (event, arg) => {
-			// Convert the JSON string to an object
-			const currentProject = JSON.parse(arg);
-
-			// Store the loaded project
-			currentProjectService.set(currentProject);
-
-			// Record the loaded project in our state
-			this.setState(
-				{
-					hasCurrentProject: true,
-					currentProject,
-				},
-				// Navigate to the Nodes page
-				() => this.navigateToNodes(),
-			);
-		});
-
 		// Open a project
 		ipcRenderer.send('openClick');
 	};
