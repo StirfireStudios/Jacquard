@@ -24,30 +24,61 @@ const theme = createMuiTheme();
 class App extends Component {
 	constructor(props) {
 		super(props);
+
+		// Set up the initial state
 		this.state = {
+			// We don't have a current project initially
 			hasCurrentProject: false,
+			currentProject: null,
 		};
+	}
+
+	componentWillMount() {
+		// Get the current project (if any)
+		const currentProject = currentProjectService.get();
+
+		// Record the current project (if any) in our state
+		this.setState({
+			hasCurrentProject: !!currentProject,
+			currentProject,
+		});
 	}
 
 	onSaveProject = () => {
 		console.log('Saving Project');
-		ipcRenderer.send('saveAsClick', JSON.stringify(currentProjectService.get()));
 	};
 
 	onSaveProjectAs = () => {
 		console.log('Saving Project As...');
+
+		// Get the current project
+		const currentProject = currentProjectService.get();
+
+		// Convert it to JSON
+		const currentProjectJSON = JSON.stringify(currentProject);
+
+		// Save the current project under another name
+		ipcRenderer.send('saveAsClick', currentProjectJSON);
 	};
 
 	onCreateNewProject = () => {
-		currentProjectService.set({
+		// Create a new project
+		const newProject = {
 			name: 'New Project',
 			nodes: [],
 			characters: [],
 			functions: [],
 			variables: [],
-		});
+		};
 
-		this.setState({ hasCurrentProject: true });
+		// Store the new project
+		currentProjectService.set(newProject);
+
+		// Record the new project in our state
+		this.setState({
+			hasCurrentProject: true,
+			currentProject: newProject,
+		});
 	}
 
 	onExportYarnFile = () => {
@@ -63,20 +94,51 @@ class App extends Component {
 	};
 
 	onCloseProject = () => {
+		// Remove the project from storage
 		currentProjectService.clear();
-		this.setState({ hasCurrentProject: false });
+
+		// Clear the project from our state
+		this.setState({
+			hasCurrentProject: false,
+			currentProject: null,
+		});
 	};
 
 	onOpenExistingProject = () => {
+		// Set up a handler for when the project is loaded
+		// The loaded project will be passed as a JSON string in the "arg"
+		// parameter
 		ipcRenderer.on('content-loaded', (event, arg) => {
-			currentProjectService.set(arg);
-			this.setState({ hasCurrentProject: true });
+			// Convert the JSON string to an object
+			const currentProject = JSON.parse(arg);
+
+			// Store the loaded project
+			currentProjectService.set(currentProject);
+
+			// Record the loaded project in our state
+			this.setState({
+				hasCurrentProject: true,
+				currentProject,
+			});
 		});
 
+		// Open a project
 		ipcRenderer.send('openClick');
 	};
 
+	onCurrentProjectChanged = (updatedCurrentProject) => {
+		// Store the updated project
+		currentProjectService.set(updatedCurrentProject);
+
+		// Record the updated project in our state
+		this.setState({
+			hasCurrentProject: true,
+			currentProject: updatedCurrentProject,
+		});
+	}
+
 	render() {
+		// Build the app components
 		const Menu = () =>	(<MainMenu
 			hasCurrentProject={this.state.hasCurrentProject}
 			onCreateNewProject={this.onCreateNewProject}
@@ -89,12 +151,53 @@ class App extends Component {
 			onCloseProject={this.onCloseProject}
 		/>);
 
-		const BasePage = props => <Page mainMenu={Menu} title={props.title}>{props.children}</Page>;
-		const HomePageComplete = () => <BasePage title="Home"><DefaultPage currentProject={this.state.currentProject} /></BasePage>;
-		const CharacterPageComplete = () => <BasePage title="Characters"><CharacterPage currentProject={this.state.currentProject} /></BasePage>;
-		const FunctionPageComplete = () => <BasePage title="Functions"><FunctionPage currentProject={this.state.currentProject} /></BasePage>;
-		const NodePageComplete = () => <BasePage title="Nodes"><NodePage currentProject={this.state.currentProject} /></BasePage>;
-		const VariablePageComplete = () => <BasePage title="Variables"><VariablePage currentProject={this.state.currentProject} /></BasePage>;
+		const BasePage = props => (
+			<Page mainMenu={Menu} title={props.title}>
+				{props.children}
+			</Page>
+		);
+
+		const HomePageComplete = () => (
+			<BasePage title="Home">
+				<DefaultPage />
+			</BasePage>
+		);
+
+		const CharacterPageComplete = () => (
+			<BasePage title="Characters">
+				<CharacterPage
+					currentProject={this.state.currentProject}
+					onCurrentProjectChanged={this.onCurrentProjectChanged}
+				/>
+			</BasePage>
+		);
+
+		const FunctionPageComplete = () => (
+			<BasePage title="Functions">
+				<FunctionPage
+					currentProject={this.state.currentProject}
+					onCurrentProjectChanged={this.onCurrentProjectChanged}
+				/>
+			</BasePage>
+		);
+
+		const NodePageComplete = () => (
+			<BasePage title="Nodes">
+				<NodePage
+					currentProject={this.state.currentProject}
+					onCurrentProjectChanged={this.onCurrentProjectChanged}
+				/>
+			</BasePage>
+		);
+
+		const VariablePageComplete = () => (
+			<BasePage title="Variables">
+				<VariablePage
+					currentProject={this.state.currentProject}
+					onCurrentProjectChanged={this.onCurrentProjectChanged}
+				/>
+			</BasePage>
+		);
 
 		return (
 			<MuiThemeProvider theme={theme}>

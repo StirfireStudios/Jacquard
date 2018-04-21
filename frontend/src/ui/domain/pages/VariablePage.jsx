@@ -1,5 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { withStyles } from 'material-ui/styles';
+
 import ListPage from '../../general/pages/ListPage';
 import themes from '../themes';
 import FieldListForm from '../../general/components/FieldListForm';
@@ -12,9 +15,11 @@ class VariablePage extends React.Component {
 
 		return (
 			<ListPage
+				onCurrentProjectChanged={this.props.onCurrentProjectChanged}
 				fieldNames={fieldNames}
 				displayNames={displayNames}
 				keyName="name"
+				currentProject={this.props.currentProject}
 				currentProjectPropName="variables"
 				editFormTitle="Edit Variables"
 				addFormTitle="Add Variables"
@@ -37,5 +42,15 @@ class VariablePage extends React.Component {
 		);
 	}
 }
+
+VariablePage.propTypes = {
+	onCurrentProjectChanged: PropTypes.func.isRequired,
+
+	currentProject: PropTypes.object,
+};
+
+VariablePage.defaultProps = {
+	currentProject: null,
+};
 
 export default withStyles(themes.defaultTheme)(VariablePage);

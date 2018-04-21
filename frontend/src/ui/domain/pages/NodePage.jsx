@@ -1,5 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { withStyles } from 'material-ui/styles';
+
 import ListPage from '../../general/pages/ListPage';
 import themes from '../themes';
 import NodeEditor from '../modals/NodeEditor';
@@ -13,9 +16,11 @@ class NodeListPage extends React.Component {
 
 		return (
 			<ListPage
+				onCurrentProjectChanged={this.props.onCurrentProjectChanged}
 				fieldNames={fieldNames}
 				displayNames={displayNames}
 				keyName="title"
+				currentProject={this.props.currentProject}
 				currentProjectPropName="nodes"
 				editFormTitle="Edit Node"
 				addFormTitle="Add Node"
@@ -50,5 +55,15 @@ class NodeListPage extends React.Component {
 		);
 	}
 }
+
+NodeListPage.propTypes = {
+	onCurrentProjectChanged: PropTypes.func.isRequired,
+
+	currentProject: PropTypes.object,
+};
+
+NodeListPage.defaultProps = {
+	currentProject: null,
+};
 
 export default withStyles(themes.defaultTheme)(NodeListPage);

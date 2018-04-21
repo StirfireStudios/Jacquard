@@ -1,12 +1,12 @@
 import React from 'react';
-import Button from 'material-ui/Button';
 import PropTypes from 'prop-types';
+
+import Button from 'material-ui/Button';
+
 // import ListEditButton from '../../general/components/ListEditButton';
 // import ListDeleteButton from '../../general/components/ListDeleteButton';
-import currentProjectService from '../../../services/currentProjectService';
 import FieldListTable from '../components/FieldListTable';
 
-// @description State is stored at this level.
 // Assumes that you are going to have a list of some sort that you can edit.
 // Takes a list of fields that you want to show, a form that will act as the add/edit form and
 // the name of the array from currentProject that you want to deal with
@@ -15,106 +15,139 @@ class ListPage extends React.Component {
 	constructor(props) {
 		super(props);
 
+		// Initialize the state of the component
 		this.state = {
-			currentProject: {},
+			// The Add/Edit form is initially closed
 			addEditFormOpen: false,
-			formData: null,
-			formTitle: '',
+			// Whether the Add/Edit form is in Add mode (it's in Edit mode otherwise)
+			addEditFormAddModeEnabled: true,
+			// We don't have any form data yet
+			addEditFormData: null,
 		};
 	}
 
-	componentWillMount() {
-		const currentProject = currentProjectService.get();
-		this.setState({ currentProject });
-	}
-
 	onAddItemClick = () => {
-		this.openAddEditForm(this.props.addFormTitle, this.createNewFormData());
+		// Create new Add/Edit form data
+		const newFormData = this.createNewAddEditFormData();
+
+		// Open the form in Add mode
+		this.openAddForm(newFormData);
 	};
 
 	onEditItemClick = (keyValue) => {
-		const currentProject = currentProjectService.get();
+		// Get a copy of the current project
+		const currentProject = { ...this.props.currentProject };
 
+		// Get the row data we'll be editing
 		const rowData = currentProject[this.props.currentProjectPropName];
 
-		const formData = {};
+		// Generate the form data from the row data
+		const addEditFormData = {};
 		rowData.forEach((row) => {
 			if (row[this.props.keyName] === keyValue) {
-				this.setFieldsBasedOnFormSchema(row, formData);
+				this.setFieldsBasedOnFormSchema(row, addEditFormData);
 			}
 		});
 
-		this.openAddEditForm(this.props.editFormTitle, formData);
+		// Open the form in Edit mode
+		this.openEditForm(addEditFormData);
 	};
 
 	onDeleteItemClick = (keyValue) => {
-		const currentProject = currentProjectService.get();
+		// Get a copy of the current project
+		const currentProject = { ...this.props.currentProject };
 
+		// Get the row data we'll be deleting from
 		const rowData = currentProject[this.props.currentProjectPropName];
 
+		// Delete the item
 		const filteredRowData = rowData.filter(row => row[this.props.keyName] !== keyValue);
 
+		// Update the current project with the new row data
 		currentProject[this.props.currentProjectPropName] = filteredRowData;
 
-		currentProjectService.set(currentProject);
-
-		this.setState({ currentProject });
+		// Notify the callback that the current project has changed
+		this.props.onCurrentProjectChanged(currentProject);
 	};
 
 	// TODO: Move to a helper function
 	onUpdateFormField = (event, key) => {
-		const { formData } = this.state;
-		formData[key] = event.target.value;
-		this.setState({	formData });
+		// Get a copy of the form data
+		const addEditFormData = { ...this.state.addEditFormData };
+
+		console.log(`key=${key}, value=${event.target.value}`);
+
+		// Set the value of the form data based on the key
+		addEditFormData[key] = event.target.value;
+
+		// Record the updated form data in our state
+		this.setState({	addEditFormData });
 	}
 
 	onAddEditFormOk = () => {
-		const currentProject = currentProjectService.get();
+		// Get a copy of the current project
+		const currentProject = { ...this.props.currentProject };
 
+		// Get the row data we'll be updating
 		const rowData = currentProject[this.props.currentProjectPropName];
 
-		let rowToUpdate = null;
+		// Get the index of the row we'll be updating
+		const rowToUpdateIndex = rowData
+			.findIndex(row =>
+				row[this.props.keyName] === this.state.addEditFormData[this.props.keyName]);
 
-		rowData.forEach((row) => {
-			if (row[this.props.keyName] === this.state.formData[this.props.keyName]) {
-				rowToUpdate = row;
-				this.setFieldsBasedOnFormSchema(this.state.formData, rowToUpdate);
-			}
-		});
+		// If we found the row, update it
+		if (rowToUpdateIndex !== -1) {
+			// Get the row to update
+			const rowToUpdate = rowData[rowToUpdateIndex];
 
-		// If we didn't find a row to update, just push the form data onto the array as
-		// it's a new row.
-		// TODO: we should probably clean this up so it matches a schema definition somewhere.
-		// Might not necessarily be the formField schema
-		if (rowToUpdate === null) {
-			rowData.push(this.state.formData);
+			// Update the row fields from the form data according to the form schema
+			this.setFieldsBasedOnFormSchema(this.state.addEditFormData, rowToUpdate);
+		} else {
+			// If we didn't find a row to update, just push the form data onto
+			// the array as it's a new row.
+			// TODO: we should probably clean this up so it matches a schema definition somewhere.
+			// Might not necessarily be the formField schema
+			rowData.push(this.state.addEditFormData);
 		}
 
-		currentProjectService.set(currentProject);
+		// Notify the callback that the current project has changed
+		this.props.onCurrentProjectChanged(currentProject);
 
-		this.setState({ currentProject });
-
+		// Close the Add/Edit form
 		this.closeAddEditForm();
 	}
 
 	onAddEditFormCancel = () => {
 		this.closeAddEditForm();
-		console.log('Clicked Cancel');
 	}
 
 	setFieldsBasedOnFormSchema = (source, dest) => {
 		this.props.formSchema.forEach((formField) => {
 			dest[formField.fieldName] = source[formField.fieldName];
 		});
-	};
+	}
 
-	getRows = () => this.state.currentProject[this.props.currentProjectPropName];
+	/* eslint no-confusing-arrow: ["error", {"allowParens": true}] */
+	getCurrentProjectProp = () => (
+		this.props.currentProject
+			? this.props.currentProject[this.props.currentProjectPropName]
+			: []
+	);
 
-	openAddEditForm = (title, data) => {
+	openAddForm = (addEditFormData) => {
 		this.setState({
-			formTitle: title,
-			formData: data,
 			addEditFormOpen: true,
+			addEditFormAddModeEnabled: true,
+			addEditFormData,
+		});
+	}
+
+	openEditForm = (addEditFormData) => {
+		this.setState({
+			addEditFormOpen: true,
+			addEditFormAddModeEnabled: false,
+			addEditFormData,
 		});
 	}
 
@@ -124,16 +157,22 @@ class ListPage extends React.Component {
 		});
 	}
 
-	createNewFormData = () => {
-		const formData = {};
-
-		this.props.formSchema.forEach((formField) => { formData[formField.fieldName] = ''; });
-
-		return formData;
-	}
+	createNewAddEditFormData = () =>
+		// Set up an empty field for each field in the form schema
+		this.props.formSchema.reduce((addEditFormData, addEditFormField) => {
+			addEditFormData[addEditFormField.fieldName] = '';
+			return addEditFormData;
+		}, {});
 
 	render() {
+		// Get the Add/Edit form component
 		const AddEditForm = this.props.addEditForm;
+
+		// Determine the title of the Add/Edit form base on whether we have
+		// any form data
+		const addEditFormTitle = (this.state.addEditFormAddModeEnabled)
+			? this.props.editFormTitle
+			: this.props.addFormTitle;
 
 		return (
 			<div>
@@ -145,16 +184,16 @@ class ListPage extends React.Component {
 					Add
 				</Button>
 				<AddEditForm
-					data={this.state.formData}
+					data={this.state.addEditFormData}
 					open={this.state.addEditFormOpen}
 					onUpdateFormField={this.onUpdateFormField}
 					onOk={this.onAddEditFormOk}
 					onCancel={this.onAddEditFormCancel}
-					title={this.state.formTitle}
+					title={addEditFormTitle}
 					formSchema={this.props.formSchema}
 				/>
 				<FieldListTable
-					rows={this.getRows()}
+					rows={this.getCurrentProjectProp()}
 					fieldNames={this.props.fieldNames}
 					displayNames={this.props.displayNames}
 					keyName={this.props.keyName}
@@ -166,17 +205,22 @@ class ListPage extends React.Component {
 	}
 }
 
-ListPage.defaultProps = {};
-
 ListPage.propTypes = {
+	onCurrentProjectChanged: PropTypes.func.isRequired,
+
 	editFormTitle: PropTypes.string.isRequired,
 	addFormTitle: PropTypes.string.isRequired,
+	currentProject: PropTypes.object,
 	currentProjectPropName: PropTypes.string.isRequired,
 	keyName: PropTypes.string.isRequired,
 	fieldNames: PropTypes.array.isRequired,
 	displayNames: PropTypes.array.isRequired,
 	formSchema: PropTypes.array.isRequired,
 	addEditForm: PropTypes.func.isRequired,
+};
+
+ListPage.defaultProps = {
+	currentProject: null,
 };
 
 export default ListPage;
