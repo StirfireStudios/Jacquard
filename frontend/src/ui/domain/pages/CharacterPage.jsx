@@ -33,7 +33,7 @@ class CharacterPage extends React.Component {
 					},
 					{
 						fieldName: 'description',
-						label: 'description',
+						label: 'Description',
 						readOnly: false,
 						multiline: true,
 					},
