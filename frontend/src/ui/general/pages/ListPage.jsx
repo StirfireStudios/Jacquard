@@ -23,6 +23,9 @@ class ListPage extends React.Component {
 			addEditFormAddModeEnabled: true,
 			// We don't have any form data yet
 			addEditFormData: null,
+			// The previous value of the key before the form data was updated
+			// (initially null)
+			addEditFormDataPreviousKeyValue: null,
 		};
 	}
 
@@ -75,8 +78,6 @@ class ListPage extends React.Component {
 		// Get a copy of the form data
 		const addEditFormData = { ...this.state.addEditFormData };
 
-		console.log(`key=${key}, value=${event.target.value}`);
-
 		// Set the value of the form data based on the key
 		addEditFormData[key] = event.target.value;
 
@@ -91,24 +92,26 @@ class ListPage extends React.Component {
 		// Get the row data we'll be updating
 		const rowData = currentProject[this.props.currentProjectPropName];
 
-		// Get the index of the row we'll be updating
-		const rowToUpdateIndex = rowData
-			.findIndex(row =>
-				row[this.props.keyName] === this.state.addEditFormData[this.props.keyName]);
-
-		// If we found the row, update it
-		if (rowToUpdateIndex !== -1) {
-			// Get the row to update
-			const rowToUpdate = rowData[rowToUpdateIndex];
-
-			// Update the row fields from the form data according to the form schema
-			this.setFieldsBasedOnFormSchema(this.state.addEditFormData, rowToUpdate);
-		} else {
-			// If we didn't find a row to update, just push the form data onto
-			// the array as it's a new row.
-			// TODO: we should probably clean this up so it matches a schema definition somewhere.
-			// Might not necessarily be the formField schema
+		// Is Add mode enabled?
+		if (this.state.addEditFormAddModeEnabled) {
+			// Add the form data to the current projects row data
 			rowData.push(this.state.addEditFormData);
+		} else {
+			// Get the index of the row we'll be updating
+			// We look up the row using the previous value of the key, since it
+			// might have been changed during editing
+			const rowToUpdateIndex = rowData
+				.findIndex(row =>
+					row[this.props.keyName] === this.state.addEditFormDataPreviousKeyValue);
+
+			// If we found the row, update it
+			if (rowToUpdateIndex !== -1) {
+				// Get the row to update
+				const rowToUpdate = rowData[rowToUpdateIndex];
+
+				// Update the row fields from the form data according to the form schema
+				this.setFieldsBasedOnFormSchema(this.state.addEditFormData, rowToUpdate);
+			}
 		}
 
 		// Notify the callback that the current project has changed
@@ -140,14 +143,21 @@ class ListPage extends React.Component {
 			addEditFormOpen: true,
 			addEditFormAddModeEnabled: true,
 			addEditFormData,
+			addEditFormDataPreviousKeyValue: null,
 		});
 	}
 
 	openEditForm = (addEditFormData) => {
+		// Get the key value from the Add/Edit form data
+		// We'll use this to be able to match the row being edited even if the
+		// key value changes
+		const addEditFormDataPreviousKeyValue = addEditFormData[this.props.keyName];
+
 		this.setState({
 			addEditFormOpen: true,
 			addEditFormAddModeEnabled: false,
 			addEditFormData,
+			addEditFormDataPreviousKeyValue,
 		});
 	}
 
