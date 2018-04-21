@@ -75,10 +75,14 @@ class App extends Component {
 		currentProjectService.set(newProject);
 
 		// Record the new project in our state
-		this.setState({
-			hasCurrentProject: true,
-			currentProject: newProject,
-		});
+		this.setState(
+			{
+				hasCurrentProject: true,
+				currentProject: newProject,
+			},
+			// Navigate to the Nodes page
+			() => this.navigateToNodes(),
+		);
 	}
 
 	onExportYarnFile = () => {
@@ -120,10 +124,14 @@ class App extends Component {
 			currentProjectService.set(currentProject);
 
 			// Record the loaded project in our state
-			this.setState({
-				hasCurrentProject: true,
-				currentProject,
-			});
+			this.setState(
+				{
+					hasCurrentProject: true,
+					currentProject,
+				},
+				// Navigate to the Nodes page
+				() => this.navigateToNodes(),
+			);
 		});
 
 		// Open a project
@@ -143,6 +151,10 @@ class App extends Component {
 
 	navigateToHome = () => {
 		this.props.history.push('/');
+	};
+
+	navigateToNodes = () => {
+		this.props.history.push('/nodes');
 	};
 
 	render() {
