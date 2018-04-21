@@ -18,6 +18,7 @@ import VariablePage from './ui/domain/pages/VariablePage';
 import MainMenu from './ui/domain/components/MainMenu';
 
 import currentProjectService from './services/currentProjectService';
+import yarnService from './services/yarnService';
 
 const theme = createMuiTheme();
 
@@ -130,7 +131,22 @@ class App extends Component {
 	}
 
 	onExportYarnFile = () => {
-		console.log('Exporting Yarn File');
+		// Get the current project
+		const currentProject = currentProjectService.get();
+
+		// Convert the project to Yarn
+		const currentProjectYarn = yarnService.exportProjectToYarn(currentProject);
+
+		console.log(currentProjectYarn);
+
+		// Get the current project file path
+		const currentProjectFilePath = currentProjectService.getFilePath();
+
+		// Export the current project as a yarn file
+		ipcRenderer.send('projectExportAsYarn', {
+			currentProjectYarn,
+			currentProjectFilePath,
+		});
 	};
 
 	onImportYarnFile = () => {

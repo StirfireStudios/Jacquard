@@ -72,6 +72,50 @@ const currentProjectSaveAs = (event, currentProjectJSON, currentProjectFilePath)
 	);
 };
 
+const currentProjectExportAsYarn = (event, currentProjectYarn, currentProjectFilePath) => {
+	// Get the current directory from the project file path (if we have one)
+	const currentDirectoryPath = (currentProjectFilePath)
+		? path.dirname(currentProjectFilePath)
+		: '';
+
+	// Show the Save As dialog
+	dialog.showSaveDialog(
+		{
+			title: 'Export Project as Yarn',
+			showTagsField: false,
+			defaultPath: currentDirectoryPath,
+			filters: [
+				{ name: 'Yarn', extensions: ['yarn'] },
+				{ name: 'All Files', extensions: ['*'] },
+			],
+		},
+		(fileName) => {
+			// Do we not have a filename?
+			if (!fileName) {
+				console.log('Unable to export to Yarn');
+				return;
+			}
+
+			// Write the project Yarn to disk
+			fs.writeFile(fileName, currentProjectYarn, (err) => {
+				if (err) {
+					dialog.showMessageBox({
+						title: 'Error',
+						message: `An error ocurred exporting to Yarn :${err.message}`,
+						type: 'error',
+					});
+				}
+
+				dialog.showMessageBox({
+					title: 'Success',
+					message: 'The project was successfully exported to Yarn',
+					type: 'info',
+				});
+			});
+		},
+	);
+};
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
@@ -136,6 +180,15 @@ ipcMain.on('projectOpen', (event) => {
 			event.sender.send(projectLoadedMessage, data);
 		});
 	});
+});
+
+
+ipcMain.on('projectExportAsYarn', (event, arg) => {
+	// Get the project info from the argument
+	const { currentProjectYarn, currentProjectFilePath } = arg;
+
+	// Ask the user to export the project as Yarn under a different file path
+	currentProjectExportAsYarn(event, currentProjectYarn, currentProjectFilePath);
 });
 
 ipcMain.on('setWindowTitleInfo', (event, arg) => {
