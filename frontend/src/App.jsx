@@ -44,7 +44,7 @@ class App extends Component {
 		// Set up a handler for when the project is loaded
 		// The loaded project will be passed as a JSON string in the "arg"
 		// parameter
-		ipcRenderer.on('content-loaded', (event, arg) => {
+		ipcRenderer.on('project-loaded', (event, arg) => {
 			// Convert the JSON string to an object
 			const currentProject = JSON.parse(arg);
 
@@ -83,7 +83,7 @@ class App extends Component {
 		const currentProjectJSON = JSON.stringify(currentProject);
 
 		// Save the current project to the current file path
-		ipcRenderer.send('saveClick', {
+		ipcRenderer.send('projectSave', {
 			currentProjectJSON,
 			currentProjectFilePath,
 		});
@@ -100,7 +100,7 @@ class App extends Component {
 		const currentProjectJSON = JSON.stringify(currentProject);
 
 		// Save the current project under another name
-		ipcRenderer.send('saveAsClick', {
+		ipcRenderer.send('projectSaveAs', {
 			currentProjectJSON,
 			currentProjectFilePath,
 		});
@@ -157,7 +157,7 @@ class App extends Component {
 
 	onOpenExistingProject = () => {
 		// Open a project
-		ipcRenderer.send('openClick');
+		ipcRenderer.send('projectOpen');
 	};
 
 	onCurrentProjectChanged = (updatedCurrentProject) => {

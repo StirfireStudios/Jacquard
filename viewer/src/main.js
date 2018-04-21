@@ -120,14 +120,14 @@ function jsonifyYarn(yarntext) {
 }
 
 function onOpenClick(){
-	ipcRenderer.on('content-loaded', (event, arg) => {
+	ipcRenderer.on('project-loaded', (event, arg) => {
 		$('#input-area').val(arg);
 	});
-	ipcRenderer.send('openClick');
+	ipcRenderer.send('projectOpen');
 }
 
 function onSaveAsClick(){
-	ipcRenderer.send('saveAsClick', $('#input-area').val());	
+	ipcRenderer.send('projectSaveAs', $('#input-area').val());	
 }
 
 function log(logText) {

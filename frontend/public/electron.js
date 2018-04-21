@@ -12,7 +12,7 @@ const isDev = require('electron-is-dev');
 let mainWindow;
 
 const projectFilePathChangedMessage = 'project-file-path-changed';
-const contentLoadedMessage = 'content-loaded';
+const projectLoadedMessage = 'project-loaded';
 
 function createWindow() {
 	mainWindow = new BrowserWindow({ width: 900, height: 680 });
@@ -86,7 +86,7 @@ app.on('activate', () => {
 	}
 });
 
-ipcMain.on('saveClick', (event, arg) => {
+ipcMain.on('projectSave', (event, arg) => {
 	// Get the project info from the argument
 	const { currentProjectJSON, currentProjectFilePath } = arg;
 
@@ -100,7 +100,7 @@ ipcMain.on('saveClick', (event, arg) => {
 	currentProjectSave(event, currentProjectJSON, currentProjectFilePath);
 });
 
-ipcMain.on('saveAsClick', (event, arg) => {
+ipcMain.on('projectSaveAs', (event, arg) => {
 	// Get the project info from the argument
 	const { currentProjectJSON, currentProjectFilePath } = arg;
 
@@ -108,7 +108,7 @@ ipcMain.on('saveAsClick', (event, arg) => {
 	currentProjectSaveAs(event, currentProjectJSON, currentProjectFilePath);
 });
 
-ipcMain.on('openClick', (event) => {
+ipcMain.on('projectOpen', (event) => {
 	dialog.showOpenDialog((fileNames) => {
 		// fileNames is an array that contains all the selected
 		if (fileNames === undefined || fileNames.length < 1) {
@@ -133,7 +133,7 @@ ipcMain.on('openClick', (event) => {
 			event.sender.send(projectFilePathChangedMessage, currentProjectFilePath);
 
 			// Notify that the project has been loaded
-			event.sender.send(contentLoadedMessage, data);
+			event.sender.send(projectLoadedMessage, data);
 		});
 	});
 });
