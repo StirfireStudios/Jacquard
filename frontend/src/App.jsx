@@ -1,6 +1,6 @@
 // React Imports
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, withRouter } from 'react-router-dom';
 
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
@@ -98,10 +98,14 @@ class App extends Component {
 		currentProjectService.clear();
 
 		// Clear the project from our state
-		this.setState({
-			hasCurrentProject: false,
-			currentProject: null,
-		});
+		this.setState(
+			{
+				hasCurrentProject: false,
+				currentProject: null,
+			},
+			// Navigate back to the home page
+			() => this.navigateToHome(),
+		);
 	};
 
 	onOpenExistingProject = () => {
@@ -136,6 +140,10 @@ class App extends Component {
 			currentProject: updatedCurrentProject,
 		});
 	}
+
+	navigateToHome = () => {
+		this.props.history.push('/');
+	};
 
 	render() {
 		// Build the app components
@@ -200,19 +208,28 @@ class App extends Component {
 		);
 
 		return (
-			<MuiThemeProvider theme={theme}>
-				<Router>
-					<div>
-						<Route exact path="/" component={HomePageComplete} />
-						<Route path="/characters" component={CharacterPageComplete} />
-						<Route path="/functions" component={FunctionPageComplete} />
-						<Route path="/nodes" component={NodePageComplete} />
-						<Route path="/variables" component={VariablePageComplete} />
-					</div>
-				</Router>
-			</MuiThemeProvider>
+			<div>
+				<Route exact path="/" component={HomePageComplete} />
+				<Route path="/characters" component={CharacterPageComplete} />
+				<Route path="/functions" component={FunctionPageComplete} />
+				<Route path="/nodes" component={NodePageComplete} />
+				<Route path="/variables" component={VariablePageComplete} />
+			</div>
 		);
 	}
 }
 
-export default App;
+const AppContainer = () => {
+	// Wrap the app so it has access to the routers match, location, and history props
+	const AppWithRouter = withRouter(App);
+
+	return (
+		<MuiThemeProvider theme={theme}>
+			<Router>
+				<AppWithRouter />
+			</Router>
+		</MuiThemeProvider>
+	);
+};
+
+export default AppContainer;
