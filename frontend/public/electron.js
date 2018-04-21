@@ -51,9 +51,13 @@ const currentProjectSaveAs = (event, currentProjectJSON, currentProjectFilePath)
 	// Show the Save As dialog
 	dialog.showSaveDialog(
 		{
-			title: 'Save Yarn File',
+			title: 'Save Project',
 			showTagsField: false,
 			defaultPath: currentDirectoryPath,
+			filters: [
+				{ name: 'Jacquard Projects', extensions: ['json'] },
+				{ name: 'All Files', extensions: ['*'] }
+			],
 		},
 		(fileName) => {
 			// Do we not have a filename?
