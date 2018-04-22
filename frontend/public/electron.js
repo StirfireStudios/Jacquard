@@ -13,6 +13,7 @@ let mainWindow;
 
 const projectFilePathChangedMessage = 'project-file-path-changed';
 const projectLoadedMessage = 'project-loaded';
+const yarnLoadedMessage = 'yarn-loaded';
 
 function createWindow() {
 	mainWindow = new BrowserWindow({ width: 900, height: 680 });
@@ -162,6 +163,60 @@ const currentProjectOpen = (event, currentProjectFilePath) => {
 		},
 	);
 };
+
+const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
+	// Get the current directory from the project file path (if we have one)
+	const currentDirectoryPath = (currentProjectFilePath)
+		? path.dirname(currentProjectFilePath)
+		: '';
+
+	// Show the file selection dialog
+	dialog.showOpenDialog(
+		{
+			title: 'Import Project from Yarn',
+			showTagsField: false,
+			defaultPath: currentDirectoryPath,
+			filters: [
+				{ name: 'Yarn', extensions: ['yarn'] },
+				{ name: 'All Files', extensions: ['*'] },
+			],
+		},
+		(fileNames) => {
+			// fileNames is an array that contains all the selected
+			if (fileNames === undefined || fileNames.length < 1) {
+				console.log('No file selected');
+				return;
+			}
+
+			// Get the project Yarn file path
+			const currentProjectYarnFilePath = fileNames[0];
+
+			fs.readFile(currentProjectYarnFilePath, 'utf-8', (err, data) => {
+				if (err) {
+					dialog.showMessageBox({
+						title: 'Error',
+						message: `An error ocurred reading the file :${err.message}`,
+						type: 'error',
+					});
+					return;
+				}
+
+				// Get the project file path from the Yarn file path by
+				// replacing the file extension with '.json'
+				const importedProjectFileName =
+					`${path.basename(currentProjectYarnFilePath, path.extname(currentProjectYarnFilePath))}.json`;
+				const importedProjectFilePath = path.join(path.dirname(currentProjectYarnFilePath), importedProjectFileName);
+
+				// Notify that the project file path has changed
+				event.sender.send(projectFilePathChangedMessage, importedProjectFilePath);
+
+				// Notify that the project has been loaded
+				event.sender.send(yarnLoadedMessage, data);
+			});
+		},
+	);
+};
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
@@ -201,14 +256,12 @@ ipcMain.on('projectSaveAs', (event, arg) => {
 ipcMain.on('projectOpen', (event, currentProjectFilePath) => {
 	// As the user to select a project file to open
 	currentProjectOpen(event, currentProjectFilePath);
-				});
-
-			// Notify that the project has been loaded
-			event.sender.send(projectLoadedMessage, data);
-		});
-	});
 });
 
+ipcMain.on('projectImportFromYarn', (event, currentProjectFilePath) => {
+	// Ask the user to select a Yarn file to import
+	currentProjectImportFromYarn(event, currentProjectFilePath);
+});
 
 ipcMain.on('projectExportToYarn', (event, arg) => {
 	// Get the project info from the argument

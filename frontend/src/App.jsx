@@ -61,6 +61,26 @@ class App extends Component {
 				() => this.navigateToNodes(),
 			);
 		});
+
+		// Set up a handler for when a Yarn file is loaded
+		// The loaded project will be passed as a string in the "arg"
+		// parameter
+		ipcRenderer.on('yarn-loaded', (event, arg) => {
+			// Convert the JSON string to an object
+			const currentProject = yarnService.importProjectFromYarn(arg);
+
+			// Store the loaded project
+			currentProjectService.set(currentProject);
+
+			// Record the loaded project in our state
+			this.setState(
+				{
+					currentProject,
+				},
+				// Navigate to the Nodes page
+				() => this.navigateToNodes(),
+			);
+		});
 	}
 
 	componentWillMount() {
@@ -150,7 +170,11 @@ class App extends Component {
 	};
 
 	onImportYarnFile = () => {
-		console.log('Importing Yarn File');
+		// Get the current project file path
+		const currentProjectFilePath = currentProjectService.getFilePath();
+
+		// Open a project
+		ipcRenderer.send('projectImportFromYarn', currentProjectFilePath);
 	};
 
 	onRunProject = () => {
