@@ -42,7 +42,7 @@ class App extends Component {
 			ipcRenderer.send('setWindowTitleInfo', arg);
 		});
 
-		// Set up a handler for when the project is loaded
+		// Set up a handler for when a project is loaded
 		// The loaded project will be passed as a JSON string in the "arg"
 		// parameter
 		ipcRenderer.on('project-loaded', (event, arg) => {
