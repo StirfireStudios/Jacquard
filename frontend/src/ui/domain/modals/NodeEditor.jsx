@@ -229,7 +229,7 @@ NodeEditor.propTypes = {
 	data: PropTypes.object,
 	open: PropTypes.bool.isRequired,
 	onUpdateFormField: PropTypes.func.isRequired,
-	onOk: PropTypes.func.isRequired,
+	onOK: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
 };
 
