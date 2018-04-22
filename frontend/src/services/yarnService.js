@@ -3,13 +3,15 @@ const exportProjectToYarn = project =>
 	// Map each of the nodes to its Yarn equivalent
 	project.nodes.reduce((yarn, node) => {
 		// Build the node Yarn
-		const nodeYarn = `title: ${node.title}\n` +
-		`tags: ${node.tags}\n` +
-		`section: ${node.section}\n` +
-		`colorID: ${node.colorId}\n` +
-		`position: ${node.position}\n` +
+		// TODO: Use the header properties map from importProjectFromYarn
+		// to generate the string
+		const nodeYarn = `title: ${(node.title) ? node.title : ''}\n` +
+		`tags: ${(node.tags) ? node.tags : ''}\n` +
+		`section: ${(node.section) ? node.section : ''}\n` +
+		`colorID: ${(node.colorId) ? node.colorId : ''}\n` +
+		`position: ${(node.position) ? node.position : ''}\n` +
 		'---\n' +
-		`${node.content}\n` +
+		`${(node.content) ? node.content : ''}\n` +
 		'===\n';
 
 		// Add it to the existing Yarn
