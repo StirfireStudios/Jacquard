@@ -181,8 +181,8 @@ class ListPage extends React.Component {
 		// Determine the title of the Add/Edit form base on whether we have
 		// any form data
 		const addEditFormTitle = (this.state.addEditFormAddModeEnabled)
-			? this.props.editFormTitle
-			: this.props.addFormTitle;
+			? this.props.addFormTitle
+			: this.props.editFormTitle;
 
 		return (
 			<div>
