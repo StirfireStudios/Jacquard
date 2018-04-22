@@ -13,6 +13,41 @@ import InsertVariableIntoNode from './InsertVariableIntoNode';
 
 import FullScreenDialog from '../../general/components/FullScreenDialog';
 
+/*
+** Returns the caret (cursor) position of the specified text field.
+** Return value range is 0-oField.value.length.
+** See: https://stackoverflow.com/questions/2897155/get-cursor-position-in-characters-within-a-text-input-field
+*/
+/*
+const getTextFieldCaretPosition = (textFieldElement) => {
+	// The caret position
+	let caretPosition = 0;
+
+	// IE Support
+	if (document.selection) {
+		// Set focus on the element
+		textFieldElement.focus();
+
+		// To get cursor position, get empty selection range
+		const selectionRange = document.selection.createRange();
+
+		// Move selection start to 0 position
+		selectionRange.moveStart('character', -textFieldElement.value.length);
+
+		// The caret position is selection length
+		caretPosition = selectionRange.text.length;
+	} else if ((typeof textFieldElement.selectionStart === 'number') && (typeof textFieldElement.selectionEnd === 'number')) {
+		// Firefox support
+		caretPosition = textFieldElement.selectionDirection === 'backward' ?
+			textFieldElement.selectionStart :
+			textFieldElement.selectionEnd;
+	}
+
+	// Return results
+	return caretPosition;
+};
+*/
+
 const TagList = props => (<List
 	component="nav"
 	subheader={<ListSubheader component="div">Tags</ListSubheader>}

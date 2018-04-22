@@ -10,6 +10,7 @@ import { ipcRenderer } from 'electron';
 // General Component Imports
 import Page from './ui/general/pages/Page';
 // Page Imports
+import RunPage from './ui/domain/pages/RunPage';
 import CharacterPage from './ui/domain/pages/CharacterPage';
 import DefaultPage from './ui/domain/pages/DefaultPage';
 import FunctionPage from './ui/domain/pages/FunctionPage';
@@ -177,10 +178,6 @@ class App extends Component {
 		ipcRenderer.send('projectImportFromYarn', currentProjectFilePath);
 	};
 
-	onRunProject = () => {
-		console.log('Running Project');
-	};
-
 	onCloseProject = () => {
 		// Remove the project from storage
 		currentProjectService.clear();
@@ -225,6 +222,11 @@ class App extends Component {
 		// Determine whether we have a current project
 		const hasCurrentProject = !!this.state.currentProject;
 
+		// Get the yarn nodes (if any)
+		const yarnNodes = (hasCurrentProject)
+			? this.state.currentProject.nodes
+			: [];
+
 		// Build the app components
 		const Menu = () =>	(<MainMenu
 			hasCurrentProject={hasCurrentProject}
@@ -232,7 +234,6 @@ class App extends Component {
 			onSaveProject={this.onSaveProject}
 			onSaveProjectAs={this.onSaveProjectAs}
 			onOpenExistingProject={this.onOpenExistingProject}
-			onRunProject={this.onRunProject}
 			onImportYarnFile={this.onImportYarnFile}
 			onExportYarnFile={this.onExportYarnFile}
 			onCloseProject={this.onCloseProject}
@@ -247,6 +248,14 @@ class App extends Component {
 		const HomePageComplete = () => (
 			<BasePage title="Home">
 				<DefaultPage />
+			</BasePage>
+		);
+
+		const RunPageComplete = () => (
+			<BasePage title="Run">
+				<RunPage
+					yarnNodes={yarnNodes}
+				/>
 			</BasePage>
 		);
 
@@ -289,6 +298,7 @@ class App extends Component {
 		return (
 			<div>
 				<Route exact path="/" component={HomePageComplete} />
+				<Route path="/run" component={RunPageComplete} />
 				<Route path="/characters" component={CharacterPageComplete} />
 				<Route path="/functions" component={FunctionPageComplete} />
 				<Route path="/nodes" component={NodePageComplete} />

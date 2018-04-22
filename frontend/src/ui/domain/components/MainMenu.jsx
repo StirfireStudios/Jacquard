@@ -37,11 +37,14 @@ class MainMenu extends React.Component {
 
 		if (this.props.hasCurrentProject) {
 			returnValue = (<MenuList>
+				<Divider />
+				<Link to="/run"><MenuItem button><ListItemText primary="Run" /></MenuItem></Link>
+				<Divider />
 				<Link to="/nodes"><MenuItem button><ListItemText primary="Nodes" /></MenuItem></Link>
 				<Link to="/characters"><MenuItem button><ListItemText primary="Characters" /></MenuItem></Link>
 				<Link to="/functions"><MenuItem button><ListItemText primary="Functions" /></MenuItem></Link>
 				<Link to="/variables"><MenuItem button><ListItemText primary="Variables" /></MenuItem></Link>
-				<MenuItem button onClick={this.props.onRunProject}><ListItemText primary="Run Project" /></MenuItem>
+				<Divider />
 				<MenuItem button onClick={this.props.onSaveProject}><ListItemText primary="Save Project" /></MenuItem>
 				<MenuItem button onClick={this.props.onSaveProjectAs}><ListItemText primary="Save Project As..." /></MenuItem>
 				<MenuItem button onClick={this.props.onExportYarnFile}><ListItemText primary="Export Project To Yarn" /></MenuItem>
