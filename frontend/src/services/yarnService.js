@@ -11,7 +11,7 @@ const exportProjectToYarn = project =>
 		`colorID: ${(node.colorId) ? node.colorId : ''}\n` +
 		`position: ${(node.position) ? node.position : ''}\n` +
 		'---\n' +
-		`${(node.content) ? node.content : ''}\n` +
+		`${(node.body) ? node.body : ''}\n` +
 		'===\n';
 
 		// Add it to the existing Yarn
@@ -27,8 +27,8 @@ const importProjectFromYarn = (yarn) => {
 
 	// Generate the nodes
 	yarnNodes.forEach((yarnNode) => {
-		// Split the node into header and content sections
-		// We assume the header comes first, then the content
+		// Split the node into header and body sections
+		// We assume the header comes first, then the body
 		const nodeParts = yarnNode.split('---');
 
 		// Make sure we actually have a header
@@ -96,13 +96,13 @@ const importProjectFromYarn = (yarn) => {
 						}
 					});
 
-					// Get the content (if we have any)
-					const content = (nodeParts.length >= 2)
+					// Get the body (if we have any)
+					const body = (nodeParts.length >= 2)
 						? nodeParts[1]
 						: '';
 
-					// Record the content in the node
-					node.content = content;
+					// Record the body in the node
+					node.body = body;
 
 					// Add the node to the projects nodes
 					nodes.push(node);

@@ -196,13 +196,13 @@ class NodeEditor extends React.Component {
 									<Button onClick={this.onInsertConditionalIntoNodeModalOpen}>Conditional...</Button>
 								</Paper>
 								<TextField
-									label="Node Content"
+									label="Node Body"
 									multiline
 									rows="20"
 									margin="normal"
 									style={{ width: '100%' }}
-									value={this.props.data.content}
-									onChange={(e) => { this.props.onUpdateFormField(e, 'content'); }}
+									value={this.props.data.body}
+									onChange={(e) => { this.props.onUpdateFormField(e, 'body'); }}
 								/>
 							</div>
 							<div

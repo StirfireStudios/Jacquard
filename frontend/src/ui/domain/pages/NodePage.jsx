@@ -57,8 +57,8 @@ class NodeListPage extends React.Component {
 						multiline: false,
 					},
 					{
-						fieldName: 'content',
-						label: 'Content',
+						fieldName: 'body',
+						label: 'Body',
 						readOnly: false,
 						multiline: false,
 					},
