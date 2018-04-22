@@ -68,7 +68,7 @@ const currentProjectSaveAs = (event, currentProjectFilePath, currentProjectJSON)
 			}
 
 			// Save the current project JSON
-			currentProjectSave(event, currentProjectJSON, fileName);
+			currentProjectSave(event, fileName, currentProjectJSON);
 		},
 	);
 };
