@@ -4,7 +4,7 @@ const exportProjectToYarn = project =>
 	project.nodes.reduce((yarn, node) => {
 		// Build the node Yarn
 		const nodeYarn = `title: ${node.title}\n` +
-		`tags: ${node.tag}\n` +
+		`tags: ${node.tags}\n` +
 		`section: ${node.section}\n` +
 		`colorID: ${node.colorId}\n` +
 		`position: ${node.position}\n` +

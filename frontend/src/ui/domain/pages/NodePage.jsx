@@ -9,7 +9,7 @@ import NodeEditor from '../modals/NodeEditor';
 
 class NodeListPage extends React.Component {
 	render() {
-		const fieldNames = ['section', 'title', 'tag'];
+		const fieldNames = ['section', 'title', 'tags'];
 		const displayNames = ['Section', 'Title', 'Tags'];
 
 		const addEditForm = props => (<NodeEditor {...props} />);
@@ -33,8 +33,8 @@ class NodeListPage extends React.Component {
 						multiline: false,
 					},
 					{
-						fieldName: 'tag',
-						label: 'Tag',
+						fieldName: 'tags',
+						label: 'Tags',
 						readOnly: false,
 						multiline: false,
 					},

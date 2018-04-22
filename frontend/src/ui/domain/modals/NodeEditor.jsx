@@ -17,7 +17,7 @@ const TagList = props => (<List
 	component="nav"
 	subheader={<ListSubheader component="div">Tags</ListSubheader>}
 >
-	{props.tag.split(',').map(t => (<ListItem key={t} button>{t}</ListItem>))}
+	{props.tags.split(',').map(t => (<ListItem key={t} button>{t}</ListItem>))}
 </List>);
 
 const styles = theme => ({
@@ -141,8 +141,8 @@ class NodeEditor extends React.Component {
 									id="node-tags"
 									label="Tags"
 									className={classes.textArea}
-									value={this.props.data.tag}
-									onChange={(e) => { this.props.onUpdateFormField(e, 'tag'); }}
+									value={this.props.data.tags}
+									onChange={(e) => { this.props.onUpdateFormField(e, 'tags'); }}
 								/>
 								<TextField
 									className={classes.textArea}
@@ -183,7 +183,7 @@ class NodeEditor extends React.Component {
 							<div
 								className={classes.drawerPaper}
 							>
-								<TagList tag={this.props.data.tag} />
+								<TagList tags={this.props.data.tags} />
 							</div>
 						</div>
 
