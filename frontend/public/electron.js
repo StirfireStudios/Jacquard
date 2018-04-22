@@ -268,7 +268,7 @@ ipcMain.on('projectExportToYarn', (event, arg) => {
 	const { currentProjectYarn, currentProjectFilePath } = arg;
 
 	// Ask the user to export the project as Yarn under a different file path
-	currentProjectExportAsYarn(event, currentProjectYarn, currentProjectFilePath);
+	currentProjectExportAsYarn(event, currentProjectFilePath, currentProjectYarn);
 });
 
 ipcMain.on('setWindowTitleInfo', (event, arg) => {
