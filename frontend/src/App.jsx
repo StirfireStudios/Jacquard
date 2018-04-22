@@ -143,7 +143,7 @@ class App extends Component {
 		const currentProjectFilePath = currentProjectService.getFilePath();
 
 		// Export the current project as a yarn file
-		ipcRenderer.send('projectExportAsYarn', {
+		ipcRenderer.send('projectExportToYarn', {
 			currentProjectYarn,
 			currentProjectFilePath,
 		});

@@ -81,7 +81,7 @@ const currentProjectExportAsYarn = (event, currentProjectYarn, currentProjectFil
 	// Show the Save As dialog
 	dialog.showSaveDialog(
 		{
-			title: 'Export Project as Yarn',
+			title: 'Export Project to Yarn',
 			showTagsField: false,
 			defaultPath: currentDirectoryPath,
 			filters: [
@@ -183,7 +183,7 @@ ipcMain.on('projectOpen', (event) => {
 });
 
 
-ipcMain.on('projectExportAsYarn', (event, arg) => {
+ipcMain.on('projectExportToYarn', (event, arg) => {
 	// Get the project info from the argument
 	const { currentProjectYarn, currentProjectFilePath } = arg;
 
