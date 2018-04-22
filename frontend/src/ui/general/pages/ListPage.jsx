@@ -197,7 +197,7 @@ class ListPage extends React.Component {
 					data={this.state.addEditFormData}
 					open={this.state.addEditFormOpen}
 					onUpdateFormField={this.onUpdateFormField}
-					onOk={this.onAddEditFormOk}
+					onOK={this.onAddEditFormOk}
 					onCancel={this.onAddEditFormCancel}
 					title={addEditFormTitle}
 					formSchema={this.props.formSchema}

@@ -12,7 +12,7 @@ class InsertVariableIntoNode extends React.Component {
 				title="Insert Variable"
 				open={this.props.open}
 				onCancel={this.props.onCancel}
-				onOk={this.props.onOk}
+				onOK={this.props.onOK}
 			>
 				<div>Need to do some sort of lookup for this</div>
 				<TextField

@@ -25,7 +25,7 @@ class FieldListForm extends React.Component {
 				title={this.props.title}
 				open={this.props.open}
 				onCancel={this.props.onCancel}
-				onOk={this.props.onOk}
+				onOK={this.props.onOK}
 			>
 				{fields}
 			</ModalDialog>
@@ -43,7 +43,7 @@ FieldListForm.propTypes = {
 	formSchema: PropTypes.array.isRequired,
 	open: PropTypes.bool.isRequired,
 	onUpdateFormField: PropTypes.func.isRequired,
-	onOk: PropTypes.func.isRequired,
+	onOK: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
 };
 

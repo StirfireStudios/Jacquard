@@ -58,12 +58,20 @@ class NodeEditor extends React.Component {
 		this.setState({ insertCharacterIntoNodeModalOpen: true });
 	}
 
+	onInsertCharacterIntoNodeModalOK = () => {
+		this.setState({ insertCharacterIntoNodeModalOpen: false });
+	}
+
 	onInsertCharacterIntoNodeModalCancel = () => {
 		this.setState({ insertCharacterIntoNodeModalOpen: false });
 	}
 
 	onInsertConditionalIntoNodeModalOpen = () => {
 		this.setState({ insertConditionalIntoNodeModalOpen: true });
+	}
+
+	onInsertConditionalIntoNodeModalOK = () => {
+		this.setState({ insertConditionalIntoNodeModalOpen: false });
 	}
 
 	onInsertConditionalIntoNodeModalCancel = () => {
@@ -74,6 +82,10 @@ class NodeEditor extends React.Component {
 		this.setState({ insertFunctionCallIntoNodeModalOpen: true });
 	}
 
+	onInsertFunctionCallIntoNodeModalOK = () => {
+		this.setState({ insertFunctionCallIntoNodeModalOpen: false });
+	}
+
 	onInsertFunctionCallIntoNodeModalCancel = () => {
 		this.setState({ insertFunctionCallIntoNodeModalOpen: false });
 	}
@@ -82,12 +94,20 @@ class NodeEditor extends React.Component {
 		this.setState({ insertNodeIntoNodeModalOpen: true });
 	}
 
+	onInsertNodeIntoNodeModalOK = () => {
+		this.setState({ insertNodeIntoNodeModalOpen: false });
+	}
+
 	onInsertNodeIntoNodeModalCancel = () => {
 		this.setState({ insertNodeIntoNodeModalOpen: false });
 	}
 
 	onInsertVariableIntoNodeModalOpen = () => {
 		this.setState({ insertVariableIntoNodeModalOpen: true });
+	}
+
+	onInsertVariableIntoNodeModalOK = () => {
+		this.setState({ insertVariableIntoNodeModalOpen: false });
 	}
 
 	onInsertVariableIntoNodeModalCancel = () => {
@@ -102,28 +122,33 @@ class NodeEditor extends React.Component {
 				<FullScreenDialog
 					open={this.props.open}
 					onCancel={this.props.onCancel}
-					onOk={this.props.onOk}
+					onOK={this.props.onOK}
 					title={this.props.title}
 					description="Allows you to edit the node"
 				>
 					<InsertCharacterIntoNode
 						open={this.state.insertCharacterIntoNodeModalOpen}
+						onOK={this.onInsertCharacterIntoNodeModalOK}
 						onCancel={this.onInsertCharacterIntoNodeModalCancel}
 					/>
 					<InsertConditionalIntoNode
 						open={this.state.insertConditionalIntoNodeModalOpen}
+						onOK={this.onInsertConditionalIntoNodeModalOK}
 						onCancel={this.onInsertConditionalIntoNodeModalCancel}
 					/>
 					<InsertFunctionCallIntoNode
 						open={this.state.insertFunctionCallIntoNodeModalOpen}
+						onOK={this.onInsertFunctionCallIntoNodeModalOK}
 						onCancel={this.onInsertFunctionCallIntoNodeModalCancel}
 					/>
 					<InsertNodeIntoNode
 						open={this.state.insertNodeIntoNodeModalOpen}
+						onOK={this.onInsertNodeIntoNodeModalOK}
 						onCancel={this.onInsertNodeIntoNodeModalCancel}
 					/>
 					<InsertVariableIntoNode
 						open={this.state.insertVariableIntoNodeModalOpen}
+						onOK={this.onInsertVariableIntoNodeModalOK}
 						onCancel={this.onInsertVariableIntoNodeModalCancel}
 					/>
 					<main className={classes.main}>
