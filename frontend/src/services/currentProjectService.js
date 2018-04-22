@@ -17,7 +17,9 @@ const get = () => {
 	const currentProjectJSON = localStorage.getItem(currentProjectJSONKey);
 
 	// Convert the JSON string to an object
-	const currentProject = JSON.parse(currentProjectJSON);
+	const currentProject = (currentProjectJSON)
+		? JSON.parse(currentProjectJSON)
+		: null;
 
 	return currentProject;
 };
