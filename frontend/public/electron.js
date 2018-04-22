@@ -155,7 +155,7 @@ const currentProjectOpen = (event, currentProjectFilePath) => {
 				}
 
 				// Notify that the project file path has changed
-				event.sender.send(projectFilePathChangedMessage, currentProjectFilePath);
+				event.sender.send(projectFilePathChangedMessage, selectedProjectFilePath);
 
 				// Notify that the project has been loaded
 				event.sender.send(projectLoadedMessage, data);
@@ -272,5 +272,11 @@ ipcMain.on('projectExportToYarn', (event, arg) => {
 });
 
 ipcMain.on('setWindowTitleInfo', (event, arg) => {
-	mainWindow.setTitle(`Jacquard - ${arg}`);
+	// Build the window title
+	const windowTitle = (arg)
+		? `Jacquard - ${arg}`
+		: 'Jacquard';
+
+	// Set the title of the window
+	mainWindow.setTitle(windowTitle);
 });
