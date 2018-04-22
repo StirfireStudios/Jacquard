@@ -172,8 +172,11 @@ class App extends Component {
 	};
 
 	onOpenExistingProject = () => {
+		// Get the current project file path
+		const currentProjectFilePath = currentProjectService.getFilePath();
+
 		// Open a project
-		ipcRenderer.send('projectOpen');
+		ipcRenderer.send('projectOpen', currentProjectFilePath);
 	};
 
 	onCurrentProjectChanged = (updatedCurrentProject) => {

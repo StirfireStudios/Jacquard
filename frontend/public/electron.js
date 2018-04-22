@@ -116,6 +116,52 @@ const currentProjectExportAsYarn = (event, currentProjectYarn, currentProjectFil
 	);
 };
 
+const currentProjectOpen = (event, currentProjectFilePath) => {
+	// Get the current directory from the project file path (if we have one)
+	const currentDirectoryPath = (currentProjectFilePath)
+		? path.dirname(currentProjectFilePath)
+		: '';
+
+	// Show the file selection dialog
+	dialog.showOpenDialog(
+		{
+			title: 'Open Project',
+			showTagsField: false,
+			defaultPath: currentDirectoryPath,
+			filters: [
+				{ name: 'JSON', extensions: ['json'] },
+				{ name: 'All Files', extensions: ['*'] },
+			],
+		},
+		(fileNames) => {
+			// fileNames is an array that contains all the selected
+			if (fileNames === undefined || fileNames.length < 1) {
+				console.log('No file selected');
+				return;
+			}
+
+			// Get the project file path
+			const selectedProjectFilePath = fileNames[0];
+
+			fs.readFile(selectedProjectFilePath, 'utf-8', (err, data) => {
+				if (err) {
+					dialog.showMessageBox({
+						title: 'Error',
+						message: `An error ocurred reading the file :${err.message}`,
+						type: 'error',
+					});
+					return;
+				}
+
+				// Notify that the project file path has changed
+				event.sender.send(projectFilePathChangedMessage, currentProjectFilePath);
+
+				// Notify that the project has been loaded
+				event.sender.send(projectLoadedMessage, data);
+			});
+		},
+	);
+};
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
@@ -152,29 +198,10 @@ ipcMain.on('projectSaveAs', (event, arg) => {
 	currentProjectSaveAs(event, currentProjectJSON, currentProjectFilePath);
 });
 
-ipcMain.on('projectOpen', (event) => {
-	dialog.showOpenDialog((fileNames) => {
-		// fileNames is an array that contains all the selected
-		if (fileNames === undefined || fileNames.length < 1) {
-			console.log('No file selected');
-			return;
-		}
-
-		// Get the project file path
-		const currentProjectFilePath = fileNames[0];
-
-		fs.readFile(currentProjectFilePath, 'utf-8', (err, data) => {
-			if (err) {
-				dialog.showMessageBox({
-					title: 'Error',
-					message: `An error ocurred reading the file :${err.message}`,
-					type: 'error',
+ipcMain.on('projectOpen', (event, currentProjectFilePath) => {
+	// As the user to select a project file to open
+	currentProjectOpen(event, currentProjectFilePath);
 				});
-				return;
-			}
-
-			// Notify that the project file path has changed
-			event.sender.send(projectFilePathChangedMessage, currentProjectFilePath);
 
 			// Notify that the project has been loaded
 			event.sender.send(projectLoadedMessage, data);
