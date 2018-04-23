@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
+import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
 
 import uuidv4 from 'uuid/v4';
@@ -162,14 +163,16 @@ class RunPage extends React.Component {
 		// Get the iteration result options
 		const bondageIterationResultOptions = bondageIterationResult.value.options;
 
+
 		// Render each of the options
 		const options = bondageIterationResultOptions.map((option, bondageIterationResultOptionIndex) => (
-			<button
+			<Button
 				key={uuidv4()}
+				variant="raised"
 				onClick={() => this.selectOption(bondageIterationResult, bondageIterationResultOptionIndex)}
 			>
 				{option}
-			</button>
+			</Button>
 		));
 
 		return options;
