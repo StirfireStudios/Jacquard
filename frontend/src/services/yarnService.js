@@ -38,7 +38,7 @@ const importProjectFromYarn = (yarn) => {
 
 			// Ignore the header if it's just a LF, CR, or CRLF (e.g. an empty line
 			// at the end of a file)
-			if ((header !== '\n') && (header !== '\r') && (header !== '\r\n')) {
+			if ((header.length > 0) && (header !== '\n') && (header !== '\r') && (header !== '\r\n')) {
 				// Parse the header into key/value pairs (making sure we handle
 				// both LF, CR, and CRLF)
 				const headerKeyValuePairs = header
