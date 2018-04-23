@@ -1,3 +1,4 @@
+import jacquardYarnParser from 'jacquard-yarnparser';
 
 const exportProjectToYarn = project =>
 	// Map each of the nodes to its Yarn equivalent
@@ -123,9 +124,31 @@ const importProjectFromYarn = (yarn) => {
 	return project;
 };
 
+const validateProjectNode = (projectFilePath, projectNode) => {
+	// Build a dummy project with only the single node
+	const project = {
+		nodes: [projectNode],
+	};
+
+	// Export the project to Yarn
+	const projectYarn = exportProjectToYarn(project);
+
+	// Create a parser
+	const parser = new jacquardYarnParser.Parser();
+
+	// Parse the node
+	const error = parser.parse(projectYarn, false, projectFilePath);
+
+	// If there where errors or warnings, return them
+	return (error)
+		? { warnings: parser.warnings, errors: parser.errors }
+		: null;
+};
+
 const exportYarnService = {
 	exportProjectToYarn,
 	importProjectFromYarn,
+	validateProjectNode,
 };
 
 export default exportYarnService;

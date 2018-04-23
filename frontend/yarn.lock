@@ -4435,6 +4435,12 @@ items@2.x.x:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/items/-/items-2.1.1.tgz#8bd16d9c83b19529de5aea321acaada78364a198"
 
+jacquard-yarnparser@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/jacquard-yarnparser/-/jacquard-yarnparser-0.1.1.tgz#3bef60981fb08be6c0a9efe058ce1b3fa65e29ac"
+  dependencies:
+    antlr4 "^4.7.1"
+
 jest-changed-files@^20.0.3:
   version "20.0.3"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-20.0.3.tgz#9394d5cc65c438406149bef1bf4d52b68e03e3f8"
