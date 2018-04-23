@@ -222,6 +222,9 @@ class App extends Component {
 		// Determine whether we have a current project
 		const hasCurrentProject = !!this.state.currentProject;
 
+		// Get the current project file path
+		const currentProjectFilePath = currentProjectService.getFilePath();
+
 		// Get the yarn nodes (if any)
 		const yarnNodes = (hasCurrentProject)
 			? this.state.currentProject.nodes
@@ -263,6 +266,7 @@ class App extends Component {
 			<BasePage title="Characters">
 				<CharacterPage
 					currentProject={this.state.currentProject}
+					currentProjectFilePath={currentProjectFilePath}
 					onCurrentProjectChanged={this.onCurrentProjectChanged}
 				/>
 			</BasePage>
@@ -272,6 +276,7 @@ class App extends Component {
 			<BasePage title="Functions">
 				<FunctionPage
 					currentProject={this.state.currentProject}
+					currentProjectFilePath={currentProjectFilePath}
 					onCurrentProjectChanged={this.onCurrentProjectChanged}
 				/>
 			</BasePage>
@@ -281,6 +286,7 @@ class App extends Component {
 			<BasePage title="Nodes">
 				<NodePage
 					currentProject={this.state.currentProject}
+					currentProjectFilePath={currentProjectFilePath}
 					onCurrentProjectChanged={this.onCurrentProjectChanged}
 				/>
 			</BasePage>
@@ -290,6 +296,7 @@ class App extends Component {
 			<BasePage title="Variables">
 				<VariablePage
 					currentProject={this.state.currentProject}
+					currentProjectFilePath={currentProjectFilePath}
 					onCurrentProjectChanged={this.onCurrentProjectChanged}
 				/>
 			</BasePage>

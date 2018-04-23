@@ -20,6 +20,7 @@ class VariablePage extends React.Component {
 				displayNames={displayNames}
 				keyName="name"
 				currentProject={this.props.currentProject}
+				currentProjectFilePath={this.props.currentProjectFilePath}
 				currentProjectPropName="variables"
 				editFormTitle="Edit Variables"
 				addFormTitle="Add Variables"
@@ -47,6 +48,7 @@ VariablePage.propTypes = {
 	onCurrentProjectChanged: PropTypes.func.isRequired,
 
 	currentProject: PropTypes.object,
+	currentProjectFilePath: PropTypes.string.isRequired,
 };
 
 VariablePage.defaultProps = {

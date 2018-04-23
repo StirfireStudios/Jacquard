@@ -275,6 +275,7 @@ NodeEditor.defaultProps = {
 
 NodeEditor.propTypes = {
 	title: PropTypes.string.isRequired,
+	projectFilePath: PropTypes.string.isRequired,
 	data: PropTypes.object,
 	open: PropTypes.bool.isRequired,
 	onUpdateFormField: PropTypes.func.isRequired,

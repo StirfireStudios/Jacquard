@@ -21,6 +21,7 @@ class NodeListPage extends React.Component {
 				displayNames={displayNames}
 				keyName="title"
 				currentProject={this.props.currentProject}
+				currentProjectFilePath={this.props.currentProjectFilePath}
 				currentProjectPropName="nodes"
 				editFormTitle="Edit Node"
 				addFormTitle="Add Node"
@@ -72,6 +73,7 @@ NodeListPage.propTypes = {
 	onCurrentProjectChanged: PropTypes.func.isRequired,
 
 	currentProject: PropTypes.object,
+	currentProjectFilePath: PropTypes.string.isRequired,
 };
 
 NodeListPage.defaultProps = {

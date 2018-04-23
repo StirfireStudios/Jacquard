@@ -20,6 +20,7 @@ class FunctionPage extends React.Component {
 				displayNames={displayNames}
 				keyName="name"
 				currentProject={this.props.currentProject}
+				currentProjectFilePath={this.props.currentProjectFilePath}
 				currentProjectPropName="functions"
 				editFormTitle="Edit Function"
 				addFormTitle="Add Function"
@@ -47,6 +48,7 @@ FunctionPage.propTypes = {
 	onCurrentProjectChanged: PropTypes.func.isRequired,
 
 	currentProject: PropTypes.object,
+	currentProjectFilePath: PropTypes.string.isRequired,
 };
 
 FunctionPage.defaultProps = {

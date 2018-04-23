@@ -20,6 +20,7 @@ class CharacterPage extends React.Component {
 				displayNames={displayNames}
 				keyName="name"
 				currentProject={this.props.currentProject}
+				currentProjectFilePath={this.props.currentProjectFilePath}
 				currentProjectPropName="characters"
 				editFormTitle="Edit Character"
 				addFormTitle="Add Character"
@@ -47,6 +48,7 @@ CharacterPage.propTypes = {
 	onCurrentProjectChanged: PropTypes.func.isRequired,
 
 	currentProject: PropTypes.object,
+	currentProjectFilePath: PropTypes.string.isRequired,
 };
 
 CharacterPage.defaultProps = {

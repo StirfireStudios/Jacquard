@@ -194,12 +194,13 @@ class ListPage extends React.Component {
 					Add
 				</Button>
 				<AddEditForm
+					title={addEditFormTitle}
+					projectFilePath={this.props.currentProjectFilePath}
 					data={this.state.addEditFormData}
 					open={this.state.addEditFormOpen}
 					onUpdateFormField={this.onUpdateFormField}
 					onOK={this.onAddEditFormOk}
 					onCancel={this.onAddEditFormCancel}
-					title={addEditFormTitle}
 					formSchema={this.props.formSchema}
 				/>
 				<FieldListTable
@@ -221,6 +222,7 @@ ListPage.propTypes = {
 	editFormTitle: PropTypes.string.isRequired,
 	addFormTitle: PropTypes.string.isRequired,
 	currentProject: PropTypes.object,
+	currentProjectFilePath: PropTypes.string.isRequired,
 	currentProjectPropName: PropTypes.string.isRequired,
 	keyName: PropTypes.string.isRequired,
 	fieldNames: PropTypes.array.isRequired,
