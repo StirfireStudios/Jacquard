@@ -2,14 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import { withStyles } from 'material-ui/styles';
-// import Button from 'material-ui/Button';
+import Button from 'material-ui/Button';
 // import Paper from 'material-ui/Paper';
-import List, { ListItem, ListSubheader } from 'material-ui/List';
-import InsertCharacterIntoNode from './InsertCharacterIntoNode';
-import InsertConditionalIntoNode from './InsertConditionalIntoNode';
-import InsertFunctionCallIntoNode from './InsertFunctionCallIntoNode';
-import InsertNodeIntoNode from './InsertNodeIntoNode';
-import InsertVariableIntoNode from './InsertVariableIntoNode';
+import Icon from 'material-ui/Icon';
+import List, { ListItem, ListItemText, ListSubheader } from 'material-ui/List';
 
 // import InsertCharacterIntoNode from './InsertCharacterIntoNode';
 // import InsertConditionalIntoNode from './InsertConditionalIntoNode';
@@ -18,6 +14,8 @@ import InsertVariableIntoNode from './InsertVariableIntoNode';
 // import InsertVariableIntoNode from './InsertVariableIntoNode';
 
 import FullScreenDialog from '../../general/components/FullScreenDialog';
+
+import yarnService from '../../../services/yarnService';
 
 /*
 ** Returns the caret (cursor) position of the specified text field.
@@ -83,10 +81,16 @@ const styles = theme => ({
 	},
 });
 
+const buildLocationString = location => `${location.fileID}
+ (${location.start.line}, ${location.start.column}) -
+ (${location.end.line}, ${location.end.column})`;
+
 class NodeEditor extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			validationErrors: [],
+			validationWarnings: [],
 			/*
 			insertCharacterIntoNodeModalOpen: false,
 			insertConditionalIntoNodeModalOpen: false,
@@ -159,10 +163,82 @@ class NodeEditor extends React.Component {
 	}
 	*/
 
+	onValidate = () => {
+		// Validate the project node
+		const validationResult = yarnService.validateProjectNode(this.props.projectFilePath, this.props.data);
+
+		// Get the validation errors
+		const validationErrors = (validationResult)
+			? validationResult.errors
+			: [];
+
+		// Get the validation warnings
+		const validationWarnings = (validationResult)
+			? validationResult.warnings
+			: [];
+
+		// Record the new validation errors and warnings
+		this.setState({
+			validationErrors,
+			validationWarnings,
+		});
+	}
+
+	renderErrors = () => {
+		// Build the validation errors
+		const validationErrors = this.state.validationErrors.map((validationError) => {
+			// Build the location
+			const location = buildLocationString(validationError.location);
+
+			return (
+				<ListItem key={location}>
+					<Icon color="error">error</Icon>
+					<ListItemText primary={validationError.message} secondary={location} />
+				</ListItem>
+			);
+		});
+
+		return (
+			<List>
+				{validationErrors}
+			</List>
+		);
+	}
+
+	renderWarnings = () => {
+		// Build the validation warnings
+		const validationWarnings = this.state.validationWarnings.map((validationWarning) => {
+			// Build the location
+			const location = buildLocationString(validationWarning.location);
+
+			return (
+				<ListItem key={location}>
+					<Icon>warning</Icon>
+					<ListItemText
+						primary={validationWarning.message}
+						secondary={location}
+					/>
+				</ListItem>
+			);
+		});
+
+		return (
+			<List>
+				{validationWarnings}
+			</List>
+		);
+	}
+
 	render() {
+		// Get the classes prop
 		const { classes } = this.props;
 
+		// Do we have any data?
 		if (this.props.data) {
+			// Render the validation errors and warnings
+			const validationErrors = this.renderErrors();
+			const validationWarnings = this.renderWarnings();
+
 			return (
 				<FullScreenDialog
 					open={this.props.open}
@@ -253,6 +329,14 @@ class NodeEditor extends React.Component {
 									value={this.props.data.body}
 									onChange={(e) => { this.props.onUpdateFormField(e, 'body'); }}
 								/>
+								<Button
+									variant="raised"
+									onClick={this.onValidate}
+								>
+									Validate
+								</Button>
+								{validationErrors}
+								{validationWarnings}
 							</div>
 							<div
 								className={classes.drawerPaper}
