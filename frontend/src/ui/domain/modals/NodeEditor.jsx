@@ -11,6 +11,12 @@ import InsertFunctionCallIntoNode from './InsertFunctionCallIntoNode';
 import InsertNodeIntoNode from './InsertNodeIntoNode';
 import InsertVariableIntoNode from './InsertVariableIntoNode';
 
+// import InsertCharacterIntoNode from './InsertCharacterIntoNode';
+// import InsertConditionalIntoNode from './InsertConditionalIntoNode';
+// import InsertFunctionCallIntoNode from './InsertFunctionCallIntoNode';
+// import InsertNodeIntoNode from './InsertNodeIntoNode';
+// import InsertVariableIntoNode from './InsertVariableIntoNode';
+
 import FullScreenDialog from '../../general/components/FullScreenDialog';
 
 /*
@@ -81,14 +87,17 @@ class NodeEditor extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			/*
 			insertCharacterIntoNodeModalOpen: false,
 			insertConditionalIntoNodeModalOpen: false,
 			insertFunctionCallIntoNodeModalOpen: false,
 			insertNodeIntoNodeModalOpen: false,
 			insertVariableIntoNodeModalOpen: false,
+			*/
 		};
 	}
 
+	/*
 	onInsertCharacterIntoNodeModalOpen = () => {
 		this.setState({ insertCharacterIntoNodeModalOpen: true });
 	}
@@ -148,6 +157,7 @@ class NodeEditor extends React.Component {
 	onInsertVariableIntoNodeModalCancel = () => {
 		this.setState({ insertVariableIntoNodeModalOpen: false });
 	}
+	*/
 
 	render() {
 		const { classes } = this.props;
@@ -161,6 +171,7 @@ class NodeEditor extends React.Component {
 					title={this.props.title}
 					description="Allows you to edit the node"
 				>
+					{ /*
 					<InsertCharacterIntoNode
 						open={this.state.insertCharacterIntoNodeModalOpen}
 						onOK={this.onInsertCharacterIntoNodeModalOK}
@@ -186,6 +197,7 @@ class NodeEditor extends React.Component {
 						onOK={this.onInsertVariableIntoNodeModalOK}
 						onCancel={this.onInsertVariableIntoNodeModalCancel}
 					/>
+					*/ }
 					<main className={classes.main}>
 						<div className={classes.parentContainer}>
 							<div className={classes.content}>
@@ -230,7 +242,8 @@ class NodeEditor extends React.Component {
 									<Button onClick={this.onInsertCharacterIntoNodeModalOpen}>Character...</Button>
 									<Button onClick={this.onInsertNodeIntoNodeModalOpen}>Node...</Button>
 									<Button onClick={this.onInsertConditionalIntoNodeModalOpen}>Conditional...</Button>
-								</Paper> */ }
+								</Paper>
+								*/ }
 								<TextField
 									label="Node Body"
 									multiline
