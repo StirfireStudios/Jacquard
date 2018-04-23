@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from 'material-ui/TextField';
 import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import Paper from 'material-ui/Paper';
+// import Button from 'material-ui/Button';
+// import Paper from 'material-ui/Paper';
 import List, { ListItem, ListSubheader } from 'material-ui/List';
 import InsertCharacterIntoNode from './InsertCharacterIntoNode';
 import InsertConditionalIntoNode from './InsertConditionalIntoNode';
@@ -189,7 +189,7 @@ class NodeEditor extends React.Component {
 					<main className={classes.main}>
 						<div className={classes.parentContainer}>
 							<div className={classes.content}>
-								<Button>Test From Here</Button>
+								{ /* <Button>Test From Here</Button> */ }
 								<TextField
 									id="node-title"
 									label="Title"
@@ -222,6 +222,7 @@ class NodeEditor extends React.Component {
 									value={this.props.data.position}
 									onChange={(e) => { this.props.onUpdateFormField(e, 'position'); }}
 								/>
+								{ /*
 								<Paper>
 									<div>Insert at Cursor</div>
 									<Button onClick={this.onInsertVariableIntoNodeModalOpen}>Variable...</Button>
@@ -229,7 +230,7 @@ class NodeEditor extends React.Component {
 									<Button onClick={this.onInsertCharacterIntoNodeModalOpen}>Character...</Button>
 									<Button onClick={this.onInsertNodeIntoNodeModalOpen}>Node...</Button>
 									<Button onClick={this.onInsertConditionalIntoNodeModalOpen}>Conditional...</Button>
-								</Paper>
+								</Paper> */ }
 								<TextField
 									label="Node Body"
 									multiline
