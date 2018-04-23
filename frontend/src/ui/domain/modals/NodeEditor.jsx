@@ -7,6 +7,8 @@ import Button from 'material-ui/Button';
 import Icon from 'material-ui/Icon';
 import List, { ListItem, ListItemText, ListSubheader } from 'material-ui/List';
 
+import uuidv4 from 'uuid/v4';
+
 // import InsertCharacterIntoNode from './InsertCharacterIntoNode';
 // import InsertConditionalIntoNode from './InsertConditionalIntoNode';
 // import InsertFunctionCallIntoNode from './InsertFunctionCallIntoNode';
@@ -191,7 +193,7 @@ class NodeEditor extends React.Component {
 			const location = buildLocationString(validationError.location);
 
 			return (
-				<ListItem key={location}>
+				<ListItem key={uuidv4()}>
 					<Icon color="error">error</Icon>
 					<ListItemText primary={validationError.message} secondary={location} />
 				</ListItem>
@@ -212,7 +214,7 @@ class NodeEditor extends React.Component {
 			const location = buildLocationString(validationWarning.location);
 
 			return (
-				<ListItem key={location}>
+				<ListItem key={uuidv4()}>
 					<Icon>warning</Icon>
 					<ListItemText
 						primary={validationWarning.message}
