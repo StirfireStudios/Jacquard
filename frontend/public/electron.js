@@ -1,4 +1,4 @@
-const electron = require('electron');
+const electron = require('electron'); // eslint-disable-line
 
 const {
 	ipcMain, dialog, app, BrowserWindow,
