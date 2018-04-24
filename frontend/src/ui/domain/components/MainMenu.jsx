@@ -8,7 +8,53 @@ import { ListItemText } from 'material-ui/List';
 
 import themes from '../themes';
 
+/* TODO: Change the links to use embedded components like so:
+class ListItemLink extends React.Component {
+  renderLink = itemProps => <Link to={this.props.to} {...itemProps} />;
+
+  render() {
+    const { icon, primary, secondary, to } = this.props;
+    return (
+      <li>
+        <ListItem button component={this.renderLink}>
+          {icon && <ListItemIcon>{icon}</ListItemIcon>}
+          <ListItemText inset primary={primary} secondary={secondary} />
+        </ListItem>
+      </li>
+    );
+  }
+}
+*/
+
 class MainMenu extends React.Component {
+	constructor(props) {
+		super(props);
+		this.CurrentProjectMenu = this.CurrentProjectMenu.bind(this);
+	}
+
+	CurrentProjectMenu() {
+		let returnValue = null;
+
+		if (this.props.hasCurrentProject) {
+			returnValue = (<MenuList>
+				<Divider />
+				<Link to="/run"><MenuItem button><ListItemText primary="Run" /></MenuItem></Link>
+				<Divider />
+				<Link to="/nodes"><MenuItem button><ListItemText primary="Nodes" /></MenuItem></Link>
+				<Link to="/characters"><MenuItem button><ListItemText primary="Characters" /></MenuItem></Link>
+				<Link to="/functions"><MenuItem button><ListItemText primary="Functions" /></MenuItem></Link>
+				<Link to="/variables"><MenuItem button><ListItemText primary="Variables" /></MenuItem></Link>
+				<Divider />
+				<MenuItem button onClick={this.props.onSaveProject}><ListItemText primary="Save Project" /></MenuItem>
+				<MenuItem button onClick={this.props.onSaveProjectAs}><ListItemText primary="Save Project As..." /></MenuItem>
+				<MenuItem button onClick={this.props.onExportYarnFile}><ListItemText primary="Export Project To Yarn" /></MenuItem>
+				<MenuItem button onClick={this.props.onCloseProject}><ListItemText primary="Close Project" /></MenuItem>
+			</MenuList>);
+		}
+		return returnValue;
+	}
+
+
 	render() {
 		const { classes } = this.props;
 		return (
@@ -22,19 +68,13 @@ class MainMenu extends React.Component {
 					<h2>Jacquard v0.0.1</h2>
 				</div>
 				<Divider />
-				<MenuList>
-					<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
-					<Link to="/nodes"><MenuItem button><ListItemText primary="Nodes" /></MenuItem></Link>
-					<Link to="/characters"><MenuItem button><ListItemText primary="Characters" /></MenuItem></Link>
-					<Link to="/functions"><MenuItem button><ListItemText primary="Functions" /></MenuItem></Link>
-					<Link to="/variables"><MenuItem button><ListItemText primary="Variables" /></MenuItem></Link>
-				</MenuList>
+				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
+				<this.CurrentProjectMenu />
 				<Divider />
 				<MenuList>
-					<MenuItem button><ListItemText primary="Save Project" /></MenuItem>
-					<MenuItem button><ListItemText primary="Save Project As..." /></MenuItem>
-					<MenuItem button><ListItemText primary="Create New Project" /></MenuItem>
-					<MenuItem button><ListItemText primary="Open Existing Project" /></MenuItem>
+					<MenuItem button onClick={this.props.onCreateNewProject}><ListItemText primary="Create New Project" /></MenuItem>
+					<MenuItem button onClick={this.props.onOpenExistingProject}><ListItemText primary="Open Existing Project" /></MenuItem>
+					<MenuItem button onClick={this.props.onImportYarnFile}><ListItemText primary="Import Project From Yarn" /></MenuItem>
 				</MenuList>
 			</Drawer>
 		);

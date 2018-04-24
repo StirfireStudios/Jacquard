@@ -11,7 +11,8 @@ class InsertNodeIntoNode extends React.Component {
 			<ModalDialog
 				title="Insert Node"
 				open={this.props.open}
-				handleClose={this.props.handleClose}
+				onCancel={this.props.onCancel}
+				onOK={this.props.onOK}
 			>
 				<div>Need to do some sort of lookup for this</div>
 				<TextField

@@ -1,0 +1,29 @@
+.statusbox{
+    position:relative;
+    float: left;
+    padding:2em;
+    width: 25%;
+}
+
+#container {
+    display: flex;
+}
+
+#main {
+    width: 75%;
+    padding:2em;
+}
+
+#input-area, #log {
+    padding:0.5em;
+    min-height: 300px;
+    margin-bottom : 0.5em;
+}
+
+button {
+    margin-bottom: 0.2em;
+}
+
+html, body {
+    height: 100%;
+}

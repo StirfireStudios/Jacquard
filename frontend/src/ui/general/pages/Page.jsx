@@ -4,12 +4,12 @@ import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import MainMenu from '../../domain/components/MainMenu';
 
 import themes from '../../domain/themes';
 
 class Page extends React.Component {
 	render() {
+		const MainMenu = this.props.mainMenu;
 		const { classes } = this.props;
 		return (
 			<div className={classes.appFrame}>

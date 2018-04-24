@@ -5,22 +5,14 @@ import Dialog, {
 	DialogTitle,
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
-import { withStyles } from 'material-ui/styles';
-
-import themes from '../../domain/themes';
 
 class ModalDialog extends React.Component {
-	constructor(props) {
-		super(props);
-		this.handleClose = props.handleClose;
-	}
-
 	render() {
 		return (
 			<div>
 				<Dialog
 					open={this.props.open}
-					onClose={this.handleClose}
+					onClose={this.props.onCancel}
 					aria-labelledby="form-dialog-title"
 				>
 					<DialogTitle id="form-dialog-title">
@@ -30,10 +22,10 @@ class ModalDialog extends React.Component {
 						{ this.props.children }
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={this.handleClose} color="primary">
+						<Button onClick={this.props.onCancel} variant="raised" color="secondary">
 							Cancel
 						</Button>
-						<Button onClick={this.handleClose} color="primary">
+						<Button onClick={this.props.onOK} variant="raised" color="primary">
 							Ok
 						</Button>
 					</DialogActions>
@@ -43,4 +35,4 @@ class ModalDialog extends React.Component {
 	}
 }
 
-export default withStyles(themes.defaultTheme)(ModalDialog);
+export default ModalDialog;

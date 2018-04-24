@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.rawgit.com/mblode/marx/master/css/marx.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="https://rawgit.com/jhayley/bondage.js/master/dist/bondage.min.js"></script>
+    <!-- Insert this line after script imports -->
+    <script>if (window.module) module = window.module;</script>
+    <title>Jacquard Yarn Viewer</title>
+</head>
+
+<body>
+    <h1>Jacquard Viewer</h1>
+    <div id="container">
+        <div id="main">
+                <div id="display-area"></div>
+
+                <h2>Yarn File</h2>
+                <button id="btnRun">Run</button>
+                <button id="btnOpen">Open</button>
+                <button id="btnSaveAs">Save As</button>
+                <button id="btnClearLog">Clear Log</button>
+                <button id="btnToggleDevTools">Toggle Dev Tools</button>
+                <textarea id="input-area"></textarea>
+                <h2>Log</h2>
+                <textarea id="log"></textarea>
+        </div>
+        <div class="statusbox">
+            <h2>Variables</h2>
+            <div id="vardisplay">
+            </div>
+            <h2>Visited</h2>
+            <div id="visiteddisplay">
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>

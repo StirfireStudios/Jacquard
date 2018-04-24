@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-viewer/node_modules
+
 # testing
 /coverage
 
