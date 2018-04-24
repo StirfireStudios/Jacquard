@@ -5,6 +5,7 @@ module.exports = function override(config) {
 		child_process: "require('child_process')",
 		fs: "require('fs')",
 		path: "require('path')",
+		bondage: "require('bondage')",
 	};
 
 	return config;
