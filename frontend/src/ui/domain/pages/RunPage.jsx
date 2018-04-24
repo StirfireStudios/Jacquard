@@ -35,6 +35,8 @@ class RunPage extends React.Component {
 			bondageIterator: null,
 			// The results of iteration
 			bondageIterationResults: [],
+			// The exception error thrown by bondage (if any)
+			bondageExceptionError: '',
 			// The start node
 			startNodeTitle,
 		};
@@ -80,30 +82,35 @@ class RunPage extends React.Component {
 		const bondageIterationResults = [...this.state.bondageIterationResults];
 
 		// Step through the Yarn
-		let bondageIterationResult = this.state.bondageIterator.next();
+		try {
+			let bondageIterationResult = this.state.bondageIterator.next();
 
-		// Keep going until we've finished iteration
-		while (!bondageIterationResult.done) {
-			// Add the iteration result to our iteration results
-			bondageIterationResults.push(bondageIterationResult);
+			// Keep going until we've finished iteration
+			while (!bondageIterationResult.done) {
+				// Add the iteration result to our iteration results
+				bondageIterationResults.push(bondageIterationResult);
 
-			// Get the iteration result value
-			const bondageIterationResultValue = bondageIterationResult.value;
+				// Get the iteration result value
+				const bondageIterationResultValue = bondageIterationResult.value;
 
-			// Should we be showing options?
-			if (bondageIterationResultValue instanceof bondage.OptionsResult) {
-				// Stop iterating
-				break;
+				// Should we be showing options?
+				if (bondageIterationResultValue instanceof bondage.OptionsResult) {
+					// Stop iterating
+					break;
+				}
+
+				// Step through the Yarn
+				bondageIterationResult = this.state.bondageIterator.next();
 			}
 
-			// Step through the Yarn
-			bondageIterationResult = this.state.bondageIterator.next();
+			// Store the updated iteration results
+			this.setState({
+				bondageIterationResults,
+			});
+		} catch (error) {
+			// Set the error
+			this.setState({ bondageExceptionError: error });
 		}
-
-		// Store the updated iteration results
-		this.setState({
-			bondageIterationResults,
-		});
 	};
 
 	runYarn = (yarnNodes) => {
@@ -116,20 +123,26 @@ class RunPage extends React.Component {
 				: yarnNodes[0].title;
 
 			// Load the Yarn data into the bondage runner
-			this.state.bondageRunner.load(yarnNodes);
+			try {
+				this.state.bondageRunner.load(yarnNodes);
 
-			// Start running the Yarn
-			const bondageIterator = this.state.bondageRunner.run(startNodeTitle);
+				// Start running the Yarn
+				const bondageIterator = this.state.bondageRunner.run(startNodeTitle);
 
-			// Store the bondage iterator and clear the iteration results
-			this.setState(
-				{
-					bondageIterator,
-					bondageIterationResults: [],
-				},
-				// Move to the next step in the Yarn
-				() => this.step(),
-			);
+				// Store the bondage iterator and clear the iteration results
+				this.setState(
+					{
+						bondageIterator,
+						bondageIterationResults: [],
+						bondageExceptionError: '',
+					},
+					// Move to the next step in the Yarn
+					() => this.step(),
+				);
+			} catch (error) {
+				// Set the error
+				this.setState({ bondageExceptionError: error });
+			}
 		}
 	};
 
@@ -210,6 +223,7 @@ class RunPage extends React.Component {
 		// Get the keys of the visited nodes
 		const visitedNodeKeys = Object.keys(this.state.bondageRunner.visited);
 
+		// Render each visited node
 		const visitedNodeTextFields = visitedNodeKeys.map(visitedNodeKey => (
 			<p key={visitedNodeKey}>
 				{visitedNodeKey}
@@ -266,27 +280,38 @@ class RunPage extends React.Component {
 			);
 		});
 
+		// Build the yarn state
+		const yarnState = (this.state.bondageExceptionError)
+			? (
+				<p>{`${this.state.bondageExceptionError}`}</p>
+			)
+			: (
+				<div>
+					{(results.length > 0) &&
+						<div>
+							<h2>Yarn</h2>
+							{results}
+						</div>
+					}
+					{(variables.length > 0) &&
+						<div>
+							<h2>Variables</h2>
+							{variables}
+						</div>
+					}
+					{(visitedNodes.length > 0) &&
+						<div>
+							<h2>Visited</h2>
+							{visitedNodes}
+						</div>
+					}
+				</div>
+			);
+
 		return (
 			<div>
 				{startNodeRunner}
-				{(results.length > 0) &&
-					<div>
-						<h2>Yarn</h2>
-						{results}
-					</div>
-				}
-				{(variables.length > 0) &&
-					<div>
-						<h2>Variables</h2>
-						{variables}
-					</div>
-				}
-				{(visitedNodes.length > 0) &&
-					<div>
-						<h2>Visited</h2>
-						{visitedNodes}
-					</div>
-				}
+				{yarnState}
 			</div>
 		);
 	}
