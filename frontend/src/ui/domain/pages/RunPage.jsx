@@ -66,7 +66,11 @@ class RunPage extends React.Component {
 
 		// Parse the value as JSON if possible
 		if (variableValue.match(/^(true|false|[0-9.]+)$/)) {
-			variableValue = JSON.parse(variableValue);
+			try {
+				variableValue = JSON.parse(variableValue);
+			} catch (error) {
+				console.log(error);
+			}
 		}
 
 		// Update the variable in a copy of the bondage runner
