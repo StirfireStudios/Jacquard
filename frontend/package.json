@@ -40,6 +40,11 @@
     "lint": "node ./node_modules/eslint/bin/eslint.js --fix --ext .js ./src",
     "electron-dev": "concurrently \"BROWSER=none react-app-rewired start\" \"wait-on http://localhost:3000 && electron .\"",
     "electron-dev-win": ".\\node_modules\\.bin\\concurrently \"set BROWSER=none&&react-app-rewired start\" \".\\node_modules\\.bin\\wait-on http://localhost:3000 && .\\node_modules\\.bin\\electron .\"",
+    "electron-pack": "electron-builder",
+    "electron-pack-win32": "electron-builder --win --ia32",
+    "electron-pack-win64": "electron-builder --win --x64",
+    "electron-pack-mac": "electron-builder --mac --x64",
+    "electron-pack-linux": "electron-builder --linux --x64"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
