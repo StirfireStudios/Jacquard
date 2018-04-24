@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
+import Select from 'material-ui/Select';
+import { MenuItem } from 'material-ui/Menu';
+import { InputLabel } from 'material-ui/Input';
 import TextField from 'material-ui/TextField';
+import Grid from 'material-ui/Grid';
 
 import uuidv4 from 'uuid/v4';
 
@@ -18,6 +22,11 @@ class RunPage extends React.Component {
 		// Create a new bondage runner
 		const bondageRunner = new bondage.Runner();
 
+		// Get the default start node title
+		const startNodeTitle = (props.yarnNodes.length > 0)
+			? props.yarnNodes[0].title
+			: '';
+
 		// Set up the state of the component
 		this.state = {
 			// The bondage runner used to run the Yarn
@@ -26,17 +35,24 @@ class RunPage extends React.Component {
 			bondageIterator: null,
 			// The results of iteration
 			bondageIterationResults: [],
+			// The start node
+			startNodeTitle,
 		};
 	}
 
-	componentWillMount() {
+	onRunButtonClick() {
 		// Run the yarn
 		this.runYarn(this.props.yarnNodes);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		// Run the yarn
-		this.runYarn(nextProps.yarnNodes);
+	onStartNodeChoiceChange = (event) => {
+		// Get the start node
+		const startNodeTitle = event.target.value;
+
+		// Record the start node in our state
+		this.setState({
+			startNodeTitle,
+		});
 	}
 
 	onVariableChange = (event) => {
@@ -93,8 +109,11 @@ class RunPage extends React.Component {
 	runYarn = (yarnNodes) => {
 		// Do we have at least one node?
 		if (yarnNodes.length > 0) {
-			// Get the title of the starting node
-			const startNodeTitle = yarnNodes[0].title;
+			// Get the title of the starting node if we have one, otherwise
+			// use the title of the first node
+			const startNodeTitle = (this.state.startNodeTitle)
+				? this.state.startNodeTitle
+				: yarnNodes[0].title;
 
 			// Load the Yarn data into the bondage runner
 			this.state.bondageRunner.load(yarnNodes);
@@ -121,6 +140,47 @@ class RunPage extends React.Component {
 		// Move to the next step in the Yarn
 		this.step();
 	};
+
+	renderStartNodeRunner = () => {
+		// Build the start node choices
+		const startNodeChoices = this.props.yarnNodes.map(yarnNode => (
+			<MenuItem
+				key={uuidv4()}
+				value={yarnNode.title}
+			>
+				{yarnNode.title}
+			</MenuItem>
+		));
+
+		return (
+			<Grid container spacing={24}>
+				<Grid item xs={6}>
+					<InputLabel htmlFor="start-node-choices">Start Node</InputLabel>
+					<Select
+						value={this.state.startNodeTitle}
+						onChange={this.onStartNodeChoiceChange}
+						fullWidth
+						inputProps={{
+							name: 'start-node',
+							id: 'start-node-choices',
+						}}
+					>
+						{startNodeChoices}
+					</Select>
+				</Grid>
+				<Grid item xs={3}>
+					<Button
+						variant="raised"
+						size="large"
+						fullWidth
+						onClick={() => this.onRunButtonClick()}
+					>
+						Run From Node
+					</Button>
+				</Grid>
+			</Grid>
+		);
+	}
 
 	renderVariables = () => {
 		// Get the variable values
@@ -179,6 +239,9 @@ class RunPage extends React.Component {
 	};
 
 	render() {
+		// The start node runner
+		const startNodeRunner = this.renderStartNodeRunner();
+
 		// Render the variables
 		const variables = this.renderVariables();
 
@@ -205,23 +268,24 @@ class RunPage extends React.Component {
 
 		return (
 			<div>
+				{startNodeRunner}
 				{(results.length > 0) &&
 					<div>
-				<h2>Yarn</h2>
-					{results}
-				</div>
+						<h2>Yarn</h2>
+						{results}
+					</div>
 				}
 				{(variables.length > 0) &&
 					<div>
-				<h2>Variables</h2>
-					{variables}
-				</div>
+						<h2>Variables</h2>
+						{variables}
+					</div>
 				}
 				{(visitedNodes.length > 0) &&
 					<div>
-				<h2>Visited</h2>
-					{visitedNodes}
-				</div>
+						<h2>Visited</h2>
+						{visitedNodes}
+					</div>
 				}
 			</div>
 		);
