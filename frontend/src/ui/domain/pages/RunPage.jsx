@@ -205,18 +205,24 @@ class RunPage extends React.Component {
 
 		return (
 			<div>
+				{(results.length > 0) &&
+					<div>
 				<h2>Yarn</h2>
-				<div>
 					{results}
 				</div>
+				}
+				{(variables.length > 0) &&
+					<div>
 				<h2>Variables</h2>
-				<div>
 					{variables}
 				</div>
+				}
+				{(visitedNodes.length > 0) &&
+					<div>
 				<h2>Visited</h2>
-				<div>
 					{visitedNodes}
 				</div>
+				}
 			</div>
 		);
 	}
