@@ -198,7 +198,7 @@ class RunPage extends React.Component {
 				fullWidth
 				readOnly={false}
 				multiline={false}
-				value={variableValues[variableKey]}
+				value={String(variableValues[variableKey])}
 				onChange={event => this.onVariableChange(event)}
 			/>
 		));
