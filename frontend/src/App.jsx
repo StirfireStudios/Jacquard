@@ -47,8 +47,16 @@ class App extends Component {
 		// The loaded project will be passed as a JSON string in the "arg"
 		// parameter
 		ipcRenderer.on('project-loaded', (event, arg) => {
+			// The current project
+			let currentProject = null;
+
 			// Convert the JSON string to an object
-			const currentProject = JSON.parse(arg);
+			try {
+				currentProject = JSON.parse(arg);
+			} catch (error) {
+				// Show the error to the user
+				ipcRenderer.send('showError', 'Project is not a JSON file.');
+			}
 
 			// Store the loaded project
 			currentProjectService.set(currentProject);

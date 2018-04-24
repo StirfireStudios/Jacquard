@@ -271,6 +271,10 @@ ipcMain.on('projectExportToYarn', (event, arg) => {
 	currentProjectExportAsYarn(event, currentProjectFilePath, currentProjectYarn);
 });
 
+ipcMain.on('showError', (event, arg) => {
+	dialog.showErrorBox('Error', arg);
+});
+
 ipcMain.on('setWindowTitleInfo', (event, arg) => {
 	// Build the window title
 	const windowTitle = (arg)
