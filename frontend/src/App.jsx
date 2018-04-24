@@ -67,7 +67,7 @@ class App extends Component {
 		// The loaded project will be passed as a string in the "arg"
 		// parameter
 		ipcRenderer.on('yarn-loaded', (event, arg) => {
-			// Convert the JSON string to an object
+			// Convert the Yarn string to an object
 			const currentProject = yarnService.importProjectFromYarn(arg);
 
 			// Store the loaded project
