@@ -165,11 +165,11 @@ They will not be included in the production build so you can use them for things
 
 In the project directory, you can run these commands using `npm` or `yarn` although `yarn` is prefe:
 
-### `test` 
+### `test`
 
-**NO TESTS AVAILABLE FOR RUNNING, COMMAND WILL PUSH AN ERROR BECAUSE OF IT!**
- 
-Launches the test runner in the interactive watch mode.<br> 
+Currently this project has no tests. They will be added at a future date.
+
+Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](#running-tests) for more information.
 
 ### `eject`
@@ -182,10 +182,9 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-### `lint` 
+### `lint`
 
-**NOT SURE HOW TO DESCRIBE THIS COMMAND!**
-
+Runs the linter
 
 ### Running during development
 From the `frontend` directory, type `dev-start` on mac/linux and `dev-start-win` on windows. This will launch an instance of the application using Electron.
@@ -306,7 +305,7 @@ In the WebStorm menu `Run` select `Edit Configurations...`. Then click `+` and s
 
 Start your app by running `npm start`, then press `^D` on macOS or `F9` on Windows and Linux or click the green debug icon to start debugging in WebStorm.
 
-The same way you can debug your application in IntelliJ IDEA Ultimate, PhpStorm, PyCharm Pro, and RubyMine. 
+The same way you can debug your application in IntelliJ IDEA Ultimate, PhpStorm, PyCharm Pro, and RubyMine.
 
 ## Formatting Code Automatically
 
@@ -1681,7 +1680,7 @@ Use the following [`launch.json`](https://code.visualstudio.com/docs/editor/debu
       "name": "Debug CRA Tests",
       "type": "node",
       "request": "launch",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",      
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/react-scripts",
       "args": [
         "test",
         "--runInBand",
@@ -1995,7 +1994,7 @@ If you’re using [Apache HTTP Server](https://httpd.apache.org/), you need to c
     RewriteRule ^ index.html [QSA,L]
 ```
 
-It will get copied to the `build` folder when you run `npm run build`. 
+It will get copied to the `build` folder when you run `npm run build`.
 
 If you’re using [Apache Tomcat](http://tomcat.apache.org/), you need to follow [this Stack Overflow answer](https://stackoverflow.com/a/41249464/4878474).
 
@@ -2425,7 +2424,7 @@ To resolve this:
 1. Open an issue on the dependency's issue tracker and ask that the package be published pre-compiled.
   * Note: Create React App can consume both CommonJS and ES modules. For Node.js compatibility, it is recommended that the main entry point is CommonJS. However, they can optionally provide an ES module entry point with the `module` field in `package.json`. Note that **even if a library provides an ES Modules version, it should still precompile other ES6 features to ES5 if it intends to support older browsers**.
 
-2. Fork the package and publish a corrected version yourself. 
+2. Fork the package and publish a corrected version yourself.
 
 3. If the dependency is small enough, copy it to your `src/` folder and treat it as application code.
 
