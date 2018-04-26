@@ -1,11 +1,11 @@
 // React Imports
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, withRouter } from 'react-router-dom';
+import { HashRouter as Router, Route, withRouter } from 'react-router-dom';
 
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 // Electron Imports
-import { ipcRenderer } from 'electron';
+import { ipcRenderer } from 'electron'; // eslint-disable-line
 
 // General Component Imports
 import Page from './ui/general/pages/Page';
@@ -47,8 +47,16 @@ class App extends Component {
 		// The loaded project will be passed as a JSON string in the "arg"
 		// parameter
 		ipcRenderer.on('project-loaded', (event, arg) => {
+			// The current project
+			let currentProject = null;
+
 			// Convert the JSON string to an object
-			const currentProject = JSON.parse(arg);
+			try {
+				currentProject = JSON.parse(arg);
+			} catch (error) {
+				// Show the error to the user
+				ipcRenderer.send('showError', 'Project is not a JSON file.');
+			}
 
 			// Store the loaded project
 			currentProjectService.set(currentProject);
@@ -67,7 +75,7 @@ class App extends Component {
 		// The loaded project will be passed as a string in the "arg"
 		// parameter
 		ipcRenderer.on('yarn-loaded', (event, arg) => {
-			// Convert the JSON string to an object
+			// Convert the Yarn string to an object
 			const currentProject = yarnService.importProjectFromYarn(arg);
 
 			// Store the loaded project

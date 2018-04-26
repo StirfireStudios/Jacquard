@@ -1,4 +1,4 @@
-const electron = require('electron');
+const electron = require('electron'); // eslint-disable-line
 
 const {
 	ipcMain, dialog, app, BrowserWindow,
@@ -17,7 +17,7 @@ const yarnLoadedMessage = 'yarn-loaded';
 
 function createWindow() {
 	mainWindow = new BrowserWindow({ width: 900, height: 680 });
-	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
+	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
 	mainWindow.on('closed', () => { mainWindow = null; });
 }
 
@@ -269,6 +269,10 @@ ipcMain.on('projectExportToYarn', (event, arg) => {
 
 	// Ask the user to export the project as Yarn under a different file path
 	currentProjectExportAsYarn(event, currentProjectFilePath, currentProjectYarn);
+});
+
+ipcMain.on('showError', (event, arg) => {
+	dialog.showErrorBox('Error', arg);
 });
 
 ipcMain.on('setWindowTitleInfo', (event, arg) => {
