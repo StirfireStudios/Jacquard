@@ -2,59 +2,60 @@
   "name": "jaquard-frontend",
   "author": "Stirfire Studios",
   "productName": "Jaquard",
+  "description": "Yarn-based narrative tool!",
   "version": "0.1.0",
   "private": true,
   "main": "public/electron.js",
+  "homepage": "./",
   "build": {
     "appId": "com.jaquard",
     "files": [
       "build/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "package.json"
     ],
     "directories": {
       "buildResources": "assets"
     }
   },
   "dependencies": {
-    "babel-eslint": "^8.2.2",
+    "@material-ui/icons": "^1.0.0-beta.43",
     "bondage": "^1.0.4",
     "classnames": "^2.2.5",
-    "electron": "^1.8.3",
     "electron-is-dev": "^0.3.0",
-    "electron-packager": "^11.1.0",
-    "eslint": "^4.18.1",
-    "jacquard-yarnparser": "^0.1.1",
+    "jacquard-yarnparser": "^0.2.0",
     "material-ui": "^1.0.0-beta.34",
-    "material-ui-icons": "^1.0.0-beta.17",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1",
     "uuid": "^3.2.1"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "node ./node_modules/eslint/bin/eslint.js --fix --ext .js ./src",
-    "electron-pack": "build --em.main=public/electron.js",
-    "preelectron-pack": "yarn build",
-    "electron-dev-win": ".\\node_modules\\.bin\\concurrently \"set BROWSER=none&&yarn start\" \".\\node_modules\\.bin\\wait-on http://localhost:3000 && .\\node_modules\\.bin\\electron .\"",
-    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
-    "package-mac": "electron-packager ./src --overwrite --platform=darwin --arch=x64 --prune=true --out=dist",
-    "package-win": "electron-packager ./src jaquard --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=dist --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Jaquard\"",
-    "package-linux": "electron-packager ./src jaquard --overwrite --asar=true --platform=linux --arch=x64 --prune=true --out=dist"
+    "dev-start": "concurrently \"BROWSER=none react-app-rewired start\" \"wait-on http://localhost:3000 && electron .\"",
+    "dev-start-win": ".\\node_modules\\.bin\\concurrently \"set BROWSER=none&&react-app-rewired start\" \".\\node_modules\\.bin\\wait-on http://localhost:3000 && .\\node_modules\\.bin\\electron .\"",
+    "prd-pack": "react-app-rewired build && electron-builder",
+    "prd-pack-win32": "react-app-rewired build && cp ./assets/icon.png ./build/ && electron-builder --win --ia32",
+    "prd-pack-win64": "react-app-rewired build && cp ./assets/icon.png ./build/ && electron-builder --win --x64",
+    "prd-pack-mac": "react-app-rewired build && cp ./assets/icon.png ./build/ && electron-builder --mac --x64",
+    "prd-pack-linux": "react-app-rewired build && cp ./assets/icon.png ./build/ && electron-builder --linux --x64"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.3",
     "concurrently": "^3.5.1",
-    "electron-builder": "^20.4.1",
+    "electron": "^1.8.4",
+    "electron-builder": "^20.10.0",
+    "electron-devtools-installer": "^2.2.3",
+    "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.7.0",
-    "react-app-rewired": "^1.5.0",
+    "react-app-rewired": "1.5.2",
+    "react-scripts": "^1.1.4",
     "wait-on": "^2.1.0"
   }
 }

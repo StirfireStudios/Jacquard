@@ -136,13 +136,15 @@ const validateProjectNode = (projectFilePath, projectNode) => {
 	// Create a parser
 	const parser = new jacquardYarnParser.Parser();
 
-	// Parse the node
-	const error = parser.parse(projectYarn, false, projectFilePath);
+	// Parse the node (ignoring the return value as it's really only for a
+	// compiler toolchain)
+	parser.parse(projectYarn, false, projectFilePath);
 
-	// If there where errors or warnings, return them
-	return (error)
-		? { warnings: parser.warnings, errors: parser.errors }
-		: null;
+	// Return any errors or warnings
+	return {
+		errors: parser.errors,
+		warnings: parser.warnings,
+	};
 };
 
 const exportYarnService = {
