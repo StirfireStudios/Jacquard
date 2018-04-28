@@ -27,10 +27,10 @@ function createWindow() {
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name) => {
 				console.log(`Added Extension:  ${name}`);
-		})
-		.catch((err) => {
+			})
+			.catch((err) => {
 				console.log('An error occurred: ', err);
-		});
+			});
 	}
 }
 
@@ -99,7 +99,7 @@ const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjec
 			showTagsField: false,
 			defaultPath: currentDirectoryPath,
 			filters: [
-				{ name: 'Yarn', extensions: ['yarn'] },
+				{ name: 'Yarn', extensions: ['yarn', 'yarn.txt'] },
 				{ name: 'All Files', extensions: ['*'] },
 			],
 		},
@@ -190,7 +190,7 @@ const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
 			showTagsField: false,
 			defaultPath: currentDirectoryPath,
 			filters: [
-				{ name: 'Yarn', extensions: ['yarn'] },
+				{ name: 'Yarn', extensions: ['yarn', 'yarn.txt'] },
 				{ name: 'All Files', extensions: ['*'] },
 			],
 		},
