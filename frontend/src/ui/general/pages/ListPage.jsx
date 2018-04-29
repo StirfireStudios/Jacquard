@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
+import AddIcon from '@material-ui/icons/Add';
+import green from 'material-ui/colors/green';
 
 // import ListEditButton from '../../general/components/ListEditButton';
 // import ListDeleteButton from '../../general/components/ListDeleteButton';
@@ -10,6 +13,16 @@ import FieldListTable from '../components/FieldListTable';
 // Assumes that you are going to have a list of some sort that you can edit.
 // Takes a list of fields that you want to show, a form that will act as the add/edit form and
 // the name of the array from currentProject that you want to deal with
+
+const styles = theme => ({
+	fab: {
+		position: 'absolute',
+		top: theme.spacing.unit * 10,
+		right: theme.spacing.unit * 4,
+		color: theme.palette.common.white,
+		backgroundColor: green[500],		
+	},
+});
 
 class ListPage extends React.Component {
 	constructor(props) {
@@ -187,11 +200,12 @@ class ListPage extends React.Component {
 		return (
 			<div>
 				<Button
+					className={this.props.classes.fab}
+					variant="fab"
+					color="inherit"
 					onClick={this.onAddItemClick}
-					variant="raised"
-					color="primary"
 				>
-					Add
+					<AddIcon />
 				</Button>
 				<AddEditForm
 					title={addEditFormTitle}
@@ -235,4 +249,4 @@ ListPage.defaultProps = {
 	currentProject: null,
 };
 
-export default ListPage;
+export default withStyles(styles, { withTheme: true })(ListPage);
