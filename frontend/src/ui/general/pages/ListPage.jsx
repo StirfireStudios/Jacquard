@@ -20,7 +20,7 @@ const styles = theme => ({
 		bottom: theme.spacing.unit * 4,
 		right: theme.spacing.unit * 4,
 		color: theme.palette.common.white,
-		backgroundColor: green[500],		
+		backgroundColor: green[500],
 	},
 });
 

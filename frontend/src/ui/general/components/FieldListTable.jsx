@@ -34,7 +34,7 @@ class FieldListTable extends React.Component {
 						{displayName}
 					</TableCell>
 				))}
-				<TableCell className={this.props.classes.header}/>
+				<TableCell className={this.props.classes.header} />
 			</TableRow>
 		</TableHead>
 	);
