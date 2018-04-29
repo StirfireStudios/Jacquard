@@ -1,11 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import { withStyles } from 'material-ui/styles';
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 import uuidv4 from 'uuid/v4';
 
 import ListEditButton from './ListEditButton';
 import ListDeleteButton from './ListDeleteButton';
+
+const styles = theme => ({
+	header: {
+		backgroundColor: theme.palette.background.paper,
+		position: 'sticky',
+		top: 0,
+		zIndex: 999,
+	},
+});
 
 class FieldListTable extends React.Component {
 	FieldTableCells(item) {
@@ -15,8 +26,15 @@ class FieldListTable extends React.Component {
 	Header = () => (
 		<TableHead>
 			<TableRow>
-				{this.props.displayNames.map(displayName => <TableCell key={displayName}>{displayName}</TableCell>)}
-				<TableCell />
+				{this.props.displayNames.map(displayName => (
+					<TableCell
+						className={this.props.classes.header}
+						key={displayName}
+					>
+						{displayName}
+					</TableCell>
+				))}
+				<TableCell className={this.props.classes.header}/>
 			</TableRow>
 		</TableHead>
 	);
@@ -74,4 +92,4 @@ FieldListTable.propTypes = {
 	onDeleteClick: PropTypes.func.isRequired,
 };
 
-export default FieldListTable;
+export default withStyles(styles, { withTheme: true })(FieldListTable);
