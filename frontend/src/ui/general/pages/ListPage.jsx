@@ -17,7 +17,7 @@ import FieldListTable from '../components/FieldListTable';
 const styles = theme => ({
 	fab: {
 		position: 'absolute',
-		top: theme.spacing.unit * 10,
+		bottom: theme.spacing.unit * 4,
 		right: theme.spacing.unit * 4,
 		color: theme.palette.common.white,
 		backgroundColor: green[500],		
