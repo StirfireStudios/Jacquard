@@ -165,9 +165,17 @@ class NodeEditor extends React.Component {
 	}
 	*/
 
+	componentWillReceiveProps(nextProps) {
+		this.validateNode(nextProps.projectFilePath, nextProps.data);
+	}
+
 	onValidate = () => {
+		this.validateNode(this.props.projectFilePath, this.props.data);
+	}
+
+	validateNode = (projectFilePath, node) => {
 		// Validate the project node
-		const validationResult = yarnService.validateProjectNode(this.props.projectFilePath, this.props.data);
+		const validationResult = yarnService.validateProjectNode(projectFilePath, node);
 
 		// Get the validation errors
 		const validationErrors = (validationResult)
@@ -186,9 +194,9 @@ class NodeEditor extends React.Component {
 		});
 	}
 
-	renderErrors = () => {
+	renderErrors = () =>
 		// Build the validation errors
-		const validationErrors = this.state.validationErrors.map((validationError) => {
+		this.state.validationErrors.map((validationError) => {
 			// Build the location
 			const location = buildLocationString(validationError.location);
 
@@ -200,16 +208,9 @@ class NodeEditor extends React.Component {
 			);
 		});
 
-		return (
-			<List>
-				{validationErrors}
-			</List>
-		);
-	}
-
-	renderWarnings = () => {
+	renderWarnings = () =>
 		// Build the validation warnings
-		const validationWarnings = this.state.validationWarnings.map((validationWarning) => {
+		this.state.validationWarnings.map((validationWarning) => {
 			// Build the location
 			const location = buildLocationString(validationWarning.location);
 
@@ -224,11 +225,41 @@ class NodeEditor extends React.Component {
 			);
 		});
 
-		return (
-			<List>
-				{validationWarnings}
-			</List>
-		);
+	renderValidationResults = () => {
+		// Render the validation errors and warnings
+		const validationErrors = this.renderErrors();
+		const validationWarnings = this.renderWarnings();
+
+		// If we have no validation error or warnings, the node is valid
+		if (((!validationErrors) || (validationErrors.length === 0)) &&
+			((!validationWarnings) || (validationWarnings.length === 0))) {
+			return (
+				<p>The node is valid.</p>
+			);
+		}
+
+		// The validation results
+		const validationResults = [];
+
+		// If we have validation errors, add them to the results
+		if (validationErrors) {
+			validationResults.push((
+				<List key={uuidv4()}>
+					{validationErrors}
+				</List>
+			));
+		}
+
+		// If we have validation errors, add them to the results
+		if (validationErrors) {
+			validationResults.push((
+				<List key={uuidv4()}>
+					{validationWarnings}
+				</List>
+			));
+		}
+
+		return validationResults;
 	}
 
 	render() {
@@ -237,9 +268,8 @@ class NodeEditor extends React.Component {
 
 		// Do we have any data?
 		if (this.props.data) {
-			// Render the validation errors and warnings
-			const validationErrors = this.renderErrors();
-			const validationWarnings = this.renderWarnings();
+			// Render the validation results
+			const validationResults = this.renderValidationResults();
 
 			return (
 				<FullScreenDialog
@@ -337,8 +367,7 @@ class NodeEditor extends React.Component {
 								>
 									Validate
 								</Button>
-								{validationErrors}
-								{validationWarnings}
+								{validationResults}
 							</div>
 							<div
 								className={classes.drawerPaper}

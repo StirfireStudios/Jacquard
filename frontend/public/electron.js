@@ -19,6 +19,19 @@ function createWindow() {
 	mainWindow = new BrowserWindow({ width: 900, height: 680 });
 	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
 	mainWindow.on('closed', () => { mainWindow = null; });
+
+	// Install React Dev Tools
+	const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
+
+	if (isDev) {
+		installExtension(REACT_DEVELOPER_TOOLS)
+			.then((name) => {
+				console.log(`Added Extension:  ${name}`);
+			})
+			.catch((err) => {
+				console.log('An error occurred: ', err);
+			});
+	}
 }
 
 const currentProjectSave = (event, currentProjectFilePath, currentProjectJSON) => {
@@ -86,7 +99,7 @@ const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjec
 			showTagsField: false,
 			defaultPath: currentDirectoryPath,
 			filters: [
-				{ name: 'Yarn', extensions: ['yarn'] },
+				{ name: 'Yarn', extensions: ['yarn', 'yarn.txt'] },
 				{ name: 'All Files', extensions: ['*'] },
 			],
 		},
@@ -177,7 +190,7 @@ const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
 			showTagsField: false,
 			defaultPath: currentDirectoryPath,
 			filters: [
-				{ name: 'Yarn', extensions: ['yarn'] },
+				{ name: 'Yarn', extensions: ['yarn', 'yarn.txt'] },
 				{ name: 'All Files', extensions: ['*'] },
 			],
 		},

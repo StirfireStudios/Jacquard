@@ -1,4 +1,4 @@
-import jacquardYarnParser from 'jacquard-yarnparser';
+import { Parser } from 'jacquard-yarnparser';
 
 const exportProjectToYarn = project =>
 	// Map each of the nodes to its Yarn equivalent
@@ -134,7 +134,7 @@ const validateProjectNode = (projectFilePath, projectNode) => {
 	const projectYarn = exportProjectToYarn(project);
 
 	// Create a parser
-	const parser = new jacquardYarnParser.Parser();
+	const parser = new Parser();
 
 	// Parse the node (ignoring the return value as it's really only for a
 	// compiler toolchain)
