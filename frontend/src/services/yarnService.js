@@ -158,13 +158,63 @@ const validateProjectNode = (projectFilePath, projectNode) => {
 		warnings: parserWarnings,
 	};
 };
+
+const getProjectNodeLinks = (projectFilePath, projectNodes) => {
+	// The project node links
+	let projectNodeLinks = null;
+
+	try {
+		// Build a dummy project with the project nodes
+		const project = {
+			nodes: projectNodes,
+		};
+
+		// Export the project to Yarn
+		const projectYarn = exportProjectToYarn(project);
+
+		// Create a parser
+		const parser = new Parser();
+
+		// Parse the node (ignoring the return value as it's really only for a
+		// compiler toolchain)
+		parser.parse(projectYarn, false, projectFilePath);
+
+		// Get the named nodes
+		const parserNamedNodes = parser.nodeNames.reduce((namedNodes, nodeName) => {
+			namedNodes[nodeName] = parser.nodeNamed(nodeName);
+			return namedNodes;
+		}, {});
+
+		// Build the node links by actualizing the links of each node so we can
+		// retrieve the incoming and outgoing links
+		projectNodeLinks = Object.keys(parserNamedNodes).reduce((nodeLinks, nodeName) => {
+			// Get the node
+			const node = parserNamedNodes[nodeName];
+
+			// Actualize it's links
+			node.actualizeLinks(parserNamedNodes);
+
+			// Record the links for the node
+			nodeLinks[nodeName] = {
+				outgoingLinks: node.outgoingLinks,
+				incomingLinks: node.incomingLinks,
 	};
+
+			return nodeLinks;
+		}, {});
+	} catch (error) {
+		console.log(error);
+	}
+
+	// Return the project node links (if any)
+	return projectNodeLinks;
 };
 
 const exportYarnService = {
 	exportProjectToYarn,
 	importProjectFromYarn,
 	validateProjectNode,
+	getProjectNodeLinks,
 };
 
 export default exportYarnService;
