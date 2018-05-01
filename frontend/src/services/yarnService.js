@@ -125,6 +125,11 @@ const importProjectFromYarn = (yarn) => {
 };
 
 const validateProjectNode = (projectFilePath, projectNode) => {
+	// The errors and warnings
+	let parserErrors = [];
+	let parserWarnings = [];
+
+	try {
 	// Build a dummy project with only the single node
 	const project = {
 		nodes: [projectNode],
@@ -140,10 +145,19 @@ const validateProjectNode = (projectFilePath, projectNode) => {
 	// compiler toolchain)
 	parser.parse(projectYarn, false, projectFilePath);
 
+		// Get the errors and warnings
+		parserErrors = parser.errors;
+		parserWarnings = parser.warnings;
+	} catch (error) {
+		console.log(error);
+	}
+
 	// Return any errors or warnings
 	return {
-		errors: parser.errors,
-		warnings: parser.warnings,
+		errors: parserErrors,
+		warnings: parserWarnings,
+	};
+};
 	};
 };
 
