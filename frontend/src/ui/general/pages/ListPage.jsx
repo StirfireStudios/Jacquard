@@ -219,8 +219,7 @@ class ListPage extends React.Component {
 				/>
 				<FieldListTable
 					rows={this.getCurrentProjectProp()}
-					fieldNames={this.props.fieldNames}
-					displayNames={this.props.displayNames}
+					fields={this.props.fields}
 					keyName={this.props.keyName}
 					onEditClick={this.onEditItemClick}
 					onDeleteClick={this.onDeleteItemClick}
@@ -239,8 +238,7 @@ ListPage.propTypes = {
 	currentProjectFilePath: PropTypes.string.isRequired,
 	currentProjectPropName: PropTypes.string.isRequired,
 	keyName: PropTypes.string.isRequired,
-	fieldNames: PropTypes.array.isRequired,
-	displayNames: PropTypes.array.isRequired,
+	fields: PropTypes.array.isRequired,
 	formSchema: PropTypes.array.isRequired,
 	addEditForm: PropTypes.func.isRequired,
 };

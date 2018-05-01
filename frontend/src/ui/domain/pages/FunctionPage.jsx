@@ -3,21 +3,34 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
 
-import ListPage from '../../general/pages/ListPage';
 import themes from '../themes';
+
+import ListPage from '../../general/pages/ListPage';
 import FieldListForm from '../../general/components/FieldListForm';
+import fieldListItemContent from '../../general/utils/field-list-item-content';
 
 class FunctionPage extends React.Component {
 	render() {
+		// The list fields
+		const fields = [
+			{
+				name: 'name',
+				displayName: 'Name',
+				getContentCallback: fieldListItemContent.getTextFromItemField,
+			},
+			{
+				name: 'description',
+				displayName: 'Description',
+				getContentCallback: fieldListItemContent.getTextFromItemField,
+			},
+		];
+
 		const addEditForm = props => (<FieldListForm {...props} />);
-		const fieldNames = ['name', 'description'];
-		const displayNames = ['Name', 'Description'];
 
 		return (
 			<ListPage
 				onCurrentProjectChanged={this.props.onCurrentProjectChanged}
-				fieldNames={fieldNames}
-				displayNames={displayNames}
+				fields={fields}
 				keyName="name"
 				currentProject={this.props.currentProject}
 				currentProjectFilePath={this.props.currentProjectFilePath}

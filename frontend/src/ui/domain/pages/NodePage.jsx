@@ -3,22 +3,40 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
 
+import uuidv4 from 'uuid/v4';
+
 import ListPage from '../../general/pages/ListPage';
-import themes from '../themes';
+import fieldListItemContent from '../../general/utils/field-list-item-content';
+
 import NodeEditor from '../modals/NodeEditor';
 
 class NodeListPage extends React.Component {
 	render() {
-		const fieldNames = ['section', 'title', 'tags'];
-		const displayNames = ['Section', 'Title', 'Tags'];
+		// The list fields
+		const fields = [
+			{
+				name: 'section',
+				displayName: 'Section',
+				getContentCallback: fieldListItemContent.getTextFromItemField,
+			},
+			{
+				name: 'title',
+				displayName: 'Title',
+				getContentCallback: fieldListItemContent.getTextFromItemField,
+			},
+			{
+				name: 'tags',
+				displayName: 'Tags',
+				getContentCallback: fieldListItemContent.getTextFromItemField,
+			},
+		];
 
 		const addEditForm = props => (<NodeEditor {...props} />);
 
 		return (
 			<ListPage
 				onCurrentProjectChanged={this.props.onCurrentProjectChanged}
-				fieldNames={fieldNames}
-				displayNames={displayNames}
+				fields={fields}
 				keyName="title"
 				currentProject={this.props.currentProject}
 				currentProjectFilePath={this.props.currentProjectFilePath}

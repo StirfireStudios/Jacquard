@@ -19,19 +19,15 @@ const styles = theme => ({
 });
 
 class FieldListTable extends React.Component {
-	FieldTableCells(item) {
-		return this.props.fields.map(field => (<TableCell key={field}>{item[field]}</TableCell>));
-	}
-
-	Header = () => (
+	renderHeader = () => (
 		<TableHead>
 			<TableRow>
-				{this.props.displayNames.map(displayName => (
+				{this.props.fields.map(field => (
 					<TableCell
 						className={this.props.classes.header}
-						key={displayName}
+						key={field.name}
 					>
-						{displayName}
+						{field.displayName}
 					</TableCell>
 				))}
 				<TableCell className={this.props.classes.header} />
@@ -39,17 +35,17 @@ class FieldListTable extends React.Component {
 		</TableHead>
 	);
 
-	DisplayFields = item => this.props.fieldNames.map(fieldName => (
-		<TableCell key={fieldName}>{item[fieldName]}</TableCell>
+	renderFields = item => this.props.fields.map(field => (
+		<TableCell key={field.name}>{field.getContentCallback(item, field.name)}</TableCell>
 	));
 
-	Rows = () => {
+	renderRows = () => {
 		let returnValue = [];
 
 		if (this.props.rows) {
 			returnValue = this.props.rows.map(item => (
 				<TableRow key={uuidv4()}>
-					{this.DisplayFields(item)}
+					{this.renderFields(item)}
 					<TableCell>
 						<ListEditButton
 							onClick={() => this.props.onEditClick(item[this.props.keyName])}
@@ -68,11 +64,17 @@ class FieldListTable extends React.Component {
 	}
 
 	render() {
+		// Render the header
+		const header = this.renderHeader();
+
+		// Render the rows
+		const rows = this.renderRows();
+
 		return (
 			<Table>
-				<this.Header />
+				{header}
 				<TableBody>
-					<this.Rows />
+					{rows}
 				</TableBody>
 			</Table>
 		);
@@ -86,8 +88,7 @@ FieldListTable.defaultProps = {
 FieldListTable.propTypes = {
 	rows: PropTypes.array,
 	keyName: PropTypes.string.isRequired,
-	fieldNames: PropTypes.array.isRequired,
-	displayNames: PropTypes.array.isRequired,
+	fields: PropTypes.array.isRequired,
 	onEditClick: PropTypes.func.isRequired,
 	onDeleteClick: PropTypes.func.isRequired,
 };
