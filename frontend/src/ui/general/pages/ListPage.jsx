@@ -42,9 +42,12 @@ class ListPage extends React.Component {
 		};
 	}
 
-	onAddItemClick = () => {
+	onAddItemClick = (newItemKeyValue) => {
 		// Create new Add/Edit form data
 		const newFormData = this.createNewAddEditFormData();
+
+		// Set the key value of the new item
+		newFormData[this.props.keyName] = newItemKeyValue || '';
 
 		// Open the form in Add mode
 		this.openAddForm(newFormData);
