@@ -6,6 +6,7 @@ import Button from 'material-ui/Button';
 // import Paper from 'material-ui/Paper';
 import Icon from 'material-ui/Icon';
 import List, { ListItem, ListItemText, ListSubheader } from 'material-ui/List';
+import red from 'material-ui/colors/red';
 
 import uuidv4 from 'uuid/v4';
 
@@ -81,6 +82,20 @@ const styles = theme => ({
 	main: {
 		height: '100%',
 	},
+	nodeLinks: {
+		marginTop: theme.spacing.unit * 2,
+		marginBottom: theme.spacing.unit * 2,
+	},
+	nodeLinkText: {
+		marginRight: theme.spacing.unit * 2,
+	},
+	nodeExistingLinkButton: {
+		marginRight: theme.spacing.unit * 2,
+	},
+	nodeNonExistingLinkButton: {
+		marginRight: theme.spacing.unit * 2,
+		backgroundColor: red[500],
+	},
 });
 
 const buildLocationString = location => `${location.fileID}
@@ -93,6 +108,8 @@ class NodeEditor extends React.Component {
 		this.state = {
 			validationErrors: [],
 			validationWarnings: [],
+			outgoingLinks: {},
+			incomingLinks: {},
 			/*
 			insertCharacterIntoNodeModalOpen: false,
 			insertConditionalIntoNodeModalOpen: false,
@@ -166,11 +183,25 @@ class NodeEditor extends React.Component {
 	*/
 
 	componentWillReceiveProps(nextProps) {
-		this.validateNode(nextProps.projectFilePath, nextProps.data);
+		// Validate the node
+		const validationResult = this.validateNode(nextProps.projectFilePath, nextProps.data);
+
+		// Record the new validation errors and warnings, and the links
+		this.setState({
+			validationErrors: validationResult.errors,
+			validationWarnings: validationResult.warnings,
+		});
 	}
 
 	onValidate = () => {
-		this.validateNode(this.props.projectFilePath, this.props.data);
+		// Validate the node
+		const validationResult = this.validateNode(this.props.projectFilePath, this.props.data);
+
+		// Record the new validation errors and warnings and links
+		this.setState({
+			validationErrors: validationResult.errors,
+			validationWarnings: validationResult.warnings,
+		});
 	}
 
 	validateNode = (projectFilePath, node) => {
@@ -178,20 +209,130 @@ class NodeEditor extends React.Component {
 		const validationResult = yarnService.validateProjectNode(projectFilePath, node);
 
 		// Get the validation errors
-		const validationErrors = (validationResult)
+		const errors = (validationResult)
 			? validationResult.errors
 			: [];
 
 		// Get the validation warnings
-		const validationWarnings = (validationResult)
+		const warnings = (validationResult)
 			? validationResult.warnings
 			: [];
 
-		// Record the new validation errors and warnings
-		this.setState({
-			validationErrors,
-			validationWarnings,
+		// Return the new validation errors and warnings
+		return {
+			errors,
+			warnings,
+		};
+	}
+
+	renderIncomingLinks = () => {
+		// If the project doesn't have any node links, return an empty array
+		if (!this.props.projectNodeLinks) {
+			return [];
+		}
+
+		// Get the node links
+		const nodeLinks = this.props.projectNodeLinks[this.props.data.title];
+
+		// If we don't have any node links, return an empty array
+		if (!nodeLinks) {
+			return [];
+		}
+
+		// Build a button for each incoming link
+		const incomingLinks = Object.keys(nodeLinks.incomingLinks).map((incomingLinkKey) => {
+			// Get the node
+			const node = nodeLinks.incomingLinks[incomingLinkKey];
+
+			// Figure out the button class
+			const buttonClass = (node)
+				? this.props.classes.nodeExistingLinkButton
+				: this.props.classes.nodeNonExistingLinkButton;
+
+			// Figure out the button on-click handler
+			const buttonOnClick = (node)
+				? () => this.props.onEditItemClick(node.name)
+				: () => this.props.onAddItemClick(incomingLinkKey);
+
+			return (
+				<Button
+					key={uuidv4()}
+					className={buttonClass}
+					variant="raised"
+					onClick={buttonOnClick}
+				>
+					{incomingLinkKey}
+				</Button>
+			);
 		});
+
+		return (incomingLinks.length > 0)
+			?
+			(
+				<div className={this.props.classes.nodeLinks}>
+					<span className={this.props.classes.nodeLinkText}>Incoming Links:</span>
+					{incomingLinks}
+				</div>
+			)
+			:
+			(
+				<div className={this.props.classes.nodeLinks}>No incoming links</div>
+			);
+	}
+
+	renderOutgoingLinks = () => {
+		// If the project doesn't have any node links, return an empty array
+		if (!this.props.projectNodeLinks) {
+			return [];
+		}
+
+		// Get the node links
+		const nodeLinks = this.props.projectNodeLinks[this.props.data.title];
+
+		// If we don't have any node links, return an empty array
+		if (!nodeLinks) {
+			return [];
+		}
+
+		// Build a button for each outgoing link
+		const outgoingLinks = Object.keys(nodeLinks.outgoingLinks).map((outgoingLinkKey) => {
+			// Get the node
+			const node = nodeLinks.outgoingLinks[outgoingLinkKey];
+
+			// Figure out the button class
+			const buttonClass = (node)
+				? this.props.classes.nodeExistingLinkButton
+				: this.props.classes.nodeNonExistingLinkButton;
+
+			// Figure out the button on-click handler
+			const buttonOnClick = (node)
+				? () => this.props.onEditItemClick(node.name)
+				: () => this.props.onAddItemClick(outgoingLinkKey);
+
+			return (
+				<Button
+					key={uuidv4()}
+					className={buttonClass}
+					variant="raised"
+					onClick={buttonOnClick}
+				>
+					{outgoingLinkKey}
+				</Button>
+			);
+		});
+
+		return (outgoingLinks.length > 0)
+			?
+			(
+				<div className={this.props.classes.nodeLinks}>
+					<span className={this.props.classes.nodeLinkText}>Outgoing Links:</span>
+					{outgoingLinks}
+				</div>
+			)
+			:
+			(
+				<div className={this.props.classes.nodeLinks}>No outgoing links</div>
+			);
 	}
 
 	renderErrors = () =>
@@ -268,6 +409,10 @@ class NodeEditor extends React.Component {
 
 		// Do we have any data?
 		if (this.props.data) {
+			// Render the incoming and outgoing links
+			const incomingLinks = this.renderIncomingLinks();
+			const outgoingLinks = this.renderOutgoingLinks();
+
 			// Render the validation results
 			const validationResults = this.renderValidationResults();
 
@@ -310,6 +455,7 @@ class NodeEditor extends React.Component {
 						<div className={classes.parentContainer}>
 							<div className={classes.content}>
 								{ /* <Button>Test From Here</Button> */ }
+								{incomingLinks}
 								<TextField
 									id="node-title"
 									label="Title"
@@ -361,6 +507,7 @@ class NodeEditor extends React.Component {
 									value={this.props.data.body}
 									onChange={(e) => { this.props.onUpdateFormField(e, 'body'); }}
 								/>
+								{outgoingLinks}
 								<Button
 									variant="raised"
 									onClick={this.onValidate}
@@ -384,13 +531,10 @@ class NodeEditor extends React.Component {
 	}
 }
 
-NodeEditor.defaultProps = {
-	data: {},
-};
-
 NodeEditor.propTypes = {
 	title: PropTypes.string.isRequired,
 	projectFilePath: PropTypes.string.isRequired,
+	projectNodeLinks: PropTypes.object,
 	data: PropTypes.object,
 	open: PropTypes.bool.isRequired,
 	onUpdateFormField: PropTypes.func.isRequired,
@@ -398,4 +542,9 @@ NodeEditor.propTypes = {
 	onCancel: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles)(NodeEditor);
+NodeEditor.defaultProps = {
+	projectNodeLinks: null,
+	data: {},
+};
+
+export default withStyles(styles, { withTheme: true })(NodeEditor);

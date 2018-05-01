@@ -130,20 +130,20 @@ const validateProjectNode = (projectFilePath, projectNode) => {
 	let parserWarnings = [];
 
 	try {
-	// Build a dummy project with only the single node
-	const project = {
-		nodes: [projectNode],
-	};
+		// Build a dummy project with only the single node
+		const project = {
+			nodes: [projectNode],
+		};
 
-	// Export the project to Yarn
-	const projectYarn = exportProjectToYarn(project);
+		// Export the project to Yarn
+		const projectYarn = exportProjectToYarn(project);
 
-	// Create a parser
-	const parser = new Parser();
+		// Create a parser
+		const parser = new Parser();
 
-	// Parse the node (ignoring the return value as it's really only for a
-	// compiler toolchain)
-	parser.parse(projectYarn, false, projectFilePath);
+		// Parse the node (ignoring the return value as it's really only for a
+		// compiler toolchain)
+		parser.parse(projectYarn, false, projectFilePath);
 
 		// Get the errors and warnings
 		parserErrors = parser.errors;
@@ -198,7 +198,7 @@ const getProjectNodeLinks = (projectFilePath, projectNodes) => {
 			nodeLinks[nodeName] = {
 				outgoingLinks: node.outgoingLinks,
 				incomingLinks: node.incomingLinks,
-	};
+			};
 
 			return nodeLinks;
 		}, {});

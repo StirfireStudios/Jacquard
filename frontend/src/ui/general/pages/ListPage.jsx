@@ -215,6 +215,8 @@ class ListPage extends React.Component {
 					projectFilePath={this.props.currentProjectFilePath}
 					data={this.state.addEditFormData}
 					open={this.state.addEditFormOpen}
+					onAddItemClick={this.onAddItemClick}
+					onEditItemClick={this.onEditItemClick}
 					onUpdateFormField={this.onUpdateFormField}
 					onOK={this.onAddEditFormOk}
 					onCancel={this.onAddEditFormCancel}
@@ -224,8 +226,9 @@ class ListPage extends React.Component {
 					rows={this.getCurrentProjectProp()}
 					fields={this.props.fields}
 					keyName={this.props.keyName}
-					onEditClick={this.onEditItemClick}
-					onDeleteClick={this.onDeleteItemClick}
+					onAddItemClick={this.onAddItemClick}
+					onEditItemClick={this.onEditItemClick}
+					onDeleteItemClick={this.onDeleteItemClick}
 				/>
 			</div>
 		);

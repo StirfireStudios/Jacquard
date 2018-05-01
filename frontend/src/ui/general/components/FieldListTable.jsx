@@ -36,7 +36,16 @@ class FieldListTable extends React.Component {
 	);
 
 	renderFields = item => this.props.fields.map(field => (
-		<TableCell key={field.name}>{field.getContentCallback(item, field.name)}</TableCell>
+		<TableCell key={field.name}>
+			{
+				field.getContentCallback(
+					item,
+					field.name,
+					this.props.onAddItemClick,
+					this.props.onEditItemClick,
+				)
+			}
+		</TableCell>
 	));
 
 	renderRows = () => {
@@ -48,11 +57,11 @@ class FieldListTable extends React.Component {
 					{this.renderFields(item)}
 					<TableCell>
 						<ListEditButton
-							onClick={() => this.props.onEditClick(item[this.props.keyName])}
+							onClick={() => this.props.onEditItemClick(item[this.props.keyName])}
 							itemKey={item[this.props.keyName]}
 						/>
 						<ListDeleteButton
-							onClick={() => this.props.onDeleteClick(item[this.props.keyName])}
+							onClick={() => this.props.onDeleteItemClick(item[this.props.keyName])}
 							itemKey={item[this.props.keyName]}
 						/>
 					</TableCell>
@@ -89,8 +98,9 @@ FieldListTable.propTypes = {
 	rows: PropTypes.array,
 	keyName: PropTypes.string.isRequired,
 	fields: PropTypes.array.isRequired,
-	onEditClick: PropTypes.func.isRequired,
-	onDeleteClick: PropTypes.func.isRequired,
+	onAddItemClick: PropTypes.func.isRequired,
+	onEditItemClick: PropTypes.func.isRequired,
+	onDeleteItemClick: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles, { withTheme: true })(FieldListTable);
