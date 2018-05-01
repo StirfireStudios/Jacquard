@@ -103,14 +103,11 @@ class App extends Component {
 	}
 
 	onSaveProject = () => {
-		// Get the current project
-		const currentProject = currentProjectService.get();
-
 		// Get the current project file path
 		const currentProjectFilePath = currentProjectService.getFilePath();
 
 		// Convert the project to JSON
-		const currentProjectJSON = JSON.stringify(currentProject);
+		const currentProjectJSON = JSON.stringify(this.state.currentProject);
 
 		// Save the current project to the current file path
 		ipcRenderer.send('projectSave', {
@@ -120,14 +117,11 @@ class App extends Component {
 	};
 
 	onSaveProjectAs = () => {
-		// Get the current project
-		const currentProject = currentProjectService.get();
-
 		// Get the current project file path
 		const currentProjectFilePath = currentProjectService.getFilePath();
 
 		// Convert the project to JSON
-		const currentProjectJSON = JSON.stringify(currentProject);
+		const currentProjectJSON = JSON.stringify(this.state.currentProject);
 
 		// Save the current project under another name
 		ipcRenderer.send('projectSaveAs', {
@@ -160,16 +154,11 @@ class App extends Component {
 	}
 
 	onExportYarnFile = () => {
-		// Get the current project
-		const currentProject = currentProjectService.get();
-
-		// Convert the project to Yarn
-		const currentProjectYarn = yarnService.exportProjectToYarn(currentProject);
-
-		console.log(currentProjectYarn);
-
 		// Get the current project file path
 		const currentProjectFilePath = currentProjectService.getFilePath();
+
+		// Convert the project to Yarn
+		const currentProjectYarn = yarnService.exportProjectToYarn(this.state.currentProject);
 
 		// Export the current project as a yarn file
 		ipcRenderer.send('projectExportToYarn', {
