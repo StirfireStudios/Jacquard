@@ -85,7 +85,7 @@ class ListPage extends React.Component {
 		// Update the current project with the new row data
 		currentProject[this.props.currentProjectPropName] = filteredRowData;
 
-		// Notify the callback that the current project has changed
+		// Notify the callback that the project should be saved
 		this.props.onCurrentProjectChanged(currentProject);
 	};
 
@@ -130,7 +130,7 @@ class ListPage extends React.Component {
 			}
 		}
 
-		// Notify the callback that the current project has changed
+		// Notify the callback that the project should be saved
 		this.props.onCurrentProjectChanged(currentProject);
 
 		// Close the Add/Edit form
