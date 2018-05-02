@@ -25,8 +25,8 @@ class ModalDialog extends React.Component {
 						<Button onClick={this.props.onCancel} variant="raised" color="secondary">
 							Cancel
 						</Button>
-						<Button onClick={this.props.onOK} variant="raised" color="primary">
-							Ok
+						<Button onClick={this.props.onSave} variant="raised" color="primary">
+							Save
 						</Button>
 					</DialogActions>
 				</Dialog>

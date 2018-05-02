@@ -11,7 +11,7 @@ class InsertConditionalIntoNode extends React.Component {
 				title="Insert Conditional"
 				open={this.props.open}
 				onCancel={this.props.onCancel}
-				onOK={this.props.onOK}
+				onSave={this.props.onSave}
 			>
 				<div>Do we need variable lookups for any of these fields?</div>
 				<TextField

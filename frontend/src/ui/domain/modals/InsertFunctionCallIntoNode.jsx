@@ -12,7 +12,7 @@ class InsertFunctionCallIntoNode extends React.Component {
 				title="Insert Function Call"
 				open={this.props.open}
 				onCancel={this.props.onCancel}
-				onOK={this.props.onOK}
+				onSave={this.props.onSave}
 			>
 				<div>Need to do some sort of lookup for this</div>
 				<div>

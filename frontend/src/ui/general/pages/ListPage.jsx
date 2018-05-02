@@ -101,7 +101,7 @@ class ListPage extends React.Component {
 		this.setState({	addEditFormData });
 	}
 
-	onAddEditFormOk = () => {
+	onAddEditFormSave = () => {
 		// Get a copy of the current project
 		const currentProject = { ...this.props.currentProject };
 
@@ -218,7 +218,7 @@ class ListPage extends React.Component {
 					onAddItemClick={this.onAddItemClick}
 					onEditItemClick={this.onEditItemClick}
 					onUpdateFormField={this.onUpdateFormField}
-					onOK={this.onAddEditFormOk}
+					onSave={this.onAddEditFormSave}
 					onCancel={this.onAddEditFormCancel}
 					formSchema={this.props.formSchema}
 				/>

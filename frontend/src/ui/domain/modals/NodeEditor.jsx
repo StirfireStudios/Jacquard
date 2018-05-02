@@ -415,34 +415,34 @@ class NodeEditor extends React.Component {
 				<FullScreenDialog
 					open={this.props.open}
 					onCancel={this.props.onCancel}
-					onOK={this.props.onOK}
+					onSave={this.props.onSave}
 					title={this.props.title}
 					description="Allows you to edit the node"
 				>
 					{ /*
 					<InsertCharacterIntoNode
 						open={this.state.insertCharacterIntoNodeModalOpen}
-						onOK={this.onInsertCharacterIntoNodeModalOK}
+						onSave={this.onInsertCharacterIntoNodeModalOK}
 						onCancel={this.onInsertCharacterIntoNodeModalCancel}
 					/>
 					<InsertConditionalIntoNode
 						open={this.state.insertConditionalIntoNodeModalOpen}
-						onOK={this.onInsertConditionalIntoNodeModalOK}
+						onSave={this.onInsertConditionalIntoNodeModalOK}
 						onCancel={this.onInsertConditionalIntoNodeModalCancel}
 					/>
 					<InsertFunctionCallIntoNode
 						open={this.state.insertFunctionCallIntoNodeModalOpen}
-						onOK={this.onInsertFunctionCallIntoNodeModalOK}
+						onSave={this.onInsertFunctionCallIntoNodeModalOK}
 						onCancel={this.onInsertFunctionCallIntoNodeModalCancel}
 					/>
 					<InsertNodeIntoNode
 						open={this.state.insertNodeIntoNodeModalOpen}
-						onOK={this.onInsertNodeIntoNodeModalOK}
+						onSave={this.onInsertNodeIntoNodeModalOK}
 						onCancel={this.onInsertNodeIntoNodeModalCancel}
 					/>
 					<InsertVariableIntoNode
 						open={this.state.insertVariableIntoNodeModalOpen}
-						onOK={this.onInsertVariableIntoNodeModalOK}
+						onSave={this.onInsertVariableIntoNodeModalOK}
 						onCancel={this.onInsertVariableIntoNodeModalCancel}
 					/>
 					*/ }
@@ -533,7 +533,7 @@ NodeEditor.propTypes = {
 	data: PropTypes.object,
 	open: PropTypes.bool.isRequired,
 	onUpdateFormField: PropTypes.func.isRequired,
-	onOK: PropTypes.func.isRequired,
+	onSave: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
 };
 
