@@ -104,8 +104,6 @@ class NodeEditor extends React.Component {
 		this.state = {
 			validationErrors: [],
 			validationWarnings: [],
-			outgoingLinks: {},
-			incomingLinks: {},
 			/*
 			insertCharacterIntoNodeModalOpen: false,
 			insertConditionalIntoNodeModalOpen: false,
