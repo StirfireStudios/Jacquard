@@ -102,6 +102,7 @@ class NodeEditor extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			// The validation errors and warnings
 			validationErrors: [],
 			validationWarnings: [],
 			/*
