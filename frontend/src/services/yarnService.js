@@ -159,6 +159,98 @@ const validateProjectNode = (projectFilePath, projectNode) => {
 	};
 };
 
+const validateProjectNodes = (projectFilePath, projectNodes) => {
+	// The project nodes validation results
+	let projectNodeValidationResults = {
+		nodes: {},
+		generalErrors: [],
+		generalWarnings: [],
+	};
+
+	try {
+		// Build a dummy project with only the single node
+		const project = {
+			nodes: projectNodes,
+		};
+
+		// Export the project to Yarn
+		const projectYarn = exportProjectToYarn(project);
+
+		// Create a parser
+		const parser = new Parser();
+
+		// Parse the node (ignoring the return value as it's really only for a
+		// compiler toolchain)
+		parser.parse(projectYarn, false, projectFilePath);
+
+		// Get the errors
+		projectNodeValidationResults = parser.errors.reduce((validationResults, validationError) => {
+			// Get the node name of the error
+			const { nodeName } = validationError.location;
+
+			// If the error has a node name, add it to the nodes error list
+			if (nodeName) {
+				// Make sure we have validation results for the node
+				if (!Object.prototype.hasOwnProperty.call(validationResults.nodes, nodeName)) {
+					validationResults.nodes[nodeName] = {
+						errors: [],
+						warnings: [],
+					};
+				}
+
+				// Include the error in the nodes validation results
+				validationResults.nodes[nodeName].errors = [
+					...validationResults.nodes[nodeName].errors,
+					validationError,
+				];
+			} else {
+				// Otherwise, add it to the general errors
+				validationResults.generalErrors = [
+					...validationResults.generalErrors,
+					validationError,
+				];
+			}
+
+			return validationResults;
+		}, projectNodeValidationResults);
+
+		// Get the warnings
+		projectNodeValidationResults = parser.warnings.reduce((validationResults, validationWarning) => {
+			// Get the node name of the warning
+			const { nodeName } = validationWarning.location;
+
+			// If the error has a node name, add it to the nodes error list
+			if (nodeName) {
+				// Make sure we have validation results for the node
+				if (!Object.prototype.hasOwnProperty.call(validationResults.nodes, nodeName)) {
+					validationResults.nodes[nodeName] = {
+						errors: [],
+						warnings: [],
+					};
+				}
+
+				// Include the warning in the nodes validation results
+				validationResults.nodes[nodeName].warnings = [
+					...validationResults.nodes[nodeName].warnings,
+					validationWarning,
+				];
+			} else {
+				// Otherwise, add it to the general warnings
+				validationResults.generalWarnings = [
+					...validationResults.generalWarnings,
+					validationWarning,
+				];
+			}
+
+			return validationResults;
+		}, projectNodeValidationResults);
+	} catch (error) {
+		console.log(error);
+	}
+
+	return projectNodeValidationResults;
+};
+
 const getProjectNodeLinks = (projectFilePath, projectNodes) => {
 	// The project node links
 	let projectNodeLinks = null;
@@ -218,6 +310,7 @@ const exportYarnService = {
 	exportProjectToYarn,
 	importProjectFromYarn,
 	validateProjectNode,
+	validateProjectNodes,
 	getProjectNodeLinks,
 	buildLocationString,
 };
