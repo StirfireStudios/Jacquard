@@ -210,11 +210,16 @@ const getProjectNodeLinks = (projectFilePath, projectNodes) => {
 	return projectNodeLinks;
 };
 
+const buildLocationString = location => `${location.fileID}
+ (${location.start.line}, ${location.start.column}) -
+ (${location.end.line}, ${location.end.column})`;
+
 const exportYarnService = {
 	exportProjectToYarn,
 	importProjectFromYarn,
 	validateProjectNode,
 	getProjectNodeLinks,
+	buildLocationString,
 };
 
 export default exportYarnService;

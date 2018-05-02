@@ -98,10 +98,6 @@ const styles = theme => ({
 	},
 });
 
-const buildLocationString = location => `${location.fileID}
- (${location.start.line}, ${location.start.column}) -
- (${location.end.line}, ${location.end.column})`;
-
 class NodeEditor extends React.Component {
 	constructor(props) {
 		super(props);
@@ -339,7 +335,7 @@ class NodeEditor extends React.Component {
 		// Build the validation errors
 		this.state.validationErrors.map((validationError) => {
 			// Build the location
-			const location = buildLocationString(validationError.location);
+			const location = yarnService.buildLocationString(validationError.location);
 
 			return (
 				<ListItem key={uuidv4()}>
@@ -353,7 +349,7 @@ class NodeEditor extends React.Component {
 		// Build the validation warnings
 		this.state.validationWarnings.map((validationWarning) => {
 			// Build the location
-			const location = buildLocationString(validationWarning.location);
+			const location = yarnService.buildLocationString(validationWarning.location);
 
 			return (
 				<ListItem key={uuidv4()}>
