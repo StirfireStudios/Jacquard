@@ -20,10 +20,9 @@ function createWindow() {
 	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
 	mainWindow.on('closed', () => { mainWindow = null; });
 
-	// Install React Dev Tools
-	const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
-
 	if (isDev) {
+		// Install React Dev Tools
+		const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name) => {
 				console.log(`Added Extension:  ${name}`);
