@@ -65,19 +65,25 @@ const projectSave = (event, projectFilePath, projectJSON) => {
 		// Notify that the project file path has changed
 		event.sender.send(projectFilePathChangedMessage, projectFilePath);
 
+		// Did an error occur?
 		if (err) {
+			// Tell the user something went wrong
 			dialog.showMessageBox({
 				title: 'Error',
 				message: `An error ocurred creating the file :${err.message}`,
 				type: 'error',
 			});
-		}
+		} else {
+			// The project is no longer modified
+			projectIsModified = false;
 
-		dialog.showMessageBox({
-			title: 'Success',
-			message: 'The file saved successfully',
-			type: 'info',
-		});
+			// Tell the user we successfully saved the file
+			dialog.showMessageBox({
+				title: 'Success',
+				message: 'The file saved successfully',
+				type: 'info',
+			});
+		}
 	});
 };
 
