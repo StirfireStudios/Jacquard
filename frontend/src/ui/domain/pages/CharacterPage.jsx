@@ -29,12 +29,12 @@ class CharacterPage extends React.Component {
 
 		return (
 			<ListPage
-				onCurrentProjectChanged={this.props.onCurrentProjectChanged}
+				onProjectChanged={this.props.onProjectChanged}
 				fields={fields}
 				keyName="name"
-				currentProject={this.props.currentProject}
-				currentProjectFilePath={this.props.currentProjectFilePath}
-				currentProjectPropName="characters"
+				project={this.props.project}
+				projectFilePath={this.props.projectFilePath}
+				projectPropName="characters"
 				addEditFormEditTitle="Edit Character"
 				addEditFormAddTitle="Add Character"
 				addEditForm={addEditForm}
@@ -58,14 +58,14 @@ class CharacterPage extends React.Component {
 }
 
 CharacterPage.propTypes = {
-	onCurrentProjectChanged: PropTypes.func.isRequired,
+	onProjectChanged: PropTypes.func.isRequired,
 
-	currentProject: PropTypes.object,
-	currentProjectFilePath: PropTypes.string.isRequired,
+	project: PropTypes.object,
+	projectFilePath: PropTypes.string.isRequired,
 };
 
 CharacterPage.defaultProps = {
-	currentProject: null,
+	project: null,
 };
 
 export default withStyles(themes.defaultTheme)(CharacterPage);

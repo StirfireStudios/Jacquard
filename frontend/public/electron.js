@@ -33,11 +33,11 @@ function createWindow() {
 	}
 }
 
-const currentProjectSave = (event, currentProjectFilePath, currentProjectJSON) => {
+const projectSave = (event, projectFilePath, projectJSON) => {
 	// Write the project JSON to disk
-	fs.writeFile(currentProjectFilePath, currentProjectJSON, (err) => {
+	fs.writeFile(projectFilePath, projectJSON, (err) => {
 		// Notify that the project file path has changed
-		event.sender.send(projectFilePathChangedMessage, currentProjectFilePath);
+		event.sender.send(projectFilePathChangedMessage, projectFilePath);
 
 		if (err) {
 			dialog.showMessageBox({
@@ -55,10 +55,10 @@ const currentProjectSave = (event, currentProjectFilePath, currentProjectJSON) =
 	});
 };
 
-const currentProjectSaveAs = (event, currentProjectFilePath, currentProjectJSON) => {
+const projectSaveAs = (event, projectFilePath, projectJSON) => {
 	// Get the current directory from the project file path (if we have one)
-	const currentDirectoryPath = (currentProjectFilePath)
-		? path.dirname(currentProjectFilePath)
+	const currentDirectoryPath = (projectFilePath)
+		? path.dirname(projectFilePath)
 		: '';
 
 	// Show the Save As dialog
@@ -79,16 +79,16 @@ const currentProjectSaveAs = (event, currentProjectFilePath, currentProjectJSON)
 				return;
 			}
 
-			// Save the current project JSON
-			currentProjectSave(event, fileName, currentProjectJSON);
+			// Save the project JSON
+			projectSave(event, fileName, projectJSON);
 		},
 	);
 };
 
-const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjectYarn) => {
+const projectExportAsYarn = (event, projectFilePath, projectYarn) => {
 	// Get the current directory from the project file path (if we have one)
-	const currentDirectoryPath = (currentProjectFilePath)
-		? path.dirname(currentProjectFilePath)
+	const currentDirectoryPath = (projectFilePath)
+		? path.dirname(projectFilePath)
 		: '';
 
 	// Show the Save As dialog
@@ -110,7 +110,7 @@ const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjec
 			}
 
 			// Write the project Yarn to disk
-			fs.writeFile(fileName, currentProjectYarn, (err) => {
+			fs.writeFile(fileName, projectYarn, (err) => {
 				if (err) {
 					dialog.showMessageBox({
 						title: 'Error',
@@ -129,10 +129,10 @@ const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjec
 	);
 };
 
-const currentProjectOpen = (event, currentProjectFilePath) => {
+const projectOpen = (event, projectFilePath) => {
 	// Get the current directory from the project file path (if we have one)
-	const currentDirectoryPath = (currentProjectFilePath)
-		? path.dirname(currentProjectFilePath)
+	const currentDirectoryPath = (projectFilePath)
+		? path.dirname(projectFilePath)
 		: '';
 
 	// Show the file selection dialog
@@ -176,10 +176,10 @@ const currentProjectOpen = (event, currentProjectFilePath) => {
 	);
 };
 
-const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
+const projectImportFromYarn = (event, projectFilePath) => {
 	// Get the current directory from the project file path (if we have one)
-	const currentDirectoryPath = (currentProjectFilePath)
-		? path.dirname(currentProjectFilePath)
+	const currentDirectoryPath = (projectFilePath)
+		? path.dirname(projectFilePath)
 		: '';
 
 	// Show the file selection dialog
@@ -201,9 +201,9 @@ const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
 			}
 
 			// Get the project Yarn file path
-			const currentProjectYarnFilePath = fileNames[0];
+			const projectYarnFilePath = fileNames[0];
 
-			fs.readFile(currentProjectYarnFilePath, 'utf-8', (err, data) => {
+			fs.readFile(projectYarnFilePath, 'utf-8', (err, data) => {
 				if (err) {
 					dialog.showMessageBox({
 						title: 'Error',
@@ -216,8 +216,8 @@ const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
 				// Get the project file path from the Yarn file path by
 				// replacing the file extension with '.json'
 				const importedProjectFileName =
-					`${path.basename(currentProjectYarnFilePath, path.extname(currentProjectYarnFilePath))}.json`;
-				const importedProjectFilePath = path.join(path.dirname(currentProjectYarnFilePath), importedProjectFileName);
+					`${path.basename(projectYarnFilePath, path.extname(projectYarnFilePath))}.json`;
+				const importedProjectFilePath = path.join(path.dirname(projectYarnFilePath), importedProjectFileName);
 
 				// Notify that the project file path has changed
 				event.sender.send(projectFilePathChangedMessage, importedProjectFilePath);
@@ -245,42 +245,42 @@ app.on('activate', () => {
 
 ipcMain.on('projectSave', (event, arg) => {
 	// Get the project info from the argument
-	const { currentProjectFilePath, currentProjectJSON } = arg;
+	const { projectFilePath, projectJSON } = arg;
 
 	// Do we not have a project file path?
-	if (!currentProjectFilePath) {
+	if (!projectFilePath) {
 		// Ask the user to save the project under a different file path
-		currentProjectSaveAs(event, currentProjectFilePath, currentProjectJSON);
+		projectSaveAs(event, projectFilePath, projectJSON);
 	}
 
-	// Save the current project JSON
-	currentProjectSave(event, currentProjectFilePath, currentProjectJSON);
+	// Save the project JSON
+	projectSave(event, projectFilePath, projectJSON);
 });
 
 ipcMain.on('projectSaveAs', (event, arg) => {
 	// Get the project info from the argument
-	const { currentProjectFilePath, currentProjectJSON } = arg;
+	const { projectFilePath, projectJSON } = arg;
 
 	// Ask the user to save the project under a different file path
-	currentProjectSaveAs(event, currentProjectFilePath, currentProjectJSON);
+	projectSaveAs(event, projectFilePath, projectJSON);
 });
 
-ipcMain.on('projectOpen', (event, currentProjectFilePath) => {
+ipcMain.on('projectOpen', (event, projectFilePath) => {
 	// As the user to select a project file to open
-	currentProjectOpen(event, currentProjectFilePath);
+	projectOpen(event, projectFilePath);
 });
 
-ipcMain.on('projectImportFromYarn', (event, currentProjectFilePath) => {
+ipcMain.on('projectImportFromYarn', (event, projectFilePath) => {
 	// Ask the user to select a Yarn file to import
-	currentProjectImportFromYarn(event, currentProjectFilePath);
+	projectImportFromYarn(event, projectFilePath);
 });
 
 ipcMain.on('projectExportToYarn', (event, arg) => {
 	// Get the project info from the argument
-	const { currentProjectYarn, currentProjectFilePath } = arg;
+	const { projectYarn, projectFilePath } = arg;
 
 	// Ask the user to export the project as Yarn under a different file path
-	currentProjectExportAsYarn(event, currentProjectFilePath, currentProjectYarn);
+	projectExportAsYarn(event, projectFilePath, projectYarn);
 });
 
 ipcMain.on('showError', (event, arg) => {

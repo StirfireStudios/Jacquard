@@ -12,7 +12,7 @@ import FieldListTable from '../components/FieldListTable';
 
 // Assumes that you are going to have a list of some sort that you can edit.
 // Takes a list of fields that you want to show, a form that will act as the add/edit form and
-// the name of the array from currentProject that you want to deal with
+// the name of the array from project that you want to deal with
 
 const styles = theme => ({
 	fab: {
@@ -66,32 +66,32 @@ class ListPage extends React.Component {
 	};
 
 	onDeleteItemClick = (keyValue) => {
-		// Get a copy of the current project
-		const currentProject = { ...this.props.currentProject };
+		// Get a copy of the project
+		const project = { ...this.props.project };
 
 		// Get the row data we'll be deleting from
-		const rowData = currentProject[this.props.currentProjectPropName];
+		const rowData = project[this.props.projectPropName];
 
 		// Delete the item
 		const filteredRowData = rowData.filter(row => row[this.props.keyName] !== keyValue);
 
-		// Update the current project with the new row data
-		currentProject[this.props.currentProjectPropName] = filteredRowData;
+		// Update the project with the new row data
+		project[this.props.projectPropName] = filteredRowData;
 
 		// Notify the callback that the project has changed
-		this.props.onCurrentProjectChanged(currentProject);
+		this.props.onProjectChanged(project);
 	};
 
 	onAddEditFormOK = (addEditFormDataPreviousKeyValue, addEditFormUpdatedData) => {
-		// Get a copy of the current project
-		const currentProject = { ...this.props.currentProject };
+		// Get a copy of the project
+		const project = { ...this.props.project };
 
 		// Get the row data we'll be updating
-		const rowData = currentProject[this.props.currentProjectPropName];
+		const rowData = project[this.props.projectPropName];
 
 		// Is Add mode enabled?
 		if (this.state.addEditFormAddModeEnabled) {
-			// Add the form data to the current projects row data
+			// Add the form data to the projects row data
 			rowData.push(addEditFormUpdatedData);
 		} else {
 			// Get the index of the row we'll be updating
@@ -112,7 +112,7 @@ class ListPage extends React.Component {
 		}
 
 		// Notify the callback that the project has changed
-		this.props.onCurrentProjectChanged(currentProject);
+		this.props.onProjectChanged(project);
 
 		// Close the Add/Edit form
 		this.closeAddEditForm();
@@ -129,9 +129,9 @@ class ListPage extends React.Component {
 	}
 
 	/* eslint no-confusing-arrow: ["error", {"allowParens": true}] */
-	getCurrentProjectProp = () => (
-		this.props.currentProject
-			? this.props.currentProject[this.props.currentProjectPropName]
+	getProjectProp = () => (
+		this.props.project
+			? this.props.project[this.props.projectPropName]
 			: []
 	);
 
@@ -173,7 +173,7 @@ class ListPage extends React.Component {
 			addEditFormTitle = this.props.addEditFormEditTitle;
 
 			// Get a copy of the row data we'll be editing
-			const rowData = [...this.props.currentProject[this.props.currentProjectPropName]];
+			const rowData = [...this.props.project[this.props.projectPropName]];
 
 			// Generate the form data from the row data
 			addEditFormData = rowData.reduce((formData, row) => {
@@ -208,7 +208,7 @@ class ListPage extends React.Component {
 					data={addEditFormData}
 				/>
 				<FieldListTable
-					rows={this.getCurrentProjectProp()}
+					rows={this.getProjectProp()}
 					fields={this.props.fields}
 					keyName={this.props.keyName}
 					onAddItemClick={() => this.onAddItemClick('')}
@@ -221,10 +221,10 @@ class ListPage extends React.Component {
 }
 
 ListPage.propTypes = {
-	onCurrentProjectChanged: PropTypes.func.isRequired,
+	onProjectChanged: PropTypes.func.isRequired,
 
-	currentProject: PropTypes.object,
-	currentProjectPropName: PropTypes.string.isRequired,
+	project: PropTypes.object,
+	projectPropName: PropTypes.string.isRequired,
 
 	addEditForm: PropTypes.func.isRequired,
 	addEditFormEditTitle: PropTypes.string.isRequired,
@@ -235,7 +235,7 @@ ListPage.propTypes = {
 };
 
 ListPage.defaultProps = {
-	currentProject: null,
+	project: null,
 };
 
 export default withStyles(styles, { withTheme: true })(ListPage);

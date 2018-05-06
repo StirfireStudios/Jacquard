@@ -18,7 +18,7 @@ import NodePage from './ui/domain/pages/NodePage';
 import VariablePage from './ui/domain/pages/VariablePage';
 import MainMenu from './ui/domain/components/MainMenu';
 
-import currentProjectService from './services/currentProjectService';
+import projectService from './services/projectService';
 import yarnService from './services/yarnService';
 
 const theme = createMuiTheme();
@@ -29,8 +29,8 @@ class App extends Component {
 
 		// Set up the initial state
 		this.state = {
-			// We don't have a current project initially
-			currentProject: null,
+			// We don't have a project initially
+			project: null,
 			// Whether the project has been modified
 			projectWasModified: false,
 		};
@@ -38,8 +38,8 @@ class App extends Component {
 		// Set up a handler for when the project file path changes
 		// The new project file path is passed as the "arg" parameter
 		ipcRenderer.on('project-file-path-changed', (event, arg) => {
-			// Update the current project file path
-			currentProjectService.setFilePath(arg);
+			// Update the project file path
+			projectService.setFilePath(arg);
 
 			// Set the window title info
 			ipcRenderer.send('setWindowTitleInfo', arg);
@@ -49,24 +49,24 @@ class App extends Component {
 		// The loaded project will be passed as a JSON string in the "arg"
 		// parameter
 		ipcRenderer.on('project-loaded', (event, arg) => {
-			// The current project
-			let currentProject = null;
+			// The project
+			let project = null;
 
 			// Convert the JSON string to an object
 			try {
-				currentProject = JSON.parse(arg);
+				project = JSON.parse(arg);
 			} catch (error) {
 				// Show the error to the user
 				ipcRenderer.send('showError', 'Project is not a JSON file.');
 			}
 
 			// Store the loaded project
-			currentProjectService.set(currentProject);
+			projectService.set(project);
 
 			// Record the loaded project in our state
 			this.setState(
 				{
-					currentProject,
+					project,
 				},
 				// Navigate to the Nodes page
 				() => this.navigateToNodes(),
@@ -78,15 +78,15 @@ class App extends Component {
 		// parameter
 		ipcRenderer.on('yarn-loaded', (event, arg) => {
 			// Convert the Yarn string to an object
-			const currentProject = yarnService.importProjectFromYarn(arg);
+			const project = yarnService.importProjectFromYarn(arg);
 
 			// Store the loaded project
-			currentProjectService.set(currentProject);
+			projectService.set(project);
 
 			// Record the loaded project in our state
 			this.setState(
 				{
-					currentProject,
+					project,
 				},
 				// Navigate to the Nodes page
 				() => this.navigateToNodes(),
@@ -95,26 +95,26 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		// Get the current project (if any)
-		const currentProject = currentProjectService.get();
+		// Get the project (if any)
+		const project = projectService.get();
 
-		// Record the current project (if any) in our state
+		// Record the project (if any) in our state
 		this.setState({
-			currentProject,
+			project,
 		});
 	}
 
 	onSaveProject = () => {
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Convert the project to JSON
-		const currentProjectJSON = JSON.stringify(this.state.currentProject);
+		const projectJSON = JSON.stringify(this.state.project);
 
-		// Save the current project to the current file path
+		// Save the project to the current file path
 		ipcRenderer.send('projectSave', {
-			currentProjectJSON,
-			currentProjectFilePath,
+			projectJSON,
+			projectFilePath,
 		});
 
 		// The project has been saved, so mark it as unmodified
@@ -122,16 +122,16 @@ class App extends Component {
 	};
 
 	onSaveProjectAs = () => {
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Convert the project to JSON
-		const currentProjectJSON = JSON.stringify(this.state.currentProject);
+		const projectJSON = JSON.stringify(this.state.project);
 
-		// Save the current project under another name
+		// Save the project under another name
 		ipcRenderer.send('projectSaveAs', {
-			currentProjectJSON,
-			currentProjectFilePath,
+			projectJSON,
+			projectFilePath,
 		});
 	};
 
@@ -146,12 +146,12 @@ class App extends Component {
 		};
 
 		// Store the new project
-		currentProjectService.set(newProject);
+		projectService.set(newProject);
 
 		// Record the new project in our state
 		this.setState(
 			{
-				currentProject: newProject,
+				project: newProject,
 			},
 			// Navigate to the Nodes page
 			() => this.navigateToNodes(),
@@ -159,35 +159,35 @@ class App extends Component {
 	}
 
 	onExportYarnFile = () => {
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Convert the project to Yarn
-		const currentProjectYarn = yarnService.exportProjectToYarn(this.state.currentProject);
+		const projectYarn = yarnService.exportProjectToYarn(this.state.project);
 
-		// Export the current project as a yarn file
+		// Export the project as a yarn file
 		ipcRenderer.send('projectExportToYarn', {
-			currentProjectYarn,
-			currentProjectFilePath,
+			projectYarn,
+			projectFilePath,
 		});
 	};
 
 	onImportYarnFile = () => {
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Open a project
-		ipcRenderer.send('projectImportFromYarn', currentProjectFilePath);
+		ipcRenderer.send('projectImportFromYarn', projectFilePath);
 	};
 
 	onCloseProject = () => {
 		// Remove the project from storage
-		currentProjectService.clear();
+		projectService.clear();
 
 		// Clear the project from our state
 		this.setState(
 			{
-				currentProject: null,
+				project: null,
 			},
 			// Navigate back to the home page
 			() => this.navigateToHome(),
@@ -195,21 +195,21 @@ class App extends Component {
 	};
 
 	onOpenExistingProject = () => {
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Open a project
-		ipcRenderer.send('projectOpen', currentProjectFilePath);
+		ipcRenderer.send('projectOpen', projectFilePath);
 	};
 
-	onCurrentProjectChanged = (updatedCurrentProject) => {
+	onProjectChanged = (updatedProject) => {
 		// Store the updated project
-		currentProjectService.set(updatedCurrentProject);
+		projectService.set(updatedProject);
 
 		// Record the updated project in our state, and set the project as
 		// modified
 		this.setState({
-			currentProject: updatedCurrentProject,
+			project: updatedProject,
 			projectWasModified: true,
 		});
 	}
@@ -223,20 +223,20 @@ class App extends Component {
 	};
 
 	render() {
-		// Determine whether we have a current project
-		const hasCurrentProject = !!this.state.currentProject;
+		// Determine whether we have a project
+		const hasProject = !!this.state.project;
 
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Get the yarn nodes (if any)
-		const yarnNodes = (hasCurrentProject)
-			? this.state.currentProject.nodes
+		const yarnNodes = (hasProject)
+			? this.state.project.nodes
 			: [];
 
 		// Build the app components
 		const Menu = () =>	(<MainMenu
-			hasCurrentProject={hasCurrentProject}
+			hasProject={hasProject}
 			onCreateNewProject={this.onCreateNewProject}
 			onSaveProject={this.onSaveProject}
 			onSaveProjectAs={this.onSaveProjectAs}
@@ -269,10 +269,10 @@ class App extends Component {
 		const CharacterPageComplete = () => (
 			<BasePage title="Characters">
 				<CharacterPage
-					currentProject={this.state.currentProject}
+					project={this.state.project}
 					projectWasModified={this.state.projectWasModified}
-					currentProjectFilePath={currentProjectFilePath}
-					onCurrentProjectChanged={this.onCurrentProjectChanged}
+					projectFilePath={projectFilePath}
+					onProjectChanged={this.onProjectChanged}
 				/>
 			</BasePage>
 		);
@@ -280,10 +280,10 @@ class App extends Component {
 		const FunctionPageComplete = () => (
 			<BasePage title="Functions">
 				<FunctionPage
-					currentProject={this.state.currentProject}
+					project={this.state.project}
 					projectWasModified={this.state.projectWasModified}
-					currentProjectFilePath={currentProjectFilePath}
-					onCurrentProjectChanged={this.onCurrentProjectChanged}
+					projectFilePath={projectFilePath}
+					onProjectChanged={this.onProjectChanged}
 				/>
 			</BasePage>
 		);
@@ -291,10 +291,10 @@ class App extends Component {
 		const NodePageComplete = () => (
 			<BasePage title="Nodes">
 				<NodePage
-					currentProject={this.state.currentProject}
+					project={this.state.project}
 					projectWasModified={this.state.projectWasModified}
-					currentProjectFilePath={currentProjectFilePath}
-					onCurrentProjectChanged={this.onCurrentProjectChanged}
+					projectFilePath={projectFilePath}
+					onProjectChanged={this.onProjectChanged}
 				/>
 			</BasePage>
 		);
@@ -302,10 +302,10 @@ class App extends Component {
 		const VariablePageComplete = () => (
 			<BasePage title="Variables">
 				<VariablePage
-					currentProject={this.state.currentProject}
+					project={this.state.project}
 					projectWasModified={this.state.projectWasModified}
-					currentProjectFilePath={currentProjectFilePath}
-					onCurrentProjectChanged={this.onCurrentProjectChanged}
+					projectFilePath={projectFilePath}
+					onProjectChanged={this.onProjectChanged}
 				/>
 			</BasePage>
 		);

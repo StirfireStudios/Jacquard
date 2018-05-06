@@ -29,12 +29,12 @@ class FunctionPage extends React.Component {
 
 		return (
 			<ListPage
-				onCurrentProjectChanged={this.props.onCurrentProjectChanged}
+				onProjectChanged={this.props.onProjectChanged}
 				fields={fields}
 				keyName="name"
-				currentProject={this.props.currentProject}
-				currentProjectFilePath={this.props.currentProjectFilePath}
-				currentProjectPropName="functions"
+				project={this.props.project}
+				projectFilePath={this.props.projectFilePath}
+				projectPropName="functions"
 				addEditFormEditTitle="Edit Function"
 				addEditFormAddTitle="Add Function"
 				addEditForm={addEditForm}
@@ -58,14 +58,14 @@ class FunctionPage extends React.Component {
 }
 
 FunctionPage.propTypes = {
-	onCurrentProjectChanged: PropTypes.func.isRequired,
+	onProjectChanged: PropTypes.func.isRequired,
 
-	currentProject: PropTypes.object,
-	currentProjectFilePath: PropTypes.string.isRequired,
+	project: PropTypes.object,
+	projectFilePath: PropTypes.string.isRequired,
 };
 
 FunctionPage.defaultProps = {
-	currentProject: null,
+	project: null,
 };
 
 export default withStyles(themes.defaultTheme)(FunctionPage);

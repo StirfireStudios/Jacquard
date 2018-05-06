@@ -29,12 +29,12 @@ class VariablePage extends React.Component {
 
 		return (
 			<ListPage
-				onCurrentProjectChanged={this.props.onCurrentProjectChanged}
+				onProjectChanged={this.props.onProjectChanged}
 				fields={fields}
 				keyName="name"
-				currentProject={this.props.currentProject}
-				currentProjectFilePath={this.props.currentProjectFilePath}
-				currentProjectPropName="variables"
+				project={this.props.project}
+				projectFilePath={this.props.projectFilePath}
+				projectPropName="variables"
 				addEditFormEditTitle="Edit Variables"
 				addEditFormAddTitle="Add Variables"
 				addEditForm={addEditForm}
@@ -58,14 +58,14 @@ class VariablePage extends React.Component {
 }
 
 VariablePage.propTypes = {
-	onCurrentProjectChanged: PropTypes.func.isRequired,
+	onProjectChanged: PropTypes.func.isRequired,
 
-	currentProject: PropTypes.object,
-	currentProjectFilePath: PropTypes.string.isRequired,
+	project: PropTypes.object,
+	projectFilePath: PropTypes.string.isRequired,
 };
 
 VariablePage.defaultProps = {
-	currentProject: null,
+	project: null,
 };
 
 export default withStyles(themes.defaultTheme)(VariablePage);

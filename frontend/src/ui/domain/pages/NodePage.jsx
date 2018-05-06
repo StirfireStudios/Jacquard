@@ -254,11 +254,11 @@ class NodeListPage extends React.Component {
 	render() {
 		// Validate the project nodes
 		const projectValidationResults = yarnService
-			.validateProjectNodes(this.props.currentProjectFilePath, this.props.currentProject.nodes);
+			.validateProjectNodes(this.props.projectFilePath, this.props.project.nodes);
 
 		// Get the project node links
 		const projectNodeLinks = yarnService
-			.getProjectNodeLinks(this.props.currentProjectFilePath, this.props.currentProject.nodes);
+			.getProjectNodeLinks(this.props.projectFilePath, this.props.project.nodes);
 
 		// Render the general validation results
 		const generalValidationResults = renderGeneralValidationResults(projectValidationResults);
@@ -325,15 +325,15 @@ class NodeListPage extends React.Component {
 			<NodeEditorForm
 				{...props}
 				projectNodeLinks={projectNodeLinks}
-				projectFilePath={this.props.currentProjectFilePath}
+				projectFilePath={this.props.projectFilePath}
 			/>);
 
 		return (
 			<div>
 				<ListPage
-					onCurrentProjectChanged={this.props.onCurrentProjectChanged}
-					currentProject={this.props.currentProject}
-					currentProjectPropName="nodes"
+					onProjectChanged={this.props.onProjectChanged}
+					project={this.props.project}
+					projectPropName="nodes"
 					fields={fields}
 					keyName="title"
 					addEditForm={addEditForm}
@@ -385,14 +385,14 @@ class NodeListPage extends React.Component {
 }
 
 NodeListPage.propTypes = {
-	onCurrentProjectChanged: PropTypes.func.isRequired,
+	onProjectChanged: PropTypes.func.isRequired,
 
-	currentProject: PropTypes.object,
-	currentProjectFilePath: PropTypes.string.isRequired,
+	project: PropTypes.object,
+	projectFilePath: PropTypes.string.isRequired,
 };
 
 NodeListPage.defaultProps = {
-	currentProject: null,
+	project: null,
 };
 
 export default withStyles(styles, { withTheme: true })(NodeListPage);

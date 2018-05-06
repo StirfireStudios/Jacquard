@@ -29,13 +29,13 @@ class ListItemLink extends React.Component {
 class MainMenu extends React.Component {
 	constructor(props) {
 		super(props);
-		this.CurrentProjectMenu = this.CurrentProjectMenu.bind(this);
+		this.ProjectMenu = this.ProjectMenu.bind(this);
 	}
 
-	CurrentProjectMenu() {
+	ProjectMenu() {
 		let returnValue = null;
 
-		if (this.props.hasCurrentProject) {
+		if (this.props.hasProject) {
 			returnValue = (<MenuList>
 				<Divider />
 				<Link to="/run"><MenuItem button><ListItemText primary="Run" /></MenuItem></Link>
@@ -69,7 +69,7 @@ class MainMenu extends React.Component {
 				</div>
 				<Divider />
 				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
-				<this.CurrentProjectMenu />
+				<this.ProjectMenu />
 				<Divider />
 				<MenuList>
 					<MenuItem button onClick={this.props.onCreateNewProject}><ListItemText primary="Create New Project" /></MenuItem>
