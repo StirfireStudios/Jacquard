@@ -7,34 +7,53 @@ import Dialog, {
 	DialogTitle,
 } from 'material-ui/Dialog';
 import Button from 'material-ui/Button';
+import Grid from 'material-ui/Grid';
 
 const ModalDialog = props => (
-	<div>
-		<Dialog
-			open={props.open}
-			onClose={props.onCancel}
-			aria-labelledby="form-dialog-title"
-		>
-			<DialogTitle id="form-dialog-title">
-				{ props.title }
-			</DialogTitle>
-			<DialogContent>
-				{ props.children }
-			</DialogContent>
+	<Dialog
+		open={props.open}
+		onClose={props.onCancel}
+		aria-labelledby="form-dialog-title"
+	>
+		<Grid container spacing={0} justify="center">
+			<Grid item xs={12}>
+				<DialogTitle id="form-dialog-title">
+					{ props.title }
+				</DialogTitle>
+			</Grid>
+			<Grid item xs={12}>
+				<DialogContent>
+					{ props.children }
+				</DialogContent>
+			</Grid>
 			<DialogActions>
-				<Button onClick={props.onCancel} variant="raised" color="secondary">
-					{props.cancelButtonLabel}
-				</Button>
-				<Button onClick={props.onSave} variant="raised" color="primary">
-					{props.okButtonLabel}
-				</Button>
+				<Grid item xs={6}>
+					<Button
+						onClick={props.onOK}
+						variant="raised"
+						color="primary"
+						fullWidth
+					>
+						{props.okButtonLabel}
+					</Button>
+				</Grid>
+				<Grid item xs={6}>
+					<Button
+						onClick={props.onCancel}
+						variant="raised"
+						color="secondary"
+						fullWidth
+					>
+						{props.cancelButtonLabel}
+					</Button>
+				</Grid>
 			</DialogActions>
-		</Dialog>
-	</div>
+		</Grid>
+	</Dialog>
 );
 
 ModalDialog.propTypes = {
-	onSave: PropTypes.func.isRequired,
+	onOK: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
 
 	title: PropTypes.string.isRequired,
