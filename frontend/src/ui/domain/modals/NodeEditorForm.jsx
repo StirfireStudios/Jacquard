@@ -123,6 +123,11 @@ class NodeEditorForm extends React.Component {
 			hasDataChanged: false,
 			// Whether the cancel confirmation dialog is open (by default it isn't)
 			cancelConfirmationDialogIsOpen: false,
+			// The name of the node being added or editing
+			addEditNodeName: '',
+			// Whether the and and edit node confirmation dialogs are open (by default it isn't)
+			addNodeConfirmationDialogIsOpen: false,
+			editNodeConfirmationDialogIsOpen: false,
 			// Store the validation errors and warnings
 			validationErrors: validationResult.errors,
 			validationWarnings: validationResult.warnings,
@@ -267,6 +272,60 @@ class NodeEditorForm extends React.Component {
 		this.setState({ cancelConfirmationDialogIsOpen: false });
 	}
 
+	onAddNode = (nodeName) => {
+		// Has the data changed?
+		if (this.state.hasDataChanged) {
+			// Ask the user if they're sure they want to edit the node
+			this.setState({
+				addEditNodeName: nodeName,
+				addNodeConfirmationDialogIsOpen: true,
+			});
+		} else {
+			// Just add the node
+			this.props.onAddItemClick(nodeName);
+		}
+	}
+
+	onAddNodeConfirmationDialogOK = () => {
+		// Close the edit node confirmation dialog and add the node
+		this.setState(
+			{ addNodeConfirmationDialogIsOpen: false },
+			() => this.props.onAddItemClick(this.state.addEditNodeName),
+		);
+	}
+
+	onAddNodeConfirmationDialogCancel = () => {
+		// Close the add node confirmation dialog
+		this.setState({ addNodeConfirmationDialogIsOpen: false });
+	}
+
+	onEditNode = (nodeName) => {
+		// Has the data changed?
+		if (this.state.hasDataChanged) {
+			// Ask the user if they're sure they want to edit the node
+			this.setState({
+				addEditNodeName: nodeName,
+				editNodeConfirmationDialogIsOpen: true,
+			});
+		} else {
+			// Just edit the node
+			this.props.onEditItemClick(nodeName);
+		}
+	}
+
+	onEditNodeConfirmationDialogOK = () => {
+		// Close the edit node confirmation dialog and edit the node
+		this.setState(
+			{ editNodeConfirmationDialogIsOpen: false },
+			() => this.props.onEditItemClick(this.state.addEditNodeName),
+		);
+	}
+
+	onEditNodeConfirmationDialogCancel = () => {
+		// Close the edit node confirmation dialog
+		this.setState({ editNodeConfirmationDialogIsOpen: false });
+	}
+
 	validateNode = (projectFilePath, node) => {
 		// Validate the project node
 		const validationResult = yarnService.validateProjectNode(projectFilePath, node);
@@ -314,8 +373,8 @@ class NodeEditorForm extends React.Component {
 
 			// Figure out the button on-click handler
 			const buttonOnClick = (node)
-				? () => this.props.onEditItemClick(node.name)
-				: () => this.props.onAddItemClick(incomingLinkKey);
+				? () => this.onEditNode(node.name)
+				: () => this.onAddNode(incomingLinkKey);
 
 			return (
 				<Button
@@ -369,8 +428,8 @@ class NodeEditorForm extends React.Component {
 
 			// Figure out the button on-click handler
 			const buttonOnClick = (node)
-				? () => this.props.onEditItemClick(node.name)
-				: () => this.props.onAddItemClick(outgoingLinkKey);
+				? () => this.onEditNode(node.name)
+				: () => this.onAddNode(outgoingLinkKey);
 
 			return (
 				<Button
@@ -547,6 +606,26 @@ class NodeEditorForm extends React.Component {
 									cancelButtonLabel="No"
 								>
 									Changes will be lost, are you sure you want to close this dialog?
+								</ModalDialog>
+								<ModalDialog
+									onOK={this.onAddNodeConfirmationDialogOK}
+									onCancel={this.onAddNodeConfirmationDialogCancel}
+									title="Warning!"
+									open={this.state.addNodeConfirmationDialogIsOpen}
+									okButtonLabel="Yes"
+									cancelButtonLabel="No"
+								>
+									Changes will be lost, are you sure you want to add a new node?
+								</ModalDialog>
+								<ModalDialog
+									onOK={this.onEditNodeConfirmationDialogOK}
+									onCancel={this.onEditNodeConfirmationDialogCancel}
+									title="Warning!"
+									open={this.state.editNodeConfirmationDialogIsOpen}
+									okButtonLabel="Yes"
+									cancelButtonLabel="No"
+								>
+									Changes will be lost, are you sure you want to edit another node?
 								</ModalDialog>
 								{ /* <Button>Test From Here</Button> */ }
 								{incomingLinks}
