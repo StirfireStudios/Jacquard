@@ -338,8 +338,8 @@ class NodeListPage extends React.Component {
 					fields={fields}
 					keyName="title"
 					addEditForm={addEditForm}
-					addEditFormEditTitle="Add Node"
-					addEditFormAddTitle="Edit Node"
+					addEditFormAddTitle="Add Node"
+					addEditFormEditTitle="Edit Node"
 					addEditFormSchema={[
 						{
 							fieldName: 'title',
