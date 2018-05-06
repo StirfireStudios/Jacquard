@@ -84,7 +84,7 @@ const styles = theme => ({
 	main: {
 		height: '100%',
 	},
-	dataChangedButton: {
+	dataChanged: {
 		backgroundColor: orange[500],
 	},
 	nodeLinks: {
@@ -466,7 +466,7 @@ class NodeEditorForm extends React.Component {
 		// Has the data changed? If so, change the validation button to show
 		// that this is the case
 		const className = (this.state.hasDataChanged)
-			? this.props.classes.dataChangedButton
+			? this.props.classes.dataChanged
 			: '';
 
 		return (
