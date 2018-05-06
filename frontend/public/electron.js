@@ -259,7 +259,7 @@ const setWindowTitle = () => {
 	// If the project has been modified, display an asterix after the file path
 	const projectFilePath = (!projectIsModified)
 		? projectCurrentFilePath
-		: projectCurrentFilePath = ' *';
+		: `${projectCurrentFilePath} *`;
 
 	// Build the window title
 	const windowTitle = (projectFilePath)
