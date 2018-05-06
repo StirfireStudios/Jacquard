@@ -9,7 +9,17 @@ const fs = require('fs');
 // const url = require('url');
 const isDev = require('electron-is-dev');
 
-let mainWindow;
+// The main window
+let mainWindow = null;
+
+// Whether we're closing the main window
+let mainWindowIsBeingClosed = false;
+
+// The project file path
+let projectCurrentFilePath = '';
+
+// Whether the project has been modified (assume it hasn't)
+let projectIsModified = false;
 
 const projectFilePathChangedMessage = 'project-file-path-changed';
 const projectLoadedMessage = 'project-loaded';
@@ -18,6 +28,22 @@ const yarnLoadedMessage = 'yarn-loaded';
 function createWindow() {
 	mainWindow = new BrowserWindow({ width: 900, height: 680 });
 	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
+
+	// Handle the window being closed
+	mainWindow.on('close', (event) => {
+		// Are we not closing the main window?
+		if (!mainWindowIsBeingClosed) {
+			// Has the project been modified?
+			if (projectIsModified) {
+				// Prevent the window from closing
+				event.preventDefault();
+
+				// Ask the user if they really want to close the application
+				mainWindow.webContents.send('application-confirm-close');
+			}
+		}
+	});
+
 	mainWindow.on('closed', () => { mainWindow = null; });
 
 	if (isDev) {
@@ -229,6 +255,21 @@ const projectImportFromYarn = (event, projectFilePath) => {
 	);
 };
 
+const setWindowTitle = () => {
+	// If the project has been modified, display an asterix after the file path
+	const projectFilePath = (!projectIsModified)
+		? projectCurrentFilePath
+		: projectCurrentFilePath = ' *';
+
+	// Build the window title
+	const windowTitle = (projectFilePath)
+		? `Jacquard - ${projectFilePath}`
+		: 'Jacquard';
+
+	// Set the title of the window
+	mainWindow.setTitle(windowTitle);
+};
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
@@ -283,16 +324,30 @@ ipcMain.on('projectExportToYarn', (event, arg) => {
 	projectExportAsYarn(event, projectFilePath, projectYarn);
 });
 
+ipcMain.on('applicationClose', () => {
+	// We're closing the window
+	mainWindowIsBeingClosed = true;
+
+	// Close the window
+	mainWindow.close();
+});
+
 ipcMain.on('showError', (event, arg) => {
 	dialog.showErrorBox('Error', arg);
 });
 
-ipcMain.on('setWindowTitleInfo', (event, arg) => {
-	// Build the window title
-	const windowTitle = (arg)
-		? `Jacquard - ${arg}`
-		: 'Jacquard';
+ipcMain.on('setProjectModified', (event, arg) => {
+	// The argument specifies whether the project was modified
+	projectIsModified = arg;
 
-	// Set the title of the window
-	mainWindow.setTitle(windowTitle);
+	// Set the window title
+	setWindowTitle();
+});
+
+ipcMain.on('setProjectFilePath', (event, arg) => {
+	// Record the project file path
+	projectCurrentFilePath = arg;
+
+	// Set the window title
+	setWindowTitle();
 });

@@ -9,6 +9,8 @@ import { ipcRenderer } from 'electron'; // eslint-disable-line
 
 // General Component Imports
 import Page from './ui/general/pages/Page';
+import ModalDialog from './ui/general/components/ModalDialog';
+
 // Page Imports
 import RunPage from './ui/domain/pages/RunPage';
 import CharacterPage from './ui/domain/pages/CharacterPage';
@@ -17,6 +19,7 @@ import FunctionPage from './ui/domain/pages/FunctionPage';
 import NodePage from './ui/domain/pages/NodePage';
 import VariablePage from './ui/domain/pages/VariablePage';
 import MainMenu from './ui/domain/components/MainMenu';
+
 
 import projectService from './services/projectService';
 import yarnService from './services/yarnService';
@@ -32,8 +35,14 @@ class App extends Component {
 			// We don't have a project initially
 			project: null,
 			// Whether the project has been modified
-			projectWasModified: false,
+			projectIsModified: false,
+			// Whether the close confirmation dialog is open (by default it isn't)
+			closeConfirmationDialogIsOpen: false,
 		};
+
+		ipcRenderer.on('application-confirm-close', () => {
+			this.setState({ closeConfirmationDialogIsOpen: true });
+		});
 
 		// Set up a handler for when the project file path changes
 		// The new project file path is passed as the "arg" parameter
@@ -41,8 +50,8 @@ class App extends Component {
 			// Update the project file path
 			projectService.setFilePath(arg);
 
-			// Set the window title info
-			ipcRenderer.send('setWindowTitleInfo', arg);
+			// Set the project file path
+			ipcRenderer.send('setProjectFilePath', arg);
 		});
 
 		// Set up a handler for when a project is loaded
@@ -104,6 +113,19 @@ class App extends Component {
 		});
 	}
 
+	onCloseConfirmationDialogOK = () => {
+		// Close the close confirmation dialog and close the app
+		this.setState(
+			{ closeConfirmationDialogIsOpen: false },
+			() => ipcRenderer.send('applicationClose'),
+		);
+	}
+
+	onCloseConfirmationDialogCancel = () => {
+		// Close the close confirmation dialog
+		this.setState({ closeConfirmationDialogIsOpen: false });
+	}
+
 	onSaveProject = () => {
 		// Get the project file path
 		const projectFilePath = projectService.getFilePath();
@@ -118,7 +140,15 @@ class App extends Component {
 		});
 
 		// The project has been saved, so mark it as unmodified
-		this.setState({ projectWasModified: false });
+		this.setState(
+			{
+				projectIsModified: false,
+			},
+			() => {
+				// Tell Electron whether the project is modified
+				ipcRenderer.send('setProjectModified', this.state.projectIsModified);
+			},
+		);
 	};
 
 	onSaveProjectAs = () => {
@@ -208,10 +238,16 @@ class App extends Component {
 
 		// Record the updated project in our state, and set the project as
 		// modified
-		this.setState({
-			project: updatedProject,
-			projectWasModified: true,
-		});
+		this.setState(
+			{
+				project: updatedProject,
+				projectIsModified: true,
+			},
+			() => {
+				// Tell Electron whether the project is modified
+				ipcRenderer.send('setProjectModified', this.state.projectIsModified);
+			},
+		);
 	}
 
 	navigateToHome = () => {
@@ -237,6 +273,7 @@ class App extends Component {
 		// Build the app components
 		const Menu = () =>	(<MainMenu
 			hasProject={hasProject}
+			projectIsModified={this.state.projectIsModified}
 			onCreateNewProject={this.onCreateNewProject}
 			onSaveProject={this.onSaveProject}
 			onSaveProjectAs={this.onSaveProjectAs}
@@ -308,6 +345,16 @@ class App extends Component {
 
 		return (
 			<div>
+				<ModalDialog
+					onOK={this.onCloseConfirmationDialogOK}
+					onCancel={this.onCloseConfirmationDialogCancel}
+					title="Warning!"
+					open={this.state.closeConfirmationDialogIsOpen}
+					okButtonLabel="Yes"
+					cancelButtonLabel="No"
+				>
+					Changes will be lost, are you sure you want to close the application?
+				</ModalDialog>
 				<Route exact path="/" component={HomePageComplete} />
 				<Route path="/run" component={RunPageComplete} />
 				<Route path="/characters" component={CharacterPageComplete} />
