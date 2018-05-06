@@ -35,10 +35,10 @@ class VariablePage extends React.Component {
 				currentProject={this.props.currentProject}
 				currentProjectFilePath={this.props.currentProjectFilePath}
 				currentProjectPropName="variables"
-				editFormTitle="Edit Variables"
-				addFormTitle="Add Variables"
+				addEditFormEditTitle="Edit Variables"
+				addEditFormAddTitle="Add Variables"
 				addEditForm={addEditForm}
-				formSchema={[
+				addEditFormSchema={[
 					{
 						fieldName: 'name',
 						label: 'Name',

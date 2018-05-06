@@ -12,7 +12,7 @@ class InsertNodeIntoNode extends React.Component {
 				title="Insert Node"
 				open={this.props.open}
 				onCancel={this.props.onCancel}
-				onSave={this.props.onSave}
+				onOK={this.props.onOK}
 			>
 				<div>Need to do some sort of lookup for this</div>
 				<TextField

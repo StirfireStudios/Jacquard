@@ -7,6 +7,7 @@ import Button from 'material-ui/Button';
 import Icon from 'material-ui/Icon';
 import List, { ListItem, ListItemText, ListSubheader } from 'material-ui/List';
 import red from 'material-ui/colors/red';
+import orange from 'material-ui/colors/orange';
 
 import uuidv4 from 'uuid/v4';
 
@@ -17,6 +18,7 @@ import uuidv4 from 'uuid/v4';
 // import InsertVariableIntoNode from './InsertVariableIntoNode';
 
 import FullScreenDialog from '../../general/components/FullScreenDialog';
+import ModalDialog from '../../general/components/ModalDialog';
 
 import yarnService from '../../../services/yarnService';
 
@@ -82,6 +84,9 @@ const styles = theme => ({
 	main: {
 		height: '100%',
 	},
+	dataChangedButton: {
+		backgroundColor: orange[500],
+	},
 	nodeLinks: {
 		marginTop: theme.spacing.unit * 2,
 		marginBottom: theme.spacing.unit * 2,
@@ -98,13 +103,29 @@ const styles = theme => ({
 	},
 });
 
-class NodeEditor extends React.Component {
+class NodeEditorForm extends React.Component {
 	constructor(props) {
 		super(props);
+
+		// Validate the node (if it's not being added)
+		const validationResult = (!props.addModeEnabled)
+			? this.validateNode(props.projectFilePath, props.data)
+			: {
+				errors: [],
+				warnings: [],
+			};
+
+		// Set up the state
 		this.state = {
-			// The validation errors and warnings
-			validationErrors: [],
-			validationWarnings: [],
+			// Store the form data
+			data: this.props.data,
+			// Whether the data has changed (by default it hasn't)
+			hasDataChanged: false,
+			// Whether the cancel confirmation dialog is open (by default it isn't)
+			cancelConfirmationDialogIsOpen: false,
+			// Store the validation errors and warnings
+			validationErrors: validationResult.errors,
+			validationWarnings: validationResult.warnings,
 			/*
 			insertCharacterIntoNodeModalOpen: false,
 			insertConditionalIntoNodeModalOpen: false,
@@ -183,20 +204,63 @@ class NodeEditor extends React.Component {
 
 		// Record the new validation errors and warnings, and the links
 		this.setState({
+			// Store the form data
+			data: nextProps.data,
+			// Whether the data has changed (by default it hasn't)
+			hasDataChanged: false,
+			// Store the validation errors and warnings
 			validationErrors: validationResult.errors,
 			validationWarnings: validationResult.warnings,
 		});
 	}
 
+	onUpdateFormField = (formFieldKey, formFieldValue) => {
+		// Get a copy of the form data
+		const data = { ...this.state.data };
+
+		// Set the value of the form data based on the key
+		data[formFieldKey] = formFieldValue;
+
+		// Record the updated form data in our state
+		this.setState({
+			data,
+			hasDataChanged: true,
+		});
+	}
+
 	onValidate = () => {
 		// Validate the node
-		const validationResult = this.validateNode(this.props.projectFilePath, this.props.data);
+		const validationResult = this.validateNode(this.props.projectFilePath, this.state.data);
 
 		// Record the new validation errors and warnings and links
 		this.setState({
 			validationErrors: validationResult.errors,
 			validationWarnings: validationResult.warnings,
 		});
+	}
+
+	onCancel = () => {
+		// Has the data changed?
+		if (this.state.hasDataChanged) {
+			// Ask the user if they're sure they want to cancel
+			this.setState({ cancelConfirmationDialogIsOpen: true });
+		} else {
+			// Just cancel
+			this.props.onCancel();
+		}
+	}
+
+	onCancelConfirmationDialogOK = () => {
+		// Close the cancel confirmation dialog and cancel
+		this.setState(
+			{ cancelConfirmationDialogIsOpen: false },
+			() => this.props.onCancel(),
+		);
+	}
+
+	onCancelConfirmationDialogCancel = () => {
+		// Close the cancel confirmation dialog
+		this.setState({ cancelConfirmationDialogIsOpen: false });
 	}
 
 	validateNode = (projectFilePath, node) => {
@@ -227,7 +291,7 @@ class NodeEditor extends React.Component {
 		}
 
 		// Get the node links
-		const nodeLinks = this.props.projectNodeLinks[this.props.data.title];
+		const nodeLinks = this.props.projectNodeLinks[this.state.data.title];
 
 		// If we don't have any node links, return an empty array
 		if (!nodeLinks) {
@@ -282,7 +346,7 @@ class NodeEditor extends React.Component {
 		}
 
 		// Get the node links
-		const nodeLinks = this.props.projectNodeLinks[this.props.data.title];
+		const nodeLinks = this.props.projectNodeLinks[this.state.data.title];
 
 		// If we don't have any node links, return an empty array
 		if (!nodeLinks) {
@@ -398,12 +462,30 @@ class NodeEditor extends React.Component {
 		return validationResults;
 	}
 
+	renderValidateButton = () => {
+		// Has the data changed? If so, change the validation button to show
+		// that this is the case
+		const className = (this.state.hasDataChanged)
+			? this.props.classes.dataChangedButton
+			: '';
+
+		return (
+			<Button
+				className={className}
+				variant="raised"
+				onClick={this.onValidate}
+			>
+				Validate
+			</Button>
+		);
+	};
+
 	render() {
 		// Get the classes prop
 		const { classes } = this.props;
 
-		// Do we have any data?
-		if (this.props.data) {
+		// Do we have any form data?
+		if (this.state.data) {
 			// Render the incoming and outgoing links
 			const incomingLinks = this.renderIncomingLinks();
 			const outgoingLinks = this.renderOutgoingLinks();
@@ -411,77 +493,90 @@ class NodeEditor extends React.Component {
 			// Render the validation results
 			const validationResults = this.renderValidationResults();
 
+			// Render the validation button
+			const validationButton = this.renderValidateButton();
+
 			return (
 				<FullScreenDialog
-					open={this.props.open}
-					onCancel={this.props.onCancel}
-					onSave={this.props.onSave}
+					onOK={() => this.props.onOK(this.props.dataKeyValue, this.state.data)}
+					onCancel={this.onCancel}
 					title={this.props.title}
 					description="Allows you to edit the node"
+					open={this.props.open}
 				>
 					{ /*
 					<InsertCharacterIntoNode
 						open={this.state.insertCharacterIntoNodeModalOpen}
-						onSave={this.onInsertCharacterIntoNodeModalOK}
+						onOK={this.onInsertCharacterIntoNodeModalOK}
 						onCancel={this.onInsertCharacterIntoNodeModalCancel}
 					/>
 					<InsertConditionalIntoNode
 						open={this.state.insertConditionalIntoNodeModalOpen}
-						onSave={this.onInsertConditionalIntoNodeModalOK}
+						onOK={this.onInsertConditionalIntoNodeModalOK}
 						onCancel={this.onInsertConditionalIntoNodeModalCancel}
 					/>
 					<InsertFunctionCallIntoNode
 						open={this.state.insertFunctionCallIntoNodeModalOpen}
-						onSave={this.onInsertFunctionCallIntoNodeModalOK}
+						onOK={this.onInsertFunctionCallIntoNodeModalOK}
 						onCancel={this.onInsertFunctionCallIntoNodeModalCancel}
 					/>
 					<InsertNodeIntoNode
 						open={this.state.insertNodeIntoNodeModalOpen}
-						onSave={this.onInsertNodeIntoNodeModalOK}
+						onOK={this.onInsertNodeIntoNodeModalOK}
 						onCancel={this.onInsertNodeIntoNodeModalCancel}
 					/>
 					<InsertVariableIntoNode
 						open={this.state.insertVariableIntoNodeModalOpen}
-						onSave={this.onInsertVariableIntoNodeModalOK}
+						onOK={this.onInsertVariableIntoNodeModalOK}
 						onCancel={this.onInsertVariableIntoNodeModalCancel}
 					/>
 					*/ }
 					<main className={classes.main}>
 						<div className={classes.parentContainer}>
 							<div className={classes.content}>
+								<ModalDialog
+									onOK={this.onCancelConfirmationDialogOK}
+									onCancel={this.onCancelConfirmationDialogCancel}
+									title="Close Dialog?"
+									open={this.state.cancelConfirmationDialogIsOpen}
+									okButtonLabel="Yes"
+									cancelButtonLabel="No"
+								>
+									You have made changes, are you sure you want to close this dialog?
+								</ModalDialog>
 								{ /* <Button>Test From Here</Button> */ }
 								{incomingLinks}
 								<TextField
 									id="node-title"
 									label="Title"
 									className={classes.textArea}
-									value={this.props.data.title}
-									onChange={(e) => { this.props.onUpdateFormField(e, 'title'); }}
+									value={this.state.data.title}
+									onChange={event => this.onUpdateFormField('title', event.target.value)}
 								/>
 								<TextField
 									id="node-tags"
 									label="Tags"
 									className={classes.textArea}
-									value={this.props.data.tags}
-									onChange={(e) => { this.props.onUpdateFormField(e, 'tags'); }}
+									value={this.state.data.tags}
+									onChange={event => this.onUpdateFormField('tags', event.target.value)}
 								/>
 								<TextField
 									className={classes.textArea}
 									label="Section"
-									value={this.props.data.section}
-									onChange={(e) => { this.props.onUpdateFormField(e, 'section'); }}
+									value={this.state.data.section}
+									onChange={event => this.onUpdateFormField('section', event.target.value)}
 								/>
 								<TextField
 									className={classes.textArea}
 									label="Color ID"
-									value={this.props.data.colorId}
-									onChange={(e) => { this.props.onUpdateFormField(e, 'colorId'); }}
+									value={this.state.data.colorId}
+									onChange={event => this.onUpdateFormField('colorId', event.target.value)}
 								/>
 								<TextField
 									className={classes.textArea}
 									label="Position"
-									value={this.props.data.position}
-									onChange={(e) => { this.props.onUpdateFormField(e, 'position'); }}
+									value={this.state.data.position}
+									onChange={event => this.onUpdateFormField('position', event.target.value)}
 								/>
 								{ /*
 								<Paper>
@@ -499,22 +594,17 @@ class NodeEditor extends React.Component {
 									rows="20"
 									margin="normal"
 									style={{ width: '100%' }}
-									value={this.props.data.body}
-									onChange={(e) => { this.props.onUpdateFormField(e, 'body'); }}
+									value={this.state.data.body}
+									onChange={event => this.onUpdateFormField('body', event.target.value)}
 								/>
 								{outgoingLinks}
-								<Button
-									variant="raised"
-									onClick={this.onValidate}
-								>
-									Validate
-								</Button>
+								{validationButton}
 								{validationResults}
 							</div>
 							<div
 								className={classes.drawerPaper}
 							>
-								<TagList tags={this.props.data.tags} />
+								<TagList tags={this.state.data.tags} />
 							</div>
 						</div>
 
@@ -526,20 +616,25 @@ class NodeEditor extends React.Component {
 	}
 }
 
-NodeEditor.propTypes = {
+NodeEditorForm.propTypes = {
+	onOK: PropTypes.func.isRequired,
+	onCancel: PropTypes.func.isRequired,
+
 	title: PropTypes.string.isRequired,
+	open: PropTypes.bool.isRequired,
+	addModeEnabled: PropTypes.bool.isRequired,
+	dataKeyValue: PropTypes.any,
+	data: PropTypes.object,
+
 	projectFilePath: PropTypes.string.isRequired,
 	projectNodeLinks: PropTypes.object,
-	data: PropTypes.object,
-	open: PropTypes.bool.isRequired,
-	onUpdateFormField: PropTypes.func.isRequired,
-	onSave: PropTypes.func.isRequired,
-	onCancel: PropTypes.func.isRequired,
 };
 
-NodeEditor.defaultProps = {
-	projectNodeLinks: null,
+NodeEditorForm.defaultProps = {
+	dataKeyValue: '',
 	data: {},
+
+	projectNodeLinks: null,
 };
 
-export default withStyles(styles, { withTheme: true })(NodeEditor);
+export default withStyles(styles, { withTheme: true })(NodeEditorForm);

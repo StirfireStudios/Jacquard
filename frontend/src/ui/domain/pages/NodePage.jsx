@@ -19,7 +19,7 @@ import uuidv4 from 'uuid/v4';
 import ListPage from '../../general/pages/ListPage';
 import fieldListItemContent from '../../general/utils/field-list-item-content';
 
-import NodeEditor from '../modals/NodeEditor';
+import NodeEditorForm from '../modals/NodeEditorForm';
 
 import yarnService from '../../../services/yarnService';
 
@@ -322,24 +322,24 @@ class NodeListPage extends React.Component {
 		];
 
 		const addEditForm = props => (
-			<NodeEditor
+			<NodeEditorForm
 				{...props}
 				projectNodeLinks={projectNodeLinks}
+				projectFilePath={this.props.currentProjectFilePath}
 			/>);
 
 		return (
 			<div>
 				<ListPage
 					onCurrentProjectChanged={this.props.onCurrentProjectChanged}
+					currentProject={this.props.currentProject}
+					currentProjectPropName="nodes"
 					fields={fields}
 					keyName="title"
-					currentProject={this.props.currentProject}
-					currentProjectFilePath={this.props.currentProjectFilePath}
-					currentProjectPropName="nodes"
-					editFormTitle="Edit Node"
-					addFormTitle="Add Node"
 					addEditForm={addEditForm}
-					formSchema={[
+					addEditFormEditTitle="Add Node"
+					addEditFormAddTitle="Edit Node"
+					addEditFormSchema={[
 						{
 							fieldName: 'title',
 							label: 'Title',

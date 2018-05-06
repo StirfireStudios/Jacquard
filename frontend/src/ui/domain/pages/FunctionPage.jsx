@@ -35,10 +35,10 @@ class FunctionPage extends React.Component {
 				currentProject={this.props.currentProject}
 				currentProjectFilePath={this.props.currentProjectFilePath}
 				currentProjectPropName="functions"
-				editFormTitle="Edit Function"
-				addFormTitle="Add Function"
+				addEditFormEditTitle="Edit Function"
+				addEditFormAddTitle="Add Function"
 				addEditForm={addEditForm}
-				formSchema={[
+				addEditFormSchema={[
 					{
 						fieldName: 'name',
 						label: 'Name',

@@ -35,10 +35,10 @@ class CharacterPage extends React.Component {
 				currentProject={this.props.currentProject}
 				currentProjectFilePath={this.props.currentProjectFilePath}
 				currentProjectPropName="characters"
-				editFormTitle="Edit Character"
-				addFormTitle="Add Character"
+				addEditFormEditTitle="Edit Character"
+				addEditFormAddTitle="Add Character"
 				addEditForm={addEditForm}
-				formSchema={[
+				addEditFormSchema={[
 					{
 						fieldName: 'name',
 						label: 'Name',

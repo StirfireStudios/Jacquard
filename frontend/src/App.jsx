@@ -31,6 +31,8 @@ class App extends Component {
 		this.state = {
 			// We don't have a current project initially
 			currentProject: null,
+			// Whether the project has been modified
+			projectWasModified: false,
 		};
 
 		// Set up a handler for when the project file path changes
@@ -114,6 +116,9 @@ class App extends Component {
 			currentProjectJSON,
 			currentProjectFilePath,
 		});
+
+		// The project has been saved, so mark it as unmodified
+		this.setState({ projectWasModified: false });
 	};
 
 	onSaveProjectAs = () => {
@@ -201,9 +206,11 @@ class App extends Component {
 		// Store the updated project
 		currentProjectService.set(updatedCurrentProject);
 
-		// Record the updated project in our state
+		// Record the updated project in our state, and set the project as
+		// modified
 		this.setState({
 			currentProject: updatedCurrentProject,
+			projectWasModified: true,
 		});
 	}
 
@@ -263,6 +270,7 @@ class App extends Component {
 			<BasePage title="Characters">
 				<CharacterPage
 					currentProject={this.state.currentProject}
+					projectWasModified={this.state.projectWasModified}
 					currentProjectFilePath={currentProjectFilePath}
 					onCurrentProjectChanged={this.onCurrentProjectChanged}
 				/>
@@ -273,6 +281,7 @@ class App extends Component {
 			<BasePage title="Functions">
 				<FunctionPage
 					currentProject={this.state.currentProject}
+					projectWasModified={this.state.projectWasModified}
 					currentProjectFilePath={currentProjectFilePath}
 					onCurrentProjectChanged={this.onCurrentProjectChanged}
 				/>
@@ -283,6 +292,7 @@ class App extends Component {
 			<BasePage title="Nodes">
 				<NodePage
 					currentProject={this.state.currentProject}
+					projectWasModified={this.state.projectWasModified}
 					currentProjectFilePath={currentProjectFilePath}
 					onCurrentProjectChanged={this.onCurrentProjectChanged}
 				/>
@@ -293,6 +303,7 @@ class App extends Component {
 			<BasePage title="Variables">
 				<VariablePage
 					currentProject={this.state.currentProject}
+					projectWasModified={this.state.projectWasModified}
 					currentProjectFilePath={currentProjectFilePath}
 					onCurrentProjectChanged={this.onCurrentProjectChanged}
 				/>
