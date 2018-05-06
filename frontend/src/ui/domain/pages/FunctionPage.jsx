@@ -30,6 +30,7 @@ class FunctionPage extends React.Component {
 		return (
 			<ListPage
 				onProjectUpdated={this.props.onProjectUpdated}
+				onDataModified={this.props.onDataModified}
 				fields={fields}
 				keyName="name"
 				project={this.props.project}
@@ -59,6 +60,7 @@ class FunctionPage extends React.Component {
 
 FunctionPage.propTypes = {
 	onProjectUpdated: PropTypes.func.isRequired,
+	onDataModified: PropTypes.func.isRequired,
 
 	project: PropTypes.object,
 	projectFilePath: PropTypes.string.isRequired,

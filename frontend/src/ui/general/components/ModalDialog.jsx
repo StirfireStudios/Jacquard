@@ -15,7 +15,7 @@ const ModalDialog = props => (
 		onClose={props.onCancel}
 		aria-labelledby="form-dialog-title"
 	>
-		<Grid container spacing={0} justify="center">
+		<Grid container spacing={8} justify="center">
 			<Grid item xs={12}>
 				<DialogTitle id="form-dialog-title">
 					{ props.title }

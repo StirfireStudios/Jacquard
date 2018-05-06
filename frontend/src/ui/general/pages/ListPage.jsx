@@ -198,6 +198,7 @@ class ListPage extends React.Component {
 				<AddEditForm
 					onAddItemClick={() => this.onAddItemClick('')}
 					onEditItemClick={this.onEditItemClick}
+					onDataModified={this.props.onDataModified}
 					onOK={this.onAddEditFormOK}
 					onCancel={this.onAddEditFormCancel}
 					title={addEditFormTitle}
@@ -222,6 +223,7 @@ class ListPage extends React.Component {
 
 ListPage.propTypes = {
 	onProjectUpdated: PropTypes.func.isRequired,
+	onDataModified: PropTypes.func.isRequired,
 
 	project: PropTypes.object,
 	projectPropName: PropTypes.string.isRequired,

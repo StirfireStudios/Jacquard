@@ -250,6 +250,12 @@ class App extends Component {
 		);
 	}
 
+	onDataModified = () => {
+		// Tell Electron the project is modified (since the user has changed
+		// data in one of the pages)
+		ipcRenderer.send('setProjectModified', true);
+	}
+
 	navigateToHome = () => {
 		this.props.history.push('/');
 	};
@@ -309,6 +315,7 @@ class App extends Component {
 					project={this.state.project}
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);
@@ -319,6 +326,7 @@ class App extends Component {
 					project={this.state.project}
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);
@@ -329,6 +337,7 @@ class App extends Component {
 					project={this.state.project}
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);
@@ -339,6 +348,7 @@ class App extends Component {
 					project={this.state.project}
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);

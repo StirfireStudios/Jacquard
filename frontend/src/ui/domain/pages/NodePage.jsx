@@ -332,6 +332,7 @@ class NodeListPage extends React.Component {
 			<div>
 				<ListPage
 					onProjectUpdated={this.props.onProjectUpdated}
+					onDataModified={this.props.onDataModified}
 					project={this.props.project}
 					projectPropName="nodes"
 					fields={fields}
@@ -386,6 +387,7 @@ class NodeListPage extends React.Component {
 
 NodeListPage.propTypes = {
 	onProjectUpdated: PropTypes.func.isRequired,
+	onDataModified: PropTypes.func.isRequired,
 
 	project: PropTypes.object,
 	projectFilePath: PropTypes.string.isRequired,

@@ -221,11 +221,15 @@ class NodeEditorForm extends React.Component {
 		// Set the value of the form data based on the key
 		data[formFieldKey] = formFieldValue;
 
-		// Record the updated form data in our state
-		this.setState({
-			data,
-			hasDataChanged: true,
-		});
+		// Record the updated form data in our state and notify that data has
+		// been modified
+		this.setState(
+			{
+				data,
+				hasDataChanged: true,
+			},
+			() => this.props.onDataModified(),
+		);
 	}
 
 	onValidate = () => {
@@ -617,6 +621,7 @@ class NodeEditorForm extends React.Component {
 }
 
 NodeEditorForm.propTypes = {
+	onDataModified: PropTypes.func.isRequired,
 	onOK: PropTypes.func.isRequired,
 	onCancel: PropTypes.func.isRequired,
 
