@@ -22,7 +22,7 @@ function createWindow() {
 
 	if (isDev) {
 		// Install React Dev Tools
-		const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
+		const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer'); // eslint-disable-line
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name) => {
 				console.log(`Added Extension:  ${name}`);
