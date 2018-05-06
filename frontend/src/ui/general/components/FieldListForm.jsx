@@ -92,12 +92,12 @@ class FieldListForm extends React.Component {
 				<ModalDialog
 					onOK={this.onCancelConfirmationDialogOK}
 					onCancel={this.onCancelConfirmationDialogCancel}
-					title="Close Dialog?"
+					title="Warning!"
 					open={this.state.cancelConfirmationDialogIsOpen}
 					okButtonLabel="Yes"
 					cancelButtonLabel="No"
 				>
-					You have made changes, are you sure you want to close this dialog?
+					Changes will be lost, are you sure you want to close this dialog?
 				</ModalDialog>
 				{fields}
 			</ModalDialog>
