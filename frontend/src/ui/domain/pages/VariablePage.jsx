@@ -29,7 +29,7 @@ class VariablePage extends React.Component {
 
 		return (
 			<ListPage
-				onProjectChanged={this.props.onProjectChanged}
+				onProjectUpdated={this.props.onProjectUpdated}
 				fields={fields}
 				keyName="name"
 				project={this.props.project}
@@ -58,7 +58,7 @@ class VariablePage extends React.Component {
 }
 
 VariablePage.propTypes = {
-	onProjectChanged: PropTypes.func.isRequired,
+	onProjectUpdated: PropTypes.func.isRequired,
 
 	project: PropTypes.object,
 	projectFilePath: PropTypes.string.isRequired,

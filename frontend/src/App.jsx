@@ -202,7 +202,7 @@ class App extends Component {
 		ipcRenderer.send('projectOpen', projectFilePath);
 	};
 
-	onProjectChanged = (updatedProject) => {
+	onProjectUpdated = (updatedProject) => {
 		// Store the updated project
 		projectService.set(updatedProject);
 
@@ -272,7 +272,7 @@ class App extends Component {
 					project={this.state.project}
 					projectWasModified={this.state.projectWasModified}
 					projectFilePath={projectFilePath}
-					onProjectChanged={this.onProjectChanged}
+					onProjectUpdated={this.onProjectUpdated}
 				/>
 			</BasePage>
 		);
@@ -283,7 +283,7 @@ class App extends Component {
 					project={this.state.project}
 					projectWasModified={this.state.projectWasModified}
 					projectFilePath={projectFilePath}
-					onProjectChanged={this.onProjectChanged}
+					onProjectUpdated={this.onProjectUpdated}
 				/>
 			</BasePage>
 		);
@@ -294,7 +294,7 @@ class App extends Component {
 					project={this.state.project}
 					projectWasModified={this.state.projectWasModified}
 					projectFilePath={projectFilePath}
-					onProjectChanged={this.onProjectChanged}
+					onProjectUpdated={this.onProjectUpdated}
 				/>
 			</BasePage>
 		);
@@ -305,7 +305,7 @@ class App extends Component {
 					project={this.state.project}
 					projectWasModified={this.state.projectWasModified}
 					projectFilePath={projectFilePath}
-					onProjectChanged={this.onProjectChanged}
+					onProjectUpdated={this.onProjectUpdated}
 				/>
 			</BasePage>
 		);

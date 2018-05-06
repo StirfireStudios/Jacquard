@@ -79,7 +79,7 @@ class ListPage extends React.Component {
 		project[this.props.projectPropName] = filteredRowData;
 
 		// Notify the callback that the project has changed
-		this.props.onProjectChanged(project);
+		this.props.onProjectUpdated(project);
 	};
 
 	onAddEditFormOK = (addEditFormDataPreviousKeyValue, addEditFormUpdatedData) => {
@@ -112,7 +112,7 @@ class ListPage extends React.Component {
 		}
 
 		// Notify the callback that the project has changed
-		this.props.onProjectChanged(project);
+		this.props.onProjectUpdated(project);
 
 		// Close the Add/Edit form
 		this.closeAddEditForm();
@@ -221,7 +221,7 @@ class ListPage extends React.Component {
 }
 
 ListPage.propTypes = {
-	onProjectChanged: PropTypes.func.isRequired,
+	onProjectUpdated: PropTypes.func.isRequired,
 
 	project: PropTypes.object,
 	projectPropName: PropTypes.string.isRequired,
