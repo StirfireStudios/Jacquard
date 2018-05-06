@@ -270,7 +270,6 @@ class App extends Component {
 			<BasePage title="Characters">
 				<CharacterPage
 					project={this.state.project}
-					projectWasModified={this.state.projectWasModified}
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
 				/>
@@ -281,7 +280,6 @@ class App extends Component {
 			<BasePage title="Functions">
 				<FunctionPage
 					project={this.state.project}
-					projectWasModified={this.state.projectWasModified}
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
 				/>
@@ -292,7 +290,6 @@ class App extends Component {
 			<BasePage title="Nodes">
 				<NodePage
 					project={this.state.project}
-					projectWasModified={this.state.projectWasModified}
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
 				/>
@@ -303,7 +300,6 @@ class App extends Component {
 			<BasePage title="Variables">
 				<VariablePage
 					project={this.state.project}
-					projectWasModified={this.state.projectWasModified}
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
 				/>
