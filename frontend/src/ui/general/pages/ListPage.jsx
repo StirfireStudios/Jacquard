@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { withStyles } from 'material-ui/styles';
 import Button from 'material-ui/Button';
+import AddIcon from '@material-ui/icons/Add';
+import green from 'material-ui/colors/green';
 
 // import ListEditButton from '../../general/components/ListEditButton';
 // import ListDeleteButton from '../../general/components/ListDeleteButton';
@@ -9,7 +12,17 @@ import FieldListTable from '../components/FieldListTable';
 
 // Assumes that you are going to have a list of some sort that you can edit.
 // Takes a list of fields that you want to show, a form that will act as the add/edit form and
-// the name of the array from currentProject that you want to deal with
+// the name of the array from project that you want to deal with
+
+const styles = theme => ({
+	fab: {
+		position: 'absolute',
+		bottom: theme.spacing.unit * 4,
+		right: theme.spacing.unit * 4,
+		color: theme.palette.common.white,
+		backgroundColor: green[500],
+	},
+});
 
 class ListPage extends React.Component {
 	constructor(props) {
@@ -21,88 +34,72 @@ class ListPage extends React.Component {
 			addEditFormOpen: false,
 			// Whether the Add/Edit form is in Add mode (it's in Edit mode otherwise)
 			addEditFormAddModeEnabled: true,
-			// We don't have any form data yet
-			addEditFormData: null,
-			// The previous value of the key before the form data was updated
-			// (initially null)
-			addEditFormDataPreviousKeyValue: null,
+			// The value referenced by the key of the Add/Edit forms data
+			addEditFormDataKeyValue: null,
 		};
+
+		// Bind our handlers
+		this.onAddItemClick = this.onAddItemClick.bind(this);
+		this.onEditItemClick = this.onEditItemClick.bind(this);
+		this.onDeleteItemClick = this.onDeleteItemClick.bind(this);
+
+		this.onAddEditFormOK = this.onAddEditFormOK.bind(this);
+		this.onAddEditFormCancel = this.onAddEditFormCancel.bind(this);
 	}
 
-	onAddItemClick = () => {
-		// Create new Add/Edit form data
-		const newFormData = this.createNewAddEditFormData();
-
-		// Open the form in Add mode
-		this.openAddForm(newFormData);
+	onAddItemClick = (newItemKeyValue) => {
+		// Open the form in Add mode and record the key value
+		this.setState({
+			addEditFormOpen: true,
+			addEditFormAddModeEnabled: true,
+			addEditFormDataKeyValue: newItemKeyValue,
+		});
 	};
 
 	onEditItemClick = (keyValue) => {
-		// Get a copy of the current project
-		const currentProject = { ...this.props.currentProject };
-
-		// Get the row data we'll be editing
-		const rowData = currentProject[this.props.currentProjectPropName];
-
-		// Generate the form data from the row data
-		const addEditFormData = {};
-		rowData.forEach((row) => {
-			if (row[this.props.keyName] === keyValue) {
-				this.setFieldsBasedOnFormSchema(row, addEditFormData);
-			}
+		// Open the form in Edit mode and record the key value
+		this.setState({
+			addEditFormOpen: true,
+			addEditFormAddModeEnabled: false,
+			addEditFormDataKeyValue: keyValue,
 		});
-
-		// Open the form in Edit mode
-		this.openEditForm(addEditFormData);
 	};
 
 	onDeleteItemClick = (keyValue) => {
-		// Get a copy of the current project
-		const currentProject = { ...this.props.currentProject };
+		// Get a copy of the project
+		const project = { ...this.props.project };
 
 		// Get the row data we'll be deleting from
-		const rowData = currentProject[this.props.currentProjectPropName];
+		const rowData = project[this.props.projectPropName];
 
 		// Delete the item
 		const filteredRowData = rowData.filter(row => row[this.props.keyName] !== keyValue);
 
-		// Update the current project with the new row data
-		currentProject[this.props.currentProjectPropName] = filteredRowData;
+		// Update the project with the new row data
+		project[this.props.projectPropName] = filteredRowData;
 
-		// Notify the callback that the current project has changed
-		this.props.onCurrentProjectChanged(currentProject);
+		// Notify the callback that the project has changed
+		this.props.onProjectUpdated(project);
 	};
 
-	// TODO: Move to a helper function
-	onUpdateFormField = (event, key) => {
-		// Get a copy of the form data
-		const addEditFormData = { ...this.state.addEditFormData };
-
-		// Set the value of the form data based on the key
-		addEditFormData[key] = event.target.value;
-
-		// Record the updated form data in our state
-		this.setState({	addEditFormData });
-	}
-
-	onAddEditFormOk = () => {
-		// Get a copy of the current project
-		const currentProject = { ...this.props.currentProject };
+	onAddEditFormOK = (addEditFormDataPreviousKeyValue, addEditFormUpdatedData) => {
+		// Get a copy of the project
+		const project = { ...this.props.project };
 
 		// Get the row data we'll be updating
-		const rowData = currentProject[this.props.currentProjectPropName];
+		const rowData = project[this.props.projectPropName];
 
 		// Is Add mode enabled?
 		if (this.state.addEditFormAddModeEnabled) {
-			// Add the form data to the current projects row data
-			rowData.push(this.state.addEditFormData);
+			// Add the form data to the projects row data
+			rowData.push(addEditFormUpdatedData);
 		} else {
 			// Get the index of the row we'll be updating
 			// We look up the row using the previous value of the key, since it
 			// might have been changed during editing
 			const rowToUpdateIndex = rowData
 				.findIndex(row =>
-					row[this.props.keyName] === this.state.addEditFormDataPreviousKeyValue);
+					row[this.props.keyName] === addEditFormDataPreviousKeyValue);
 
 			// If we found the row, update it
 			if (rowToUpdateIndex !== -1) {
@@ -110,12 +107,12 @@ class ListPage extends React.Component {
 				const rowToUpdate = rowData[rowToUpdateIndex];
 
 				// Update the row fields from the form data according to the form schema
-				this.setFieldsBasedOnFormSchema(this.state.addEditFormData, rowToUpdate);
+				this.setFieldsBasedOnFormSchema(addEditFormUpdatedData, rowToUpdate);
 			}
 		}
 
-		// Notify the callback that the current project has changed
-		this.props.onCurrentProjectChanged(currentProject);
+		// Notify the callback that the project has changed
+		this.props.onProjectUpdated(project);
 
 		// Close the Add/Edit form
 		this.closeAddEditForm();
@@ -126,40 +123,17 @@ class ListPage extends React.Component {
 	}
 
 	setFieldsBasedOnFormSchema = (source, dest) => {
-		this.props.formSchema.forEach((formField) => {
+		this.props.addEditFormSchema.forEach((formField) => {
 			dest[formField.fieldName] = source[formField.fieldName];
 		});
 	}
 
 	/* eslint no-confusing-arrow: ["error", {"allowParens": true}] */
-	getCurrentProjectProp = () => (
-		this.props.currentProject
-			? this.props.currentProject[this.props.currentProjectPropName]
+	getProjectProp = () => (
+		this.props.project
+			? this.props.project[this.props.projectPropName]
 			: []
 	);
-
-	openAddForm = (addEditFormData) => {
-		this.setState({
-			addEditFormOpen: true,
-			addEditFormAddModeEnabled: true,
-			addEditFormData,
-			addEditFormDataPreviousKeyValue: null,
-		});
-	}
-
-	openEditForm = (addEditFormData) => {
-		// Get the key value from the Add/Edit form data
-		// We'll use this to be able to match the row being edited even if the
-		// key value changes
-		const addEditFormDataPreviousKeyValue = addEditFormData[this.props.keyName];
-
-		this.setState({
-			addEditFormOpen: true,
-			addEditFormAddModeEnabled: false,
-			addEditFormData,
-			addEditFormDataPreviousKeyValue,
-		});
-	}
 
 	closeAddEditForm = () => {
 		this.setState({
@@ -169,7 +143,7 @@ class ListPage extends React.Component {
 
 	createNewAddEditFormData = () =>
 		// Set up an empty field for each field in the form schema
-		this.props.formSchema.reduce((addEditFormData, addEditFormField) => {
+		this.props.addEditFormSchema.reduce((addEditFormData, addEditFormField) => {
 			addEditFormData[addEditFormField.fieldName] = '';
 			return addEditFormData;
 		}, {});
@@ -178,38 +152,69 @@ class ListPage extends React.Component {
 		// Get the Add/Edit form component
 		const AddEditForm = this.props.addEditForm;
 
-		// Determine the title of the Add/Edit form base on whether we have
-		// any form data
-		const addEditFormTitle = (this.state.addEditFormAddModeEnabled)
-			? this.props.addFormTitle
-			: this.props.editFormTitle;
+		// The title of the Add/Edit form
+		let addEditFormTitle = '';
+
+		// The Add/Edit form data
+		let addEditFormData = null;
+
+		// Are we adding an item?
+		if (this.state.addEditFormAddModeEnabled) {
+			// Set the Add/Edit form title
+			addEditFormTitle = this.props.addEditFormAddTitle;
+
+			// Create new Add/Edit form data
+			addEditFormData = this.createNewAddEditFormData();
+
+			// Set the key value of the new item (if we have one)
+			addEditFormData[this.props.keyName] = this.state.addEditFormDataKeyValue || '';
+		} else {
+			// Set the Add/Edit form title
+			addEditFormTitle = this.props.addEditFormEditTitle;
+
+			// Get a copy of the row data we'll be editing
+			const rowData = [...this.props.project[this.props.projectPropName]];
+
+			// Generate the form data from the row data
+			addEditFormData = rowData.reduce((formData, row) => {
+				if (row[this.props.keyName] === this.state.addEditFormDataKeyValue) {
+					this.setFieldsBasedOnFormSchema(row, formData);
+				}
+
+				return formData;
+			}, {});
+		}
 
 		return (
 			<div>
 				<Button
-					onClick={this.onAddItemClick}
-					variant="raised"
-					color="primary"
+					className={this.props.classes.fab}
+					variant="fab"
+					color="inherit"
+					onClick={() => this.onAddItemClick('')}
 				>
-					Add
+					<AddIcon />
 				</Button>
 				<AddEditForm
-					title={addEditFormTitle}
-					projectFilePath={this.props.currentProjectFilePath}
-					data={this.state.addEditFormData}
-					open={this.state.addEditFormOpen}
-					onUpdateFormField={this.onUpdateFormField}
-					onOK={this.onAddEditFormOk}
+					onAddItemClick={() => this.onAddItemClick('')}
+					onEditItemClick={this.onEditItemClick}
+					onDataModified={this.props.onDataModified}
+					onOK={this.onAddEditFormOK}
 					onCancel={this.onAddEditFormCancel}
-					formSchema={this.props.formSchema}
+					title={addEditFormTitle}
+					open={this.state.addEditFormOpen}
+					addModeEnabled={this.state.addEditFormAddModeEnabled}
+					schema={this.props.addEditFormSchema}
+					dateKeyValue={this.state.addEditFormDataKeyValue}
+					data={addEditFormData}
 				/>
 				<FieldListTable
-					rows={this.getCurrentProjectProp()}
-					fieldNames={this.props.fieldNames}
-					displayNames={this.props.displayNames}
+					rows={this.getProjectProp()}
+					fields={this.props.fields}
 					keyName={this.props.keyName}
-					onEditClick={this.onEditItemClick}
-					onDeleteClick={this.onDeleteItemClick}
+					onAddItemClick={() => this.onAddItemClick('')}
+					onEditItemClick={this.onEditItemClick}
+					onDeleteItemClick={this.onDeleteItemClick}
 				/>
 			</div>
 		);
@@ -217,22 +222,22 @@ class ListPage extends React.Component {
 }
 
 ListPage.propTypes = {
-	onCurrentProjectChanged: PropTypes.func.isRequired,
+	onProjectUpdated: PropTypes.func.isRequired,
+	onDataModified: PropTypes.func.isRequired,
 
-	editFormTitle: PropTypes.string.isRequired,
-	addFormTitle: PropTypes.string.isRequired,
-	currentProject: PropTypes.object,
-	currentProjectFilePath: PropTypes.string.isRequired,
-	currentProjectPropName: PropTypes.string.isRequired,
-	keyName: PropTypes.string.isRequired,
-	fieldNames: PropTypes.array.isRequired,
-	displayNames: PropTypes.array.isRequired,
-	formSchema: PropTypes.array.isRequired,
+	project: PropTypes.object,
+	projectPropName: PropTypes.string.isRequired,
+
 	addEditForm: PropTypes.func.isRequired,
+	addEditFormEditTitle: PropTypes.string.isRequired,
+	addEditFormAddTitle: PropTypes.string.isRequired,
+	addEditFormSchema: PropTypes.array.isRequired,
+	keyName: PropTypes.string.isRequired,
+	fields: PropTypes.array.isRequired,
 };
 
 ListPage.defaultProps = {
-	currentProject: null,
+	project: null,
 };
 
-export default ListPage;
+export default withStyles(styles, { withTheme: true })(ListPage);

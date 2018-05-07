@@ -43,7 +43,7 @@ class FullScreenDialog extends React.Component {
 								{this.props.title}
 							</Typography>
 							<Button color="inherit" onClick={this.props.onOK}>
-								save
+								OK
 							</Button>
 						</Toolbar>
 					</AppBar>

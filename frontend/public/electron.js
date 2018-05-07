@@ -9,7 +9,17 @@ const fs = require('fs');
 // const url = require('url');
 const isDev = require('electron-is-dev');
 
-let mainWindow;
+// The main window
+let mainWindow = null;
+
+// Whether we're closing the main window
+let mainWindowIsBeingClosed = false;
+
+// The project file path
+let projectCurrentFilePath = '';
+
+// Whether the project has been modified (assume it hasn't)
+let projectIsModified = false;
 
 const projectFilePathChangedMessage = 'project-file-path-changed';
 const projectLoadedMessage = 'project-loaded';
@@ -18,47 +28,69 @@ const yarnLoadedMessage = 'yarn-loaded';
 function createWindow() {
 	mainWindow = new BrowserWindow({ width: 900, height: 680 });
 	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
+
+	// Handle the window being closed
+	mainWindow.on('close', (event) => {
+		// Are we not closing the main window?
+		if (!mainWindowIsBeingClosed) {
+			// Has the project been modified?
+			if (projectIsModified) {
+				// Prevent the window from closing
+				event.preventDefault();
+
+				// Ask the user if they really want to close the application
+				mainWindow.webContents.send('application-confirm-close');
+			}
+		}
+	});
+
 	mainWindow.on('closed', () => { mainWindow = null; });
 
-	// Install React Dev Tools
-	const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
-
 	if (isDev) {
-		installExtension(REACT_DEVELOPER_TOOLS).then((name) => {
+		// Install React Dev Tools
+		const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer'); // eslint-disable-line
+		installExtension(REACT_DEVELOPER_TOOLS)
+			.then((name) => {
 				console.log(`Added Extension:  ${name}`);
-		})
-		.catch((err) => {
+			})
+			.catch((err) => {
 				console.log('An error occurred: ', err);
-		});
+			});
 	}
 }
 
-const currentProjectSave = (event, currentProjectFilePath, currentProjectJSON) => {
+const projectSave = (event, projectFilePath, projectJSON) => {
 	// Write the project JSON to disk
-	fs.writeFile(currentProjectFilePath, currentProjectJSON, (err) => {
+	fs.writeFile(projectFilePath, projectJSON, (err) => {
 		// Notify that the project file path has changed
-		event.sender.send(projectFilePathChangedMessage, currentProjectFilePath);
+		event.sender.send(projectFilePathChangedMessage, projectFilePath);
 
+		// Did an error occur?
 		if (err) {
+			// Tell the user something went wrong
 			dialog.showMessageBox({
 				title: 'Error',
 				message: `An error ocurred creating the file :${err.message}`,
 				type: 'error',
 			});
-		}
+		} else {
+			// The project is no longer modified
+			projectIsModified = false;
 
-		dialog.showMessageBox({
-			title: 'Success',
-			message: 'The file saved successfully',
-			type: 'info',
-		});
+			// Tell the user we successfully saved the file
+			dialog.showMessageBox({
+				title: 'Success',
+				message: 'The file saved successfully',
+				type: 'info',
+			});
+		}
 	});
 };
 
-const currentProjectSaveAs = (event, currentProjectFilePath, currentProjectJSON) => {
+const projectSaveAs = (event, projectFilePath, projectJSON) => {
 	// Get the current directory from the project file path (if we have one)
-	const currentDirectoryPath = (currentProjectFilePath)
-		? path.dirname(currentProjectFilePath)
+	const currentDirectoryPath = (projectFilePath)
+		? path.dirname(projectFilePath)
 		: '';
 
 	// Show the Save As dialog
@@ -79,16 +111,16 @@ const currentProjectSaveAs = (event, currentProjectFilePath, currentProjectJSON)
 				return;
 			}
 
-			// Save the current project JSON
-			currentProjectSave(event, fileName, currentProjectJSON);
+			// Save the project JSON
+			projectSave(event, fileName, projectJSON);
 		},
 	);
 };
 
-const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjectYarn) => {
+const projectExportAsYarn = (event, projectFilePath, projectYarn) => {
 	// Get the current directory from the project file path (if we have one)
-	const currentDirectoryPath = (currentProjectFilePath)
-		? path.dirname(currentProjectFilePath)
+	const currentDirectoryPath = (projectFilePath)
+		? path.dirname(projectFilePath)
 		: '';
 
 	// Show the Save As dialog
@@ -98,7 +130,7 @@ const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjec
 			showTagsField: false,
 			defaultPath: currentDirectoryPath,
 			filters: [
-				{ name: 'Yarn', extensions: ['yarn'] },
+				{ name: 'Yarn', extensions: ['yarn', 'yarn.txt'] },
 				{ name: 'All Files', extensions: ['*'] },
 			],
 		},
@@ -110,7 +142,7 @@ const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjec
 			}
 
 			// Write the project Yarn to disk
-			fs.writeFile(fileName, currentProjectYarn, (err) => {
+			fs.writeFile(fileName, projectYarn, (err) => {
 				if (err) {
 					dialog.showMessageBox({
 						title: 'Error',
@@ -129,10 +161,10 @@ const currentProjectExportAsYarn = (event, currentProjectFilePath, currentProjec
 	);
 };
 
-const currentProjectOpen = (event, currentProjectFilePath) => {
+const projectOpen = (event, projectFilePath) => {
 	// Get the current directory from the project file path (if we have one)
-	const currentDirectoryPath = (currentProjectFilePath)
-		? path.dirname(currentProjectFilePath)
+	const currentDirectoryPath = (projectFilePath)
+		? path.dirname(projectFilePath)
 		: '';
 
 	// Show the file selection dialog
@@ -176,10 +208,10 @@ const currentProjectOpen = (event, currentProjectFilePath) => {
 	);
 };
 
-const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
+const projectImportFromYarn = (event, projectFilePath) => {
 	// Get the current directory from the project file path (if we have one)
-	const currentDirectoryPath = (currentProjectFilePath)
-		? path.dirname(currentProjectFilePath)
+	const currentDirectoryPath = (projectFilePath)
+		? path.dirname(projectFilePath)
 		: '';
 
 	// Show the file selection dialog
@@ -189,7 +221,7 @@ const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
 			showTagsField: false,
 			defaultPath: currentDirectoryPath,
 			filters: [
-				{ name: 'Yarn', extensions: ['yarn'] },
+				{ name: 'Yarn', extensions: ['yarn', 'yarn.txt'] },
 				{ name: 'All Files', extensions: ['*'] },
 			],
 		},
@@ -201,9 +233,9 @@ const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
 			}
 
 			// Get the project Yarn file path
-			const currentProjectYarnFilePath = fileNames[0];
+			const projectYarnFilePath = fileNames[0];
 
-			fs.readFile(currentProjectYarnFilePath, 'utf-8', (err, data) => {
+			fs.readFile(projectYarnFilePath, 'utf-8', (err, data) => {
 				if (err) {
 					dialog.showMessageBox({
 						title: 'Error',
@@ -216,8 +248,8 @@ const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
 				// Get the project file path from the Yarn file path by
 				// replacing the file extension with '.json'
 				const importedProjectFileName =
-					`${path.basename(currentProjectYarnFilePath, path.extname(currentProjectYarnFilePath))}.json`;
-				const importedProjectFilePath = path.join(path.dirname(currentProjectYarnFilePath), importedProjectFileName);
+					`${path.basename(projectYarnFilePath, path.extname(projectYarnFilePath))}.json`;
+				const importedProjectFilePath = path.join(path.dirname(projectYarnFilePath), importedProjectFileName);
 
 				// Notify that the project file path has changed
 				event.sender.send(projectFilePathChangedMessage, importedProjectFilePath);
@@ -227,6 +259,21 @@ const currentProjectImportFromYarn = (event, currentProjectFilePath) => {
 			});
 		},
 	);
+};
+
+const setWindowTitle = () => {
+	// If the project has been modified, display an asterix after the file path
+	const projectFilePath = (!projectIsModified)
+		? projectCurrentFilePath
+		: `${projectCurrentFilePath} *`;
+
+	// Build the window title
+	const windowTitle = (projectFilePath)
+		? `Jacquard - ${projectFilePath}`
+		: 'Jacquard';
+
+	// Set the title of the window
+	mainWindow.setTitle(windowTitle);
 };
 
 app.on('ready', createWindow);
@@ -245,54 +292,68 @@ app.on('activate', () => {
 
 ipcMain.on('projectSave', (event, arg) => {
 	// Get the project info from the argument
-	const { currentProjectFilePath, currentProjectJSON } = arg;
+	const { projectFilePath, projectJSON } = arg;
 
 	// Do we not have a project file path?
-	if (!currentProjectFilePath) {
+	if (!projectFilePath) {
 		// Ask the user to save the project under a different file path
-		currentProjectSaveAs(event, currentProjectFilePath, currentProjectJSON);
+		projectSaveAs(event, projectFilePath, projectJSON);
 	}
 
-	// Save the current project JSON
-	currentProjectSave(event, currentProjectFilePath, currentProjectJSON);
+	// Save the project JSON
+	projectSave(event, projectFilePath, projectJSON);
 });
 
 ipcMain.on('projectSaveAs', (event, arg) => {
 	// Get the project info from the argument
-	const { currentProjectFilePath, currentProjectJSON } = arg;
+	const { projectFilePath, projectJSON } = arg;
 
 	// Ask the user to save the project under a different file path
-	currentProjectSaveAs(event, currentProjectFilePath, currentProjectJSON);
+	projectSaveAs(event, projectFilePath, projectJSON);
 });
 
-ipcMain.on('projectOpen', (event, currentProjectFilePath) => {
+ipcMain.on('projectOpen', (event, projectFilePath) => {
 	// As the user to select a project file to open
-	currentProjectOpen(event, currentProjectFilePath);
+	projectOpen(event, projectFilePath);
 });
 
-ipcMain.on('projectImportFromYarn', (event, currentProjectFilePath) => {
+ipcMain.on('projectImportFromYarn', (event, projectFilePath) => {
 	// Ask the user to select a Yarn file to import
-	currentProjectImportFromYarn(event, currentProjectFilePath);
+	projectImportFromYarn(event, projectFilePath);
 });
 
 ipcMain.on('projectExportToYarn', (event, arg) => {
 	// Get the project info from the argument
-	const { currentProjectYarn, currentProjectFilePath } = arg;
+	const { projectYarn, projectFilePath } = arg;
 
 	// Ask the user to export the project as Yarn under a different file path
-	currentProjectExportAsYarn(event, currentProjectFilePath, currentProjectYarn);
+	projectExportAsYarn(event, projectFilePath, projectYarn);
+});
+
+ipcMain.on('applicationClose', () => {
+	// We're closing the window
+	mainWindowIsBeingClosed = true;
+
+	// Close the window
+	mainWindow.close();
 });
 
 ipcMain.on('showError', (event, arg) => {
 	dialog.showErrorBox('Error', arg);
 });
 
-ipcMain.on('setWindowTitleInfo', (event, arg) => {
-	// Build the window title
-	const windowTitle = (arg)
-		? `Jacquard - ${arg}`
-		: 'Jacquard';
+ipcMain.on('setProjectModified', (event, arg) => {
+	// The argument specifies whether the project was modified
+	projectIsModified = arg;
 
-	// Set the title of the window
-	mainWindow.setTitle(windowTitle);
+	// Set the window title
+	setWindowTitle();
+});
+
+ipcMain.on('setProjectFilePath', (event, arg) => {
+	// Record the project file path
+	projectCurrentFilePath = arg;
+
+	// Set the window title
+	setWindowTitle();
 });

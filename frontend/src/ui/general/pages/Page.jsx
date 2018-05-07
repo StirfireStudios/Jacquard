@@ -11,7 +11,7 @@ import themes from '../../domain/themes';
 const style = {
 	width: '100vw',
 	height: '100vh',
-}
+};
 
 class Page extends React.Component {
 	render() {
@@ -27,8 +27,14 @@ class Page extends React.Component {
 					</Toolbar>
 				</AppBar>
 				<MainMenu />
-				<Paper className={classes.content} style={{maxHeight: '100%', overflow: 'auto'}}>
-						{ this.props.children }
+				<Paper
+					className={classes.content}
+					style={{
+						maxHeight: '100%',
+						overflow: 'auto',
+					}}
+				>
+					{this.props.children}
 				</Paper>
 			</div>
 		);

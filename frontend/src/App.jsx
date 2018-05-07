@@ -9,6 +9,8 @@ import { ipcRenderer } from 'electron'; // eslint-disable-line
 
 // General Component Imports
 import Page from './ui/general/pages/Page';
+import ModalDialog from './ui/general/components/ModalDialog';
+
 // Page Imports
 import RunPage from './ui/domain/pages/RunPage';
 import CharacterPage from './ui/domain/pages/CharacterPage';
@@ -18,7 +20,8 @@ import NodePage from './ui/domain/pages/NodePage';
 import VariablePage from './ui/domain/pages/VariablePage';
 import MainMenu from './ui/domain/components/MainMenu';
 
-import currentProjectService from './services/currentProjectService';
+
+import projectService from './services/projectService';
 import yarnService from './services/yarnService';
 
 const theme = createMuiTheme();
@@ -29,42 +32,50 @@ class App extends Component {
 
 		// Set up the initial state
 		this.state = {
-			// We don't have a current project initially
-			currentProject: null,
+			// We don't have a project initially
+			project: null,
+			// Whether the project has been modified
+			projectIsModified: false,
+			// Whether the close confirmation dialog is open (by default it isn't)
+			closeConfirmationDialogIsOpen: false,
 		};
+
+		ipcRenderer.on('application-confirm-close', () => {
+			this.setState({ closeConfirmationDialogIsOpen: true });
+		});
 
 		// Set up a handler for when the project file path changes
 		// The new project file path is passed as the "arg" parameter
 		ipcRenderer.on('project-file-path-changed', (event, arg) => {
-			// Update the current project file path
-			currentProjectService.setFilePath(arg);
+			// Update the project file path
+			projectService.setFilePath(arg);
 
-			// Set the window title info
-			ipcRenderer.send('setWindowTitleInfo', arg);
+			// Set the project file path
+			ipcRenderer.send('setProjectFilePath', arg);
 		});
 
 		// Set up a handler for when a project is loaded
 		// The loaded project will be passed as a JSON string in the "arg"
 		// parameter
 		ipcRenderer.on('project-loaded', (event, arg) => {
-			// The current project
-			let currentProject = null;
+			// The project
+			let project = null;
 
 			// Convert the JSON string to an object
 			try {
-				currentProject = JSON.parse(arg);
+				project = JSON.parse(arg);
 			} catch (error) {
 				// Show the error to the user
 				ipcRenderer.send('showError', 'Project is not a JSON file.');
 			}
 
 			// Store the loaded project
-			currentProjectService.set(currentProject);
+			projectService.set(project);
 
 			// Record the loaded project in our state
 			this.setState(
 				{
-					currentProject,
+					project,
 				},
 				// Navigate to the Nodes page
 				() => this.navigateToNodes(),
@@ -76,15 +87,15 @@ class App extends Component {
 		// parameter
 		ipcRenderer.on('yarn-loaded', (event, arg) => {
 			// Convert the Yarn string to an object
-			const currentProject = yarnService.importProjectFromYarn(arg);
+			const project = yarnService.importProjectFromYarn(arg);
 
 			// Store the loaded project
-			currentProjectService.set(currentProject);
+			projectService.set(project);
 
 			// Record the loaded project in our state
 			this.setState(
 				{
-					currentProject,
+					project,
 				},
 				// Navigate to the Nodes page
 				() => this.navigateToNodes(),
@@ -93,46 +104,64 @@ class App extends Component {
 	}
 
 	componentWillMount() {
-		// Get the current project (if any)
-		const currentProject = currentProjectService.get();
+		// Get the project (if any)
+		const project = projectService.get();
 
-		// Record the current project (if any) in our state
+		// Record the project (if any) in our state
 		this.setState({
-			currentProject,
+			project,
 		});
 	}
 
-	onSaveProject = () => {
-		// Get the current project
-		const currentProject = currentProjectService.get();
+	onCloseConfirmationDialogOK = () => {
+		// Close the close confirmation dialog and close the app
+		this.setState(
+			{ closeConfirmationDialogIsOpen: false },
+			() => ipcRenderer.send('applicationClose'),
+		);
+	}
 
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+	onCloseConfirmationDialogCancel = () => {
+		// Close the close confirmation dialog
+		this.setState({ closeConfirmationDialogIsOpen: false });
+	}
+
+	onSaveProject = () => {
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Convert the project to JSON
-		const currentProjectJSON = JSON.stringify(currentProject);
+		const projectJSON = JSON.stringify(this.state.project);
 
-		// Save the current project to the current file path
+		// Save the project to the current file path
 		ipcRenderer.send('projectSave', {
-			currentProjectJSON,
-			currentProjectFilePath,
+			projectJSON,
+			projectFilePath,
 		});
+
+		// The project has been saved, so mark it as unmodified
+		this.setState(
+			{
+				projectIsModified: false,
+			},
+			() => {
+				// Tell Electron whether the project is modified
+				ipcRenderer.send('setProjectModified', this.state.projectIsModified);
+			},
+		);
 	};
 
 	onSaveProjectAs = () => {
-		// Get the current project
-		const currentProject = currentProjectService.get();
-
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Convert the project to JSON
-		const currentProjectJSON = JSON.stringify(currentProject);
+		const projectJSON = JSON.stringify(this.state.project);
 
-		// Save the current project under another name
+		// Save the project under another name
 		ipcRenderer.send('projectSaveAs', {
-			currentProjectJSON,
-			currentProjectFilePath,
+			projectJSON,
+			projectFilePath,
 		});
 	};
 
@@ -147,12 +176,12 @@ class App extends Component {
 		};
 
 		// Store the new project
-		currentProjectService.set(newProject);
+		projectService.set(newProject);
 
 		// Record the new project in our state
 		this.setState(
 			{
-				currentProject: newProject,
+				project: newProject,
 			},
 			// Navigate to the Nodes page
 			() => this.navigateToNodes(),
@@ -160,40 +189,35 @@ class App extends Component {
 	}
 
 	onExportYarnFile = () => {
-		// Get the current project
-		const currentProject = currentProjectService.get();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Convert the project to Yarn
-		const currentProjectYarn = yarnService.exportProjectToYarn(currentProject);
+		const projectYarn = yarnService.exportProjectToYarn(this.state.project);
 
-		console.log(currentProjectYarn);
-
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
-
-		// Export the current project as a yarn file
+		// Export the project as a yarn file
 		ipcRenderer.send('projectExportToYarn', {
-			currentProjectYarn,
-			currentProjectFilePath,
+			projectYarn,
+			projectFilePath,
 		});
 	};
 
 	onImportYarnFile = () => {
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Open a project
-		ipcRenderer.send('projectImportFromYarn', currentProjectFilePath);
+		ipcRenderer.send('projectImportFromYarn', projectFilePath);
 	};
 
 	onCloseProject = () => {
 		// Remove the project from storage
-		currentProjectService.clear();
+		projectService.clear();
 
 		// Clear the project from our state
 		this.setState(
 			{
-				currentProject: null,
+				project: null,
 			},
 			// Navigate back to the home page
 			() => this.navigateToHome(),
@@ -201,21 +225,35 @@ class App extends Component {
 	};
 
 	onOpenExistingProject = () => {
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Open a project
-		ipcRenderer.send('projectOpen', currentProjectFilePath);
+		ipcRenderer.send('projectOpen', projectFilePath);
 	};
 
-	onCurrentProjectChanged = (updatedCurrentProject) => {
+	onProjectUpdated = (updatedProject) => {
 		// Store the updated project
-		currentProjectService.set(updatedCurrentProject);
+		projectService.set(updatedProject);
 
-		// Record the updated project in our state
-		this.setState({
-			currentProject: updatedCurrentProject,
-		});
+		// Record the updated project in our state, and set the project as
+		// modified
+		this.setState(
+			{
+				project: updatedProject,
+				projectIsModified: true,
+			},
+			() => {
+				// Tell Electron whether the project is modified
+				ipcRenderer.send('setProjectModified', this.state.projectIsModified);
+			},
+		);
+	}
+
+	onDataModified = () => {
+		// Tell Electron the project is modified (since the user has changed
+		// data in one of the pages)
+		ipcRenderer.send('setProjectModified', true);
 	}
 
 	navigateToHome = () => {
@@ -227,20 +265,21 @@ class App extends Component {
 	};
 
 	render() {
-		// Determine whether we have a current project
-		const hasCurrentProject = !!this.state.currentProject;
+		// Determine whether we have a project
+		const hasProject = !!this.state.project;
 
-		// Get the current project file path
-		const currentProjectFilePath = currentProjectService.getFilePath();
+		// Get the project file path
+		const projectFilePath = projectService.getFilePath();
 
 		// Get the yarn nodes (if any)
-		const yarnNodes = (hasCurrentProject)
-			? this.state.currentProject.nodes
+		const yarnNodes = (hasProject)
+			? this.state.project.nodes
 			: [];
 
 		// Build the app components
 		const Menu = () =>	(<MainMenu
-			hasCurrentProject={hasCurrentProject}
+			hasProject={hasProject}
+			projectIsModified={this.state.projectIsModified}
 			onCreateNewProject={this.onCreateNewProject}
 			onSaveProject={this.onSaveProject}
 			onSaveProjectAs={this.onSaveProjectAs}
@@ -273,9 +312,10 @@ class App extends Component {
 		const CharacterPageComplete = () => (
 			<BasePage title="Characters">
 				<CharacterPage
-					currentProject={this.state.currentProject}
-					currentProjectFilePath={currentProjectFilePath}
-					onCurrentProjectChanged={this.onCurrentProjectChanged}
+					project={this.state.project}
+					projectFilePath={projectFilePath}
+					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);
@@ -283,9 +323,10 @@ class App extends Component {
 		const FunctionPageComplete = () => (
 			<BasePage title="Functions">
 				<FunctionPage
-					currentProject={this.state.currentProject}
-					currentProjectFilePath={currentProjectFilePath}
-					onCurrentProjectChanged={this.onCurrentProjectChanged}
+					project={this.state.project}
+					projectFilePath={projectFilePath}
+					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);
@@ -293,9 +334,10 @@ class App extends Component {
 		const NodePageComplete = () => (
 			<BasePage title="Nodes">
 				<NodePage
-					currentProject={this.state.currentProject}
-					currentProjectFilePath={currentProjectFilePath}
-					onCurrentProjectChanged={this.onCurrentProjectChanged}
+					project={this.state.project}
+					projectFilePath={projectFilePath}
+					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);
@@ -303,15 +345,26 @@ class App extends Component {
 		const VariablePageComplete = () => (
 			<BasePage title="Variables">
 				<VariablePage
-					currentProject={this.state.currentProject}
-					currentProjectFilePath={currentProjectFilePath}
-					onCurrentProjectChanged={this.onCurrentProjectChanged}
+					project={this.state.project}
+					projectFilePath={projectFilePath}
+					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);
 
 		return (
 			<div>
+				<ModalDialog
+					onOK={this.onCloseConfirmationDialogOK}
+					onCancel={this.onCloseConfirmationDialogCancel}
+					title="Warning!"
+					open={this.state.closeConfirmationDialogIsOpen}
+					okButtonLabel="Yes"
+					cancelButtonLabel="No"
+				>
+					Changes will be lost, are you sure you want to close the application?
+				</ModalDialog>
 				<Route exact path="/" component={HomePageComplete} />
 				<Route path="/run" component={RunPageComplete} />
 				<Route path="/characters" component={CharacterPageComplete} />

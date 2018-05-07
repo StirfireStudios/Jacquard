@@ -3,29 +3,43 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from 'material-ui/styles';
 
-import ListPage from '../../general/pages/ListPage';
 import themes from '../themes';
+
+import ListPage from '../../general/pages/ListPage';
 import FieldListForm from '../../general/components/FieldListForm';
+import fieldListItemContent from '../../general/utils/field-list-item-content';
 
 class VariablePage extends React.Component {
 	render() {
-		const fieldNames = ['name', 'description'];
-		const displayNames = ['Name', 'Description'];
+		// The list fields
+		const fields = [
+			{
+				name: 'name',
+				displayName: 'Name',
+				getContentCallback: fieldListItemContent.getTextFromItemField,
+			},
+			{
+				name: 'description',
+				displayName: 'Description',
+				getContentCallback: fieldListItemContent.getTextFromItemField,
+			},
+		];
+
 		const addEditForm = props => (<FieldListForm {...props} />);
 
 		return (
 			<ListPage
-				onCurrentProjectChanged={this.props.onCurrentProjectChanged}
-				fieldNames={fieldNames}
-				displayNames={displayNames}
+				onProjectUpdated={this.props.onProjectUpdated}
+				onDataModified={this.props.onDataModified}
+				fields={fields}
 				keyName="name"
-				currentProject={this.props.currentProject}
-				currentProjectFilePath={this.props.currentProjectFilePath}
-				currentProjectPropName="variables"
-				editFormTitle="Edit Variables"
-				addFormTitle="Add Variables"
+				project={this.props.project}
+				projectFilePath={this.props.projectFilePath}
+				projectPropName="variables"
+				addEditFormEditTitle="Edit Variables"
+				addEditFormAddTitle="Add Variables"
 				addEditForm={addEditForm}
-				formSchema={[
+				addEditFormSchema={[
 					{
 						fieldName: 'name',
 						label: 'Name',
@@ -45,14 +59,15 @@ class VariablePage extends React.Component {
 }
 
 VariablePage.propTypes = {
-	onCurrentProjectChanged: PropTypes.func.isRequired,
+	onProjectUpdated: PropTypes.func.isRequired,
+	onDataModified: PropTypes.func.isRequired,
 
-	currentProject: PropTypes.object,
-	currentProjectFilePath: PropTypes.string.isRequired,
+	project: PropTypes.object,
+	projectFilePath: PropTypes.string.isRequired,
 };
 
 VariablePage.defaultProps = {
-	currentProject: null,
+	project: null,
 };
 
 export default withStyles(themes.defaultTheme)(VariablePage);

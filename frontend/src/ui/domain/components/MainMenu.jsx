@@ -5,8 +5,10 @@ import { MenuList, MenuItem } from 'material-ui/Menu';
 import Divider from 'material-ui/Divider';
 import { Link } from 'react-router-dom';
 import { ListItemText } from 'material-ui/List';
+import orange from 'material-ui/colors/orange';
 
 import themes from '../themes';
+import packageFile from '../../../../package.json'
 
 /* TODO: Change the links to use embedded components like so:
 class ListItemLink extends React.Component {
@@ -26,32 +28,78 @@ class ListItemLink extends React.Component {
 }
 */
 
+const styles = theme => ({
+	...themes.defaultTheme(theme),
+	dataChanged: {
+		backgroundColor: orange[500],
+	},
+});
+
 class MainMenu extends React.Component {
 	constructor(props) {
 		super(props);
-		this.CurrentProjectMenu = this.CurrentProjectMenu.bind(this);
+		this.ProjectMenu = this.ProjectMenu.bind(this);
 	}
 
-	CurrentProjectMenu() {
-		let returnValue = null;
+	ProjectMenu() {
+		// Determine the Save Project class based on whether the project has been
+		// modified
+		const saveProjectClass = (this.props.projectIsModified)
+			? this.props.classes.dataChanged
+			: {};
 
-		if (this.props.hasCurrentProject) {
-			returnValue = (<MenuList>
-				<Divider />
-				<Link to="/run"><MenuItem button><ListItemText primary="Run" /></MenuItem></Link>
-				<Divider />
-				<Link to="/nodes"><MenuItem button><ListItemText primary="Nodes" /></MenuItem></Link>
-				<Link to="/characters"><MenuItem button><ListItemText primary="Characters" /></MenuItem></Link>
-				<Link to="/functions"><MenuItem button><ListItemText primary="Functions" /></MenuItem></Link>
-				<Link to="/variables"><MenuItem button><ListItemText primary="Variables" /></MenuItem></Link>
-				<Divider />
-				<MenuItem button onClick={this.props.onSaveProject}><ListItemText primary="Save Project" /></MenuItem>
-				<MenuItem button onClick={this.props.onSaveProjectAs}><ListItemText primary="Save Project As..." /></MenuItem>
-				<MenuItem button onClick={this.props.onExportYarnFile}><ListItemText primary="Export Project To Yarn" /></MenuItem>
-				<MenuItem button onClick={this.props.onCloseProject}><ListItemText primary="Close Project" /></MenuItem>
-			</MenuList>);
-		}
-		return returnValue;
+		return (this.props.hasProject)
+			? (
+				<MenuList>
+					<Divider />
+					<Link to="/run">
+						<MenuItem button>
+							<ListItemText primary="Run" />
+						</MenuItem>
+					</Link>
+					<Divider />
+					<Link to="/nodes">
+						<MenuItem button>
+							<ListItemText primary="Nodes" />
+						</MenuItem>
+					</Link>
+					<Link to="/characters">
+						<MenuItem button>
+							<ListItemText primary="Characters" />
+						</MenuItem>
+					</Link>
+					<Link to="/functions">
+						<MenuItem button>
+							<ListItemText primary="Functions" />
+						</MenuItem>
+					</Link>
+					<Link to="/variables">
+						<MenuItem button>
+							<ListItemText primary="Variables" />
+						</MenuItem>
+					</Link>
+					<Divider />
+					<MenuItem
+						button
+						classes={{
+							root: saveProjectClass,
+						}}
+						onClick={this.props.onSaveProject}
+					>
+						<ListItemText primary="Save Project" />
+					</MenuItem>
+					<MenuItem button onClick={this.props.onSaveProjectAs}>
+						<ListItemText primary="Save Project As..." />
+					</MenuItem>
+					<MenuItem button onClick={this.props.onExportYarnFile}>
+						<ListItemText primary="Export Project To Yarn" />
+					</MenuItem>
+					<MenuItem button onClick={this.props.onCloseProject}>
+						<ListItemText primary="Close Project" />
+					</MenuItem>
+				</MenuList>
+			)
+			: null;
 	}
 
 
@@ -65,11 +113,11 @@ class MainMenu extends React.Component {
 				}}
 			>
 				<div className={classes.drawerHeader}>
-					<h2>Jacquard v0.0.1</h2>
+					<h2>Jacquard {packageFile.version}</h2>
 				</div>
 				<Divider />
 				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
-				<this.CurrentProjectMenu />
+				<this.ProjectMenu />
 				<Divider />
 				<MenuList>
 					<MenuItem button onClick={this.props.onCreateNewProject}><ListItemText primary="Create New Project" /></MenuItem>
@@ -81,7 +129,4 @@ class MainMenu extends React.Component {
 	}
 }
 
-const styleFunc = withStyles(themes.defaultTheme);
-
-
-export default styleFunc(MainMenu);
+export default withStyles(styles)(MainMenu);
