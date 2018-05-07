@@ -8,6 +8,7 @@ import { ListItemText } from 'material-ui/List';
 import orange from 'material-ui/colors/orange';
 
 import themes from '../themes';
+import packageFile from '../../../../package.json'
 
 /* TODO: Change the links to use embedded components like so:
 class ListItemLink extends React.Component {
@@ -112,7 +113,7 @@ class MainMenu extends React.Component {
 				}}
 			>
 				<div className={classes.drawerHeader}>
-					<h2>Jacquard v0.0.1</h2>
+					<h2>Jacquard {packageFile.version}</h2>
 				</div>
 				<Divider />
 				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
