@@ -30,8 +30,8 @@ class Page extends React.Component {
 				<Paper
 					className={classes.content}
 					style={{
-						maxHeight: '100%',
 						overflow: 'auto',
+						height: 'initial',
 					}}
 				>
 					{this.props.children}
