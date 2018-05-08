@@ -4593,8 +4593,8 @@ items@2.x.x:
   resolved "https://registry.yarnpkg.com/items/-/items-2.1.1.tgz#8bd16d9c83b19529de5aea321acaada78364a198"
 
 jacquard-yarnparser@^0.3.4:
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/jacquard-yarnparser/-/jacquard-yarnparser-0.3.4.tgz#85f9ee94b75d75d3d28f60034ee956c3088ea50a"
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/jacquard-yarnparser/-/jacquard-yarnparser-0.3.7.tgz#9cc438d225857a9176067593087c0a4b5c183aa1"
   dependencies:
     antlr4 "^4.7.1"
 
