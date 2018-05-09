@@ -17,6 +17,7 @@ import FieldListTable from '../components/FieldListTable';
 const styles = theme => ({
 	fab: {
 		position: 'absolute',
+		"z-index": 10, 
 		bottom: theme.spacing.unit * 4,
 		right: theme.spacing.unit * 4,
 		color: theme.palette.common.white,
@@ -205,7 +206,7 @@ class ListPage extends React.Component {
 					open={this.state.addEditFormOpen}
 					addModeEnabled={this.state.addEditFormAddModeEnabled}
 					schema={this.props.addEditFormSchema}
-					dateKeyValue={this.state.addEditFormDataKeyValue}
+					dataKeyValue={this.state.addEditFormDataKeyValue}
 					data={addEditFormData}
 				/>
 				<FieldListTable
