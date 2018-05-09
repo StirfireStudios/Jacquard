@@ -206,7 +206,7 @@ class ListPage extends React.Component {
 					open={this.state.addEditFormOpen}
 					addModeEnabled={this.state.addEditFormAddModeEnabled}
 					schema={this.props.addEditFormSchema}
-					dateKeyValue={this.state.addEditFormDataKeyValue}
+					dataKeyValue={this.state.addEditFormDataKeyValue}
 					data={addEditFormData}
 				/>
 				<FieldListTable
