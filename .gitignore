@@ -1,60 +1,15 @@
-## Git ignore based partially on:
-##   https://github.com/github/gitignore
-##
-## See https://help.github.com/ignore-files/ for more about ignoring files
-
-## JAVASCRIPT
-## --
+# See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
-*/node_modules
-/jspm_packages
-
-# coverage (e.g. jscoverage/JSCover, Istanbul, and NYC)
-/lib-cov
+viewer/node_modules
+# testing
 /coverage
-.nyc_output
 
 # production
 /build
 /dist
-*/dist
-
-# runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
-
-# logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# node-waf configuration
-.lock-wscript
-
-# compiled binary addons (http://nodejs.org/api/addons.html)
-build/Release
-
-# typescript declaration files
-typings/
-
-# npm cache directory
-.npm
-
-# eslint cache
-.eslintcache
-
-# node REPL history
-.node_repl_history
-
-# yarn integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
+/jaquard-frontend-*.tgz
 
 # misc
 .DS_Store
@@ -62,3 +17,7 @@ typings/
 .env.development.local
 .env.test.local
 .env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
