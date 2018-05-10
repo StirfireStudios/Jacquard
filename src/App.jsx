@@ -13,6 +13,7 @@ import ModalDialog from './ui/general/components/ModalDialog';
 
 // Page Imports
 import RunPage from './ui/domain/pages/RunPage';
+import VisualizationPage from './ui/domain/pages/VisualizationPage';
 import CharacterPage from './ui/domain/pages/CharacterPage';
 import DefaultPage from './ui/domain/pages/DefaultPage';
 import FunctionPage from './ui/domain/pages/FunctionPage';
@@ -309,6 +310,15 @@ class App extends Component {
 			</BasePage>
 		);
 
+		const VisualizationPageComplete = () => (
+			<BasePage title="Visualization">
+				<VisualizationPage
+					project={this.state.project}
+					projectFilePath={projectFilePath}
+				/>
+			</BasePage>
+		);
+
 		const CharacterPageComplete = () => (
 			<BasePage title="Characters">
 				<CharacterPage
@@ -367,6 +377,7 @@ class App extends Component {
 				</ModalDialog>
 				<Route exact path="/" component={HomePageComplete} />
 				<Route path="/run" component={RunPageComplete} />
+				<Route path="/visualization" component={VisualizationPageComplete} />
 				<Route path="/characters" component={CharacterPageComplete} />
 				<Route path="/functions" component={FunctionPageComplete} />
 				<Route path="/nodes" component={NodePageComplete} />

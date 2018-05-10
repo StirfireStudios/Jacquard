@@ -8,7 +8,7 @@ import { ListItemText } from 'material-ui/List';
 import orange from 'material-ui/colors/orange';
 
 import themes from '../themes';
-import packageFile from '../../../../package.json'
+import packageFile from '../../../../package.json';
 
 /* TODO: Change the links to use embedded components like so:
 class ListItemLink extends React.Component {
@@ -55,6 +55,11 @@ class MainMenu extends React.Component {
 					<Link to="/run">
 						<MenuItem button>
 							<ListItemText primary="Run" />
+						</MenuItem>
+					</Link>
+					<Link to="/visualization">
+						<MenuItem button>
+							<ListItemText primary="Visualization" />
 						</MenuItem>
 					</Link>
 					<Divider />
