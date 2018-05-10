@@ -40,9 +40,6 @@ class Graph extends React.Component {
 		// Get the node
 		const node = this.props.graph.nodes[nodeIndex];
 
-		console.log(`getViewNode() - ${nodeKeyValue}, ${nodeIndex}`);
-		console.log(node);
-
 		return node;
 	}
 

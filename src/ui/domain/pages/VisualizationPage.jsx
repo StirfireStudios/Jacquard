@@ -162,13 +162,9 @@ class VisualizationPage extends React.Component {
 		// Build the existing nodes (TODO: build non-existing nodes and existing
 		// nodes by walking the incoming/outgoing links)
 		const nodes = this.buildExistingNodes();
-		console.log('nodes');
-		nodes.forEach(element => console.log(element));
 
 		// Build the edges
 		const edges = this.buildEdges();
-		console.log('edges');
-		edges.forEach(element => console.log(element));
 
 		// Build the graph
 		const graph = {
