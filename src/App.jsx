@@ -9,7 +9,6 @@ import { ipcRenderer } from 'electron'; // eslint-disable-line
 
 // General Component Imports
 import Page from './ui/general/pages/Page';
-import ModalDialog from './ui/general/components/ModalDialog';
 
 // Page Imports
 import RunPage from './ui/domain/pages/RunPage';
@@ -37,13 +36,7 @@ class App extends Component {
 			project: null,
 			// Whether the project has been modified
 			projectIsModified: false,
-			// Whether the close confirmation dialog is open (by default it isn't)
-			closeConfirmationDialogIsOpen: false,
 		};
-
-		ipcRenderer.on('application-confirm-close', () => {
-			this.setState({ closeConfirmationDialogIsOpen: true });
-		});
 
 		// Set up a handler for when the project file path changes
 		// The new project file path is passed as the "arg" parameter
@@ -112,19 +105,6 @@ class App extends Component {
 		this.setState({
 			project,
 		});
-	}
-
-	onCloseConfirmationDialogOK = () => {
-		// Close the close confirmation dialog and close the app
-		this.setState(
-			{ closeConfirmationDialogIsOpen: false },
-			() => ipcRenderer.send('applicationClose'),
-		);
-	}
-
-	onCloseConfirmationDialogCancel = () => {
-		// Close the close confirmation dialog
-		this.setState({ closeConfirmationDialogIsOpen: false });
 	}
 
 	onSaveProject = () => {
@@ -365,16 +345,6 @@ class App extends Component {
 
 		return (
 			<div>
-				<ModalDialog
-					onOK={this.onCloseConfirmationDialogOK}
-					onCancel={this.onCloseConfirmationDialogCancel}
-					title="Warning!"
-					open={this.state.closeConfirmationDialogIsOpen}
-					okButtonLabel="Yes"
-					cancelButtonLabel="No"
-				>
-					Changes will be lost, are you sure you want to close the application?
-				</ModalDialog>
 				<Route exact path="/" component={HomePageComplete} />
 				<Route path="/run" component={RunPageComplete} />
 				<Route path="/visualization" component={VisualizationPageComplete} />
