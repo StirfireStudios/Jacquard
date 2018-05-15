@@ -130,11 +130,13 @@ class ListPage extends React.Component {
 	}
 
 	/* eslint no-confusing-arrow: ["error", {"allowParens": true}] */
-	getProjectProp = () => (
-		this.props.project
+	getProjectProp = () => {
+		const projectProp = (this.props.project)
 			? this.props.project[this.props.projectPropName]
-			: []
-	);
+			: [];
+
+		return projectProp.filter(prop => !this.props.projectPropNameHiddenStates[prop.title]);
+	};
 
 	closeAddEditForm = () => {
 		this.setState({
@@ -228,6 +230,7 @@ ListPage.propTypes = {
 
 	project: PropTypes.object,
 	projectPropName: PropTypes.string.isRequired,
+	projectPropNameHiddenStates: PropTypes.object,
 
 	addEditForm: PropTypes.func.isRequired,
 	addEditFormEditTitle: PropTypes.string.isRequired,
@@ -239,6 +242,7 @@ ListPage.propTypes = {
 
 ListPage.defaultProps = {
 	project: null,
+	projectPropNameHiddenStates: {},
 };
 
 export default withStyles(styles, { withTheme: true })(ListPage);
