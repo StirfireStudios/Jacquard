@@ -25,7 +25,18 @@ import MainMenu from './ui/domain/components/MainMenu';
 import projectService from './services/projectService';
 import yarnService from './services/yarnService';
 
+//Redux
+import { Provider } from 'react-redux';
+
+// Runtime
+import assignActions from './actions/assign';
+import createStore from './store';
+
+
 const theme = createMuiTheme();
+
+const store = createStore();
+assignActions(store);
 
 class App extends Component {
 	constructor(props) {
@@ -389,11 +400,13 @@ const AppContainer = () => {
 	const AppWithRouter = withRouter(App);
 
 	return (
-		<MuiThemeProvider theme={theme}>
-			<Router>
-				<AppWithRouter />
-			</Router>
-		</MuiThemeProvider>
+		<Provider store={store}>
+			<MuiThemeProvider theme={theme}>
+				<Router>
+					<AppWithRouter />
+				</Router>
+			</MuiThemeProvider>
+		</Provider>
 	);
 };
 
