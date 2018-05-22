@@ -125,17 +125,12 @@ class VisualizationPage extends React.Component {
 	constructor(props) {
 		super(props);
 
-		// Get the project nodes
-		const projectNodes = [...this.props.project.nodes];
-
 		// Initialize the state of the component
 		this.state = {
 			// The Add/Edit form is initially closed
 			addEditFormOpen: false,
 			// The value referenced by the key of the Add/Edit forms data
 			addEditFormDataKeyValue: null,
-			// The project nodes
-			projectNodes,
 		};
 
 		// Bind our handlers
@@ -146,32 +141,21 @@ class VisualizationPage extends React.Component {
 		this.onNodePositionChanged = this.onNodePositionChanged.bind(this);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		// Get the project nodes
-		const projectNodes = [...nextProps.project.nodes];
-
-		// Update our state with the new project nodes and notify that data has
-		// been modified
-		this.setState(
-			{
-				projectNodes,
-			},
-			() => this.props.onDataModified(),
-		);
-	}
-
 	onAddEditFormOK = (addEditFormDataPreviousKeyValue, addEditFormUpdatedData) => {
 		// Get the index of the node we'll be updating
 		// We look up the row using the previous value of the key, since it
 		// might have been changed during editing
-		const nodeToUpdateIndex = this.state.projectNodes
+		const nodeToUpdateIndex = this.props.project.nodes
 			.findIndex(node =>
 				node.title === addEditFormDataPreviousKeyValue);
 
 		// If we found the node, update it
 		if (nodeToUpdateIndex !== -1) {
-			// Get the a copy of the project nodes we'll be updating
-			const projectNodes = [...this.state.projectNodes];
+			// Get a copy of the project
+			const project = { ...this.props.project };
+
+			// Get the project nodes we'll be updating
+			const projectNodes = project.nodes;
 
 			// Get the node to update
 			const nodeToUpdate = projectNodes[nodeToUpdateIndex];
@@ -179,14 +163,8 @@ class VisualizationPage extends React.Component {
 			// Update the node fields from the form data according to the form schema
 			this.setFieldsBasedOnFormSchema(addEditFormUpdatedData, nodeToUpdate);
 
-			// Record the updated node in our state and notify that data has
-			// been modified
-			this.setState(
-				{
-					projectNodes,
-				},
-				() => this.props.onDataModified(),
-			);
+			// Notify the callback that the project has changed
+			this.props.onProjectUpdated(project);
 		}
 
 		// Close the Add/Edit form
@@ -212,14 +190,17 @@ class VisualizationPage extends React.Component {
 		console.log(`onNodePositionChanged(${nodeTitle}, ${x}, ${y})`);
 
 		// Get the index of the node we'll be updating
-		const nodeToUpdateIndex = this.state.projectNodes
+		const nodeToUpdateIndex = this.props.project.nodes
 			.findIndex(node =>
 				node.title === nodeTitle);
 
 		// If we found the node, update it
 		if (nodeToUpdateIndex !== -1) {
-			// Get the a copy of the project nodes we'll be updating
-			const projectNodes = [...this.state.projectNodes];
+			// Get a copy of the project
+			const project = { ...this.props.project };
+
+			// Get the project nodes we'll be updating
+			const projectNodes = project.nodes;
 
 			// Get the node we'll be updating
 			const nodeToUpdate = projectNodes[nodeToUpdateIndex];
@@ -229,14 +210,8 @@ class VisualizationPage extends React.Component {
 
 			console.log(`${nodeToUpdate.title} - (${nodeToUpdate.position})`);
 
-			// Record the updated node in our state and notify that data has
-			// been modified
-			this.setState(
-				{
-					projectNodes,
-				},
-				() => this.props.onDataModified(),
-			);
+			// Notify the callback that the project has changed
+			this.props.onProjectUpdated(project);
 		}
 	}
 
@@ -351,7 +326,7 @@ class VisualizationPage extends React.Component {
 	render() {
 		// Get the project node links
 		const projectNodeLinks = yarnService
-			.getProjectNodeLinks(this.props.projectFilePath, this.state.projectNodes);
+			.getProjectNodeLinks(this.props.projectFilePath, this.props.project.nodes);
 
 		// Set up the add/edit form
 		const AddEditForm = props => (
@@ -365,7 +340,7 @@ class VisualizationPage extends React.Component {
 		const addEditFormTitle = 'Edit Node';
 
 		// Generate the form data from the row data
-		const addEditFormData = this.state.projectNodes.reduce((formData, node) => {
+		const addEditFormData = this.props.project.nodes.reduce((formData, node) => {
 			if (node.title === this.state.addEditFormDataKeyValue) {
 				this.setFieldsBasedOnFormSchema(node, formData);
 			}
@@ -375,7 +350,7 @@ class VisualizationPage extends React.Component {
 
 		// Build the existing nodes (TODO: build non-existing nodes and existing
 		// nodes by walking the incoming/outgoing links)
-		const nodes = this.buildExistingNodes(this.state.projectNodes);
+		const nodes = this.buildExistingNodes(this.props.project.nodes);
 
 		// Build the edges
 		const edges = this.buildEdges(projectNodeLinks);
