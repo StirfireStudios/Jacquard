@@ -303,18 +303,24 @@ class GraphView extends Component {
     	}
     }
 
-    dragNode = () => {
+    dragNode = (draggedNode) => {
     	const self = this;
+
+		// Record the start position of the node
+		const dragStartX = draggedNode.x;
+		const dragStartY = draggedNode.y;
 
     	const el = d3.select(d3.event.target.parentElement); // Enclosing 'g' element
     	el.classed('dragging', true);
-    	d3.event.on('drag', dragged).on('end', ended);
-
+		d3.event.on('drag', dragged).on('end', ended);
+		
     	let oldSibling = null;
     	function dragged(d) {
     		if (self.props.readOnly) return;
-    		const selectedNode = d3.select(this);
-    		if (!oldSibling) {
+
+			const selectedNode = d3.select(this);
+
+			if (!oldSibling) {
     			oldSibling = this.nextSibling;
     		}
     		// Moves child to the end of the element stack to re-arrange the z-index
@@ -331,28 +337,36 @@ class GraphView extends Component {
     	function ended() {
     		el.classed('dragging', false);
 
-    		if (!self.props.readOnly) {
-    			const d = d3.select(this).datum();
-    			// Move the node back to the original z-index
-    			if (oldSibling) {
-    				oldSibling.parentElement.insertBefore(this, oldSibling);
-    			}
-    			self.props.onUpdateNode(d);
-    		}
+			if (!self.props.readOnly) {
+				// Get the selected node
+				const selectedNode = d3.select(this).datum();
 
-    		// For some reason, mouseup isn't firing
-    		// - manually firing it here
-    		d3.select(this).node().dispatchEvent(new Event('mouseup'));
+				// Calculate the drag distance
+				const dragXDistance = selectedNode.x - dragStartX;
+				const dragYDistance = selectedNode.y - dragStartY;
+
+				// Did we move?
+				if ((dragXDistance !== 0) || (dragYDistance !== 0)) {
+					// Move the node back to the original z-index
+					if (oldSibling) {
+						oldSibling.parentElement.insertBefore(this, oldSibling);
+					}
+					self.props.onUpdateNode(selectedNode);
+				} else {
+					// Fire a mouse up event to trigger selection
+					d3.select(this).node().dispatchEvent(new Event('mouseup'));					
+				}
+    		}
     	}
     }
 
     // Node 'drag' handler
-    handleNodeDrag = () => {
+    handleNodeDrag = (draggedNode) => {
     	if (this.state.drawingEdge && !this.props.readOnly) {
     		const target = { x: d3.event.subject.x, y: d3.event.subject.y };
     		this.drawEdge(d3.event.subject, target);
     	} else {
-    		this.dragNode();
+    		this.dragNode(draggedNode);
     	}
     }
 
@@ -442,7 +456,11 @@ class GraphView extends Component {
 
     handleNodeMouseUp = (d) => {
     	if (this.state.selectingNode) {
-    		this.props.onSelectNode(d);
+			// Prevent d3's default as it changes the focus to the body
+			d3.event.preventDefault();
+			d3.event.stopPropagation();
+
+			this.props.onSelectNode(d);
     		this.setState({
     			selectingNode: false,
     		});
