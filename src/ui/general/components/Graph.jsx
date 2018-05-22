@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 
 import GraphView from 'react-digraph';
 
+import GraphView from '../../react-digraph/graph-view';
+
 // The styles of the component
 const styles = {
 	// The graph style
