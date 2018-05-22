@@ -6,7 +6,59 @@ import { withStyles } from 'material-ui/styles';
 import themes from '../themes';
 import Graph from '../../general/components/Graph';
 
+import NodeEditorForm from '../modals/NodeEditorForm';
+
 import yarnService from '../../../services/yarnService';
+
+// The styles of the component
+const styles = theme => ({
+	...themes.defaultTheme(theme),
+	// The graph style
+	page: {
+		height: '100%',
+		width: '100%',
+	},
+});
+
+// The Add/Edit form schema
+const addEditFormSchema = [
+	{
+		fieldName: 'title',
+		label: 'Title',
+		readOnly: false,
+		multiline: false,
+	},
+	{
+		fieldName: 'tags',
+		label: 'Tags',
+		readOnly: false,
+		multiline: false,
+	},
+	{
+		fieldName: 'section',
+		label: 'Section',
+		readOnly: false,
+		multiline: false,
+	},
+	{
+		fieldName: 'colorId',
+		label: 'Color ID',
+		readOnly: false,
+		multiline: false,
+	},
+	{
+		fieldName: 'position',
+		label: 'Position',
+		readOnly: false,
+		multiline: false,
+	},
+	{
+		fieldName: 'body',
+		label: 'Body',
+		readOnly: false,
+		multiline: false,
+	},
+];
 
 // The graph configuration
 const graphConfig = {
@@ -58,6 +110,148 @@ const EMPTY_TYPE = 'nonExistingNode';
 const NODE_KEY = 'id';
 
 class VisualizationPage extends React.Component {
+	/*
+		TODO:
+
+		We'll have to store project state in this component, otherwise the graph
+		will try and restart every time we move a node
+
+		We'll have to sort out the select/update events, at the moment both are
+		firing at the same time
+
+		Perhaps check if we've changed position and only call the handler if
+		the x/y coordinates are actually different
+	*/
+	constructor(props) {
+		super(props);
+
+		// Get the project nodes
+		const projectNodes = [...this.props.project.nodes];
+
+		// Initialize the state of the component
+		this.state = {
+			// The Add/Edit form is initially closed
+			addEditFormOpen: false,
+			// The value referenced by the key of the Add/Edit forms data
+			addEditFormDataKeyValue: null,
+			// The project nodes
+			projectNodes,
+		};
+
+		// Bind our handlers
+		this.onAddEditFormOK = this.onAddEditFormOK.bind(this);
+		this.onAddEditFormCancel = this.onAddEditFormCancel.bind(this);
+
+		this.onNodeClicked = this.onNodeClicked.bind(this);
+		this.onNodePositionChanged = this.onNodePositionChanged.bind(this);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		// Get the project nodes
+		const projectNodes = [...nextProps.project.nodes];
+
+		// Update our state with the new project nodes and notify that data has
+		// been modified
+		this.setState(
+			{
+				projectNodes,
+			},
+			() => this.props.onDataModified(),
+		);
+	}
+
+	onAddEditFormOK = (addEditFormDataPreviousKeyValue, addEditFormUpdatedData) => {
+		// Get the index of the node we'll be updating
+		// We look up the row using the previous value of the key, since it
+		// might have been changed during editing
+		const nodeToUpdateIndex = this.state.projectNodes
+			.findIndex(node =>
+				node.title === addEditFormDataPreviousKeyValue);
+
+		// If we found the node, update it
+		if (nodeToUpdateIndex !== -1) {
+			// Get the a copy of the project nodes we'll be updating
+			const projectNodes = [...this.state.projectNodes];
+
+			// Get the node to update
+			const nodeToUpdate = projectNodes[nodeToUpdateIndex];
+
+			// Update the node fields from the form data according to the form schema
+			this.setFieldsBasedOnFormSchema(addEditFormUpdatedData, nodeToUpdate);
+
+			// Record the updated node in our state and notify that data has
+			// been modified
+			this.setState(
+				{
+					projectNodes,
+				},
+				() => this.props.onDataModified(),
+			);
+		}
+
+		// Close the Add/Edit form
+		this.closeAddEditForm();
+	}
+
+	onAddEditFormCancel = () => {
+		this.closeAddEditForm();
+	}
+
+	onNodeClicked = (nodeTitle) => {
+		console.log(`onNodeClicked(${nodeTitle})`);
+
+		// Open the form in Edit mode and record the key value (i.e. the node
+		// title)
+		this.setState({
+			addEditFormOpen: true,
+			addEditFormDataKeyValue: nodeTitle,
+		});
+	}
+
+	onNodePositionChanged = (nodeTitle, x, y) => {
+		console.log(`onNodePositionChanged(${nodeTitle}, ${x}, ${y})`);
+
+		// Get the index of the node we'll be updating
+		const nodeToUpdateIndex = this.state.projectNodes
+			.findIndex(node =>
+				node.title === nodeTitle);
+
+		// If we found the node, update it
+		if (nodeToUpdateIndex !== -1) {
+			// Get the a copy of the project nodes we'll be updating
+			const projectNodes = [...this.state.projectNodes];
+
+			// Get the node we'll be updating
+			const nodeToUpdate = projectNodes[nodeToUpdateIndex];
+
+			// Set the position
+			nodeToUpdate.position = `${x}, ${y}`;
+
+			console.log(`${nodeToUpdate.title} - (${nodeToUpdate.position})`);
+
+			// Record the updated node in our state and notify that data has
+			// been modified
+			this.setState(
+				{
+					projectNodes,
+				},
+				() => this.props.onDataModified(),
+			);
+		}
+	}
+
+	setFieldsBasedOnFormSchema = (source, dest) => {
+		addEditFormSchema.forEach((formField) => {
+			dest[formField.fieldName] = source[formField.fieldName];
+		});
+	}
+
+	closeAddEditForm = () => {
+		this.setState({
+			addEditFormOpen: false,
+		});
+	}
+
 	// TODO: Use this to build existing and non-existing nodes too
 	buildNodeEdges = (projectNodeLinks, nodeLinkKey) => {
 		// If we don't have project node links, return nothing
@@ -115,13 +309,9 @@ class VisualizationPage extends React.Component {
 		];
 	}
 
-	buildEdges = () => {
-		// Get the project node links
-		const projectNodeLinks = yarnService
-			.getProjectNodeLinks(this.props.projectFilePath, this.props.project.nodes);
-
+	buildEdges = projectNodeLinks =>
 		// Build the edges of each node
-		return Object.keys(projectNodeLinks).reduce((edges, nodeLinkKey) => {
+		Object.keys(projectNodeLinks).reduce((edges, nodeLinkKey) => {
 			// Build the edges of the node
 			const nodeEdges = this.buildNodeEdges(projectNodeLinks, nodeLinkKey);
 
@@ -131,11 +321,10 @@ class VisualizationPage extends React.Component {
 				...nodeEdges,
 			];
 		}, []);
-	}
 
-	buildExistingNodes = () =>
+	buildExistingNodes = projectNodes =>
 		// Add an existing node for each project node
-		this.props.project.nodes.map((node) => {
+		projectNodes.map((node) => {
 			// Get the x/y position
 			const positionArray = node.position.split(',');
 
@@ -149,6 +338,7 @@ class VisualizationPage extends React.Component {
 				y = 0;
 			}
 
+			// Build the node
 			return {
 				id: node.title,
 				title: node.title,
@@ -159,12 +349,36 @@ class VisualizationPage extends React.Component {
 		});
 
 	render() {
+		// Get the project node links
+		const projectNodeLinks = yarnService
+			.getProjectNodeLinks(this.props.projectFilePath, this.state.projectNodes);
+
+		// Set up the add/edit form
+		const AddEditForm = props => (
+			<NodeEditorForm
+				{...props}
+				projectNodeLinks={projectNodeLinks}
+				projectFilePath={this.props.projectFilePath}
+			/>);
+
+		// Set up the Add/Edit form title
+		const addEditFormTitle = 'Edit Node';
+
+		// Generate the form data from the row data
+		const addEditFormData = this.state.projectNodes.reduce((formData, node) => {
+			if (node.title === this.state.addEditFormDataKeyValue) {
+				this.setFieldsBasedOnFormSchema(node, formData);
+			}
+
+			return formData;
+		}, {});
+
 		// Build the existing nodes (TODO: build non-existing nodes and existing
 		// nodes by walking the incoming/outgoing links)
-		const nodes = this.buildExistingNodes();
+		const nodes = this.buildExistingNodes(this.state.projectNodes);
 
 		// Build the edges
-		const edges = this.buildEdges();
+		const edges = this.buildEdges(projectNodeLinks);
 
 		// Build the graph
 		const graph = {
@@ -173,17 +387,37 @@ class VisualizationPage extends React.Component {
 		};
 
 		return (
-			<Graph
-				graph={graph}
-				graphConfig={graphConfig}
-				nodeKey={NODE_KEY}
-				emptyType={EMPTY_TYPE}
-			/>
+			<div className={this.props.classes.page}>
+				<AddEditForm
+					onAddItemClick={() => {}}
+					onEditItemClick={() => {}}
+					onDataModified={this.props.onDataModified}
+					onOK={this.onAddEditFormOK}
+					onCancel={this.onAddEditFormCancel}
+					title={addEditFormTitle}
+					open={this.state.addEditFormOpen}
+					addModeEnabled={false}
+					schema={addEditFormSchema}
+					dataKeyValue={this.state.addEditFormDataKeyValue}
+					data={addEditFormData}
+				/>
+				<Graph
+					graph={graph}
+					graphConfig={graphConfig}
+					nodeKey={NODE_KEY}
+					emptyType={EMPTY_TYPE}
+					onNodeClicked={this.onNodeClicked}
+					onNodePositionChanged={this.onNodePositionChanged}
+				/>
+			</div>
 		);
 	}
 }
 
 VisualizationPage.propTypes = {
+	onProjectUpdated: PropTypes.func.isRequired,
+	onDataModified: PropTypes.func.isRequired,
+
 	project: PropTypes.object,
 	projectFilePath: PropTypes.string.isRequired,
 };
@@ -192,4 +426,4 @@ VisualizationPage.defaultProps = {
 	project: null,
 };
 
-export default withStyles(themes.defaultTheme)(VisualizationPage);
+export default withStyles(styles)(VisualizationPage);

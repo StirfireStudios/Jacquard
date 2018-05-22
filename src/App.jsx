@@ -295,6 +295,8 @@ class App extends Component {
 				<VisualizationPage
 					project={this.state.project}
 					projectFilePath={projectFilePath}
+					onProjectUpdated={this.onProjectUpdated}
+					onDataModified={this.onDataModified}
 				/>
 			</BasePage>
 		);

@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import GraphView from 'react-digraph';
+import { withStyles } from 'material-ui/styles';
 
 import GraphView from '../../react-digraph/graph-view';
 
 // The styles of the component
-const styles = {
+const styles = () => ({
 	// The graph style
 	graph: {
 		height: '100%',
 		width: '100%',
 	},
-};
+});
 
 class Graph extends React.Component {
 	constructor(props) {
@@ -25,14 +25,38 @@ class Graph extends React.Component {
 	}
 
 	/* Define custom graph editing methods here */
-	onSelectNode = () => {}
 	onCreateNode = () => {}
-	onUpdateNode = () => {}
 	onDeleteNode = () => {}
 	onSelectEdge = () => {}
 	onCreateEdge = () => {}
 	onSwapEdge = () => {}
 	onDeleteEdge = () => {}
+
+	// Called when the user clicks on a view node
+	onSelectNode = (viewNode) => {
+		console.log('onSelectNode');
+		console.log(viewNode);
+
+		// Was a view node selected?
+		if (viewNode) {
+			this.props.onNodeClicked(viewNode.title);
+		}
+	}
+
+	// Called when the user moves a node
+	onUpdateNode = (viewNode) => {
+		console.log('onUpdateNode');
+		console.log(viewNode);
+
+		// Was a view node updated?
+		if (viewNode) {
+			this.props.onNodePositionChanged(
+				viewNode.title,
+				viewNode.x,
+				viewNode.y,
+			);
+		}
+	}
 
 	// Given a nodeKey, return the corresponding node
 	getViewNode = (nodeKeyValue) => {
@@ -51,7 +75,7 @@ class Graph extends React.Component {
 
 	render() {
 		return (
-			<div id="graph" style={styles.graph}>
+			<div id="graph" className={this.props.classes.graph}>
 				<GraphView
 					ref={(c) => { this.GraphView = c; }}
 					nodeKey={this.props.nodeKey}
@@ -62,8 +86,10 @@ class Graph extends React.Component {
 					nodeTypes={this.props.graphConfig.nodeTypes}
 					nodeSubtypes={this.props.graphConfig.nodeSubtypes}
 					edgeTypes={this.props.graphConfig.edgeTypes}
-					readOnly
 					graphControls
+					transitionTime={0}
+					zoomDelay={0}
+					zoomDur={0}
 					maxTitleChars={100}
 					getViewNode={this.getViewNode}
 					onSelectNode={this.onSelectNode}
@@ -81,6 +107,9 @@ class Graph extends React.Component {
 }
 
 Graph.propTypes = {
+	onNodeClicked: PropTypes.func.isRequired,
+	onNodePositionChanged: PropTypes.func.isRequired,
+
 	graph: PropTypes.object,
 	graphConfig: PropTypes.object,
 	nodeKey: PropTypes.string.isRequired,
@@ -96,4 +125,4 @@ Graph.defaultProps = {
 };
 
 
-export default Graph;
+export default withStyles(styles, { withTheme: true })(Graph);
