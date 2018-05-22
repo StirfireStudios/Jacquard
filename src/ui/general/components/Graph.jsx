@@ -88,8 +88,8 @@ class Graph extends React.Component {
 					edgeTypes={this.props.graphConfig.edgeTypes}
 					graphControls
 					transitionTime={0}
-					zoomDelay={0}
-					zoomDur={0}
+					zoomDelay={500}
+					zoomDur={750}
 					maxTitleChars={100}
 					getViewNode={this.getViewNode}
 					onSelectNode={this.onSelectNode}

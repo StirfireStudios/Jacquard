@@ -146,8 +146,19 @@ class GraphView extends Component {
 	constructor(props) {
 		super(props);
 
+		const sessionStorageGraphViewTransformJSON = sessionStorage.getItem("graphViewTransform");
+		const sessionStorageGraphViewTransform = (sessionStorageGraphViewTransformJSON)
+			? JSON.parse(sessionStorageGraphViewTransformJSON)
+			: null;
+
+		const viewTransform = (sessionStorageGraphViewTransform)
+			? d3.zoomIdentity
+				.translate(sessionStorageGraphViewTransform.x, sessionStorageGraphViewTransform.y)
+				.scale(sessionStorageGraphViewTransform.k)
+			: d3.zoomIdentity;
+
 		this.state = {
-			viewTransform: d3.zoomIdentity,
+			viewTransform,
 			selectionChanged: false,
 			focused: true,
 			enableFocus: props.enableFocus || false, // Enables focus/unfocus
@@ -543,7 +554,8 @@ class GraphView extends Component {
     	if (this.state.focused) {
     		this.setState({
     			viewTransform: d3.event.transform,
-    		});
+			},
+			() => sessionStorage.setItem("graphViewTransform", JSON.stringify(d3.event.transform)));
     	}
     }
 
@@ -620,9 +632,11 @@ class GraphView extends Component {
 
     // Programmatically resets zoom
     setZoom = (k = 1, x = 0, y = 0, dur = 0) => {
-    	const t = d3.zoomIdentity.translate(x, y).scale(k);
-
-    	d3.select(this.viewWrapper).select('svg')
+		const t = d3.zoomIdentity.translate(x, y).scale(k);
+		
+		d3.select(this.viewWrapper)
+			.select('svg')
+			.call(this.zoom.transform, this.state.viewTransform)
     		.transition()
     		.duration(dur)
     		.call(this.zoom.transform, t);
@@ -902,45 +916,45 @@ class GraphView extends Component {
     	const { styles, focused } = this.state;
     	return (
     		<div
-		className="viewWrapper"
+				className="viewWrapper"
     			tabIndex={0}
     			onFocus={() => {
     				this.setState({
     					focused: true,
     				});
     			}}
-		onBlur={() => {
+				onBlur={() => {
     				if (this.props.enableFocus) {
     					this.setState({
     						focused: false,
     					});
     				}
     			}}
-		ref={el => this.viewWrapper = el}
-		style={[
+				ref={el => this.viewWrapper = el}
+				style={[
     				styles.wrapper.base,
     				!!focused && styles.wrapper.focused,
     				this.props.style,
     			]}
-	>
-		<svg style={styles.svg.base}>
+			>
+				<svg style={styles.svg.base}>
     				{ this.props.renderDefs(this) }
-	<g className="view" ref={el => this.view = el}>
+					<g className="view" ref={el => this.view = el}>
     					{ this.props.renderBackground(this) }
-	<g className="entities" ref={el => this.entities = el} />
+						<g className="entities" ref={el => this.entities = el} />
     				</g>
     			</svg>
     			{this.props.graphControls && (
     				<GraphControls
-			primary={this.props.primary}
-			minZoom={this.props.minZoom}
-			maxZoom={this.props.maxZoom}
-			zoomLevel={this.state.viewTransform.k}
+						primary={this.props.primary}
+						minZoom={this.props.minZoom}
+						maxZoom={this.props.maxZoom}
+						zoomLevel={this.state.viewTransform.k}
     					zoomToFit={this.handleZoomToFit}
     					modifyZoom={this.modifyZoom}
-		/>
+					/>
     			)}
-    			</div>
+    		</div>
     	);
     }
 }
