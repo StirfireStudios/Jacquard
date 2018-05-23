@@ -506,7 +506,10 @@ class GraphView extends Component {
     	if (event.target.tagName != 'path') return false; // If the handle is clicked
 
     	const xycoords = d3.mouse(event.target);
-    	const target = this.props.getViewNode(d.target);
+		
+		const target = this.props.getViewNode(d.target);
+		if (!target) return false;
+
     	const dist = getDistance({ x: xycoords[0], y: xycoords[1] }, target);
 
     	return dist < this.props.nodeSize / 2 + this.props.edgeArrowSize + 10; // or *2 or ^2?
@@ -515,12 +518,14 @@ class GraphView extends Component {
     handleEdgeDrag = (d) => {
     	if (!this.props.readOnly && this.state.drawingEdge) {
     		const edgeDOMNode = event.target.parentElement;
-    		const sourceNode = this.props.getViewNode(d.source);
-    		const xycoords = d3.mouse(event.target);
-    		const target = { x: xycoords[0], y: xycoords[1] };
+			const sourceNode = this.props.getViewNode(d.source);
+			if (sourceNode) {
+				const xycoords = d3.mouse(event.target);
+				const target = { x: xycoords[0], y: xycoords[1] };
 
-    		this.hideEdge(edgeDOMNode);
-    		this.drawEdge(sourceNode, target, this.showEdge.bind(this, edgeDOMNode));
+				this.hideEdge(edgeDOMNode);
+				this.drawEdge(sourceNode, target, this.showEdge.bind(this, edgeDOMNode));
+			}
     	}
     }
 
@@ -668,21 +673,24 @@ class GraphView extends Component {
     			{ x: trg.x - xOff, y: trg.y - yOff },
     		]);
     	}
-    	console.warn('Unable to get source or target for ', edge);
-    	return '';
+
+		return '';
     }
 
     getEdgeHandleTransformation = (edge) => {
     	const src = this.props.getViewNode(edge.source);
     	const trg = this.props.getViewNode(edge.target);
+		if (src && trg) {
+			const origin = getMidpoint(src, trg);
+			const x = origin.x;
+			const y = origin.y;
+			const theta = getTheta(src, trg) * 180 / Math.PI;
+			const offset = -this.props.edgeHandleSize / 2;
 
-    	const origin = getMidpoint(src, trg);
-    	const x = origin.x;
-    	const y = origin.y;
-    	const theta = getTheta(src, trg) * 180 / Math.PI;
-    	const offset = -this.props.edgeHandleSize / 2;
+			return `translate(${x}, ${y}) rotate(${theta}) translate(${offset}, ${offset})`;
+		}
 
-    	return `translate(${x}, ${y}) rotate(${theta}) translate(${offset}, ${offset})`;
+		return '';
     }
 
     // Returns a d3 transformation string from node data
@@ -1034,17 +1042,20 @@ GraphView.defaultProps = {
 
 		const style = graphView.getEdgeStyle(datum, graphView.props.selected);
 		const trans = graphView.getEdgeHandleTransformation(datum);
-		d3.select(domNode)
-			.attr('style', style)
-			.select('use')
-			.attr('xlink:href', d => graphView.props.edgeTypes[d.type].shapeId)
-			.attr('width', graphView.props.edgeHandleSize)
-			.attr('height', graphView.props.edgeHandleSize)
-			.attr('transform', trans);
 
-		d3.select(domNode)
-			.select('path')
-			.attr('d', graphView.getPathDescription);
+		if (trans) {
+			d3.select(domNode)
+				.attr('style', style)
+				.select('use')
+				.attr('xlink:href', d => graphView.props.edgeTypes[d.type].shapeId)
+				.attr('width', graphView.props.edgeHandleSize)
+				.attr('height', graphView.props.edgeHandleSize)
+				.attr('transform', trans);
+
+			d3.select(domNode)
+				.select('path')
+				.attr('d', graphView.getPathDescription);
+		}
 	},
 	renderNode: (graphView, domNode, datum, index, elements) => {
 		// For new nodes, add necessary child domNodes
