@@ -25,18 +25,23 @@ class Graph extends React.Component {
 	}
 
 	/* Define custom graph editing methods here */
-	onCreateNode = () => {}
+	onCreateNode = (x, y) => {
+		this.props.onNodeCreate(x, y);
+	}
+
 	onDeleteNode = () => {}
+
 	onSelectEdge = () => {}
-	onCreateEdge = () => {}
+
+	onCreateEdge = (sourceNode, destinationNode) => {
+		this.props.onEdgeCreate(sourceNode, destinationNode);
+	}
+
 	onSwapEdge = () => {}
 	onDeleteEdge = () => {}
 
 	// Called when the user clicks on a view node
 	onSelectNode = (viewNode) => {
-		console.log('onSelectNode');
-		console.log(viewNode);
-
 		// Was a view node selected?
 		if (viewNode) {
 			this.props.onNodeClicked(viewNode.title);
@@ -45,9 +50,6 @@ class Graph extends React.Component {
 
 	// Called when the user moves a node
 	onUpdateNode = (viewNode) => {
-		console.log('onUpdateNode');
-		console.log(viewNode);
-
 		// Was a view node updated?
 		if (viewNode) {
 			this.props.onNodePositionChanged(
@@ -88,7 +90,7 @@ class Graph extends React.Component {
 					edgeTypes={this.props.graphConfig.edgeTypes}
 					graphControls
 					enableFocus={false}
-					transitionTime={1000}
+					transitionTime={0}
 					zoomDelay={500}
 					zoomDur={750}
 					maxTitleChars={100}
@@ -108,8 +110,10 @@ class Graph extends React.Component {
 }
 
 Graph.propTypes = {
+	onNodeCreate: PropTypes.func.isRequired,
 	onNodeClicked: PropTypes.func.isRequired,
 	onNodePositionChanged: PropTypes.func.isRequired,
+	onEdgeCreate: PropTypes.func.isRequired,
 
 	graph: PropTypes.object,
 	graphConfig: PropTypes.object,

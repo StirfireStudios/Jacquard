@@ -117,43 +117,56 @@ class VisualizationPage extends React.Component {
 		this.state = {
 			// The Add/Edit form is initially closed
 			addEditFormOpen: false,
+			// Whether add mode is enabled for the Add/Edit form
+			addEditFormAddModeEnabled: false,
 			// The value referenced by the key of the Add/Edit forms data
 			addEditFormDataKeyValue: null,
+			// The position of the node
+			addEditFormDataPositionX: 0,
+			addEditFormDataPositionY: 0,
 		};
 
 		// Bind our handlers
 		this.onAddEditFormOK = this.onAddEditFormOK.bind(this);
 		this.onAddEditFormCancel = this.onAddEditFormCancel.bind(this);
 
+		this.onNodeCreate = this.onNodeCreate.bind(this);
 		this.onNodeClicked = this.onNodeClicked.bind(this);
 		this.onNodePositionChanged = this.onNodePositionChanged.bind(this);
+		this.onEdgeCreate = this.onEdgeCreate.bind(this);
 	}
 
 	onAddEditFormOK = (addEditFormDataPreviousKeyValue, addEditFormUpdatedData) => {
-		// Get the index of the node we'll be updating
-		// We look up the row using the previous value of the key, since it
-		// might have been changed during editing
-		const nodeToUpdateIndex = this.props.project.nodes
-			.findIndex(node =>
-				node.title === addEditFormDataPreviousKeyValue);
+		// Get a copy of the project
+		const project = { ...this.props.project };
 
-		// If we found the node, update it
-		if (nodeToUpdateIndex !== -1) {
-			// Get a copy of the project
-			const project = { ...this.props.project };
+		// Get the project nodes we'll be updating
+		const projectNodes = project.nodes;
 
-			// Get the project nodes we'll be updating
-			const projectNodes = project.nodes;
+		// Is Add mode enabled?
+		if (this.state.addEditFormAddModeEnabled) {
+			// Add the form data to the projects row data
+			projectNodes.push(addEditFormUpdatedData);
+		} else {
+			// Get the index of the node we'll be updating
+			// We look up the row using the previous value of the key, since it
+			// might have been changed during editing
+			const nodeToUpdateIndex = this.props.project.nodes
+				.findIndex(node =>
+					node.title === addEditFormDataPreviousKeyValue);
 
-			// Get the node to update
-			const nodeToUpdate = projectNodes[nodeToUpdateIndex];
+			// If we found the node, update it
+			if (nodeToUpdateIndex !== -1) {
+				// Get the node to update
+				const nodeToUpdate = projectNodes[nodeToUpdateIndex];
 
-			// Update the node fields from the form data according to the form schema
-			this.setFieldsBasedOnFormSchema(addEditFormUpdatedData, nodeToUpdate);
-
-			// Notify the callback that the project has changed
-			this.props.onProjectUpdated(project);
+				// Update the node fields from the form data according to the form schema
+				this.setFieldsBasedOnFormSchema(addEditFormUpdatedData, nodeToUpdate);
+			}
 		}
+
+		// Notify the callback that the project has changed
+		this.props.onProjectUpdated(project);
 
 		// Close the Add/Edit form
 		this.closeAddEditForm();
@@ -163,20 +176,29 @@ class VisualizationPage extends React.Component {
 		this.closeAddEditForm();
 	}
 
-	onNodeClicked = (nodeTitle) => {
-		console.log(`onNodeClicked(${nodeTitle})`);
+	onNodeCreate = (x, y) => {
+		// Open the form in Add mode and record the key value (i.e. the node
+		// title) and position
+		this.setState({
+			addEditFormOpen: true,
+			addEditFormAddModeEnabled: true,
+			addEditFormDataKeyValue: '',
+			addEditFormDataPositionX: x,
+			addEditFormDataPositionY: y,
+		});
+	}
 
+	onNodeClicked = (nodeTitle) => {
 		// Open the form in Edit mode and record the key value (i.e. the node
 		// title)
 		this.setState({
 			addEditFormOpen: true,
+			addEditFormAddModeEnabled: false,
 			addEditFormDataKeyValue: nodeTitle,
 		});
 	}
 
 	onNodePositionChanged = (nodeTitle, x, y) => {
-		console.log(`onNodePositionChanged(${nodeTitle}, ${x}, ${y})`);
-
 		// Get the index of the node we'll be updating
 		const nodeToUpdateIndex = this.props.project.nodes
 			.findIndex(node =>
@@ -196,7 +218,30 @@ class VisualizationPage extends React.Component {
 			// Set the position
 			nodeToUpdate.position = `${x}, ${y}`;
 
-			console.log(`${nodeToUpdate.title} - (${nodeToUpdate.position})`);
+			// Notify the callback that the project has changed
+			this.props.onProjectUpdated(project);
+		}
+	}
+
+	onEdgeCreate = (sourceNode, destinationNode) => {
+		// Get the source node index
+		const nodeToUpdateIndex = this.props.project.nodes
+			.findIndex(node =>
+				node.title === sourceNode.title);
+
+		// If we found the node, update it
+		if (nodeToUpdateIndex !== -1) {
+			// Get a copy of the project
+			const project = { ...this.props.project };
+
+			// Get the project nodes we'll be updating
+			const projectNodes = project.nodes;
+
+			// Get the node we'll be updating
+			const nodeToUpdate = projectNodes[nodeToUpdateIndex];
+
+			// Append a link to the destination to the body of the source node
+			nodeToUpdate.body += `\n[[${destinationNode.title}]]`;
 
 			// Notify the callback that the project has changed
 			this.props.onProjectUpdated(project);
@@ -311,6 +356,13 @@ class VisualizationPage extends React.Component {
 			};
 		});
 
+	createNewAddEditFormData = () =>
+		// Set up an empty field for each field in the form schema
+		addEditFormSchema.reduce((addEditFormData, addEditFormField) => {
+			addEditFormData[addEditFormField.fieldName] = '';
+			return addEditFormData;
+		}, {});
+
 	render() {
 		// Get the project node links
 		const projectNodeLinks = yarnService
@@ -324,17 +376,38 @@ class VisualizationPage extends React.Component {
 				projectFilePath={this.props.projectFilePath}
 			/>);
 
-		// Set up the Add/Edit form title
-		const addEditFormTitle = 'Edit Node';
+		// The title of the Add/Edit form
+		let addEditFormTitle = '';
 
-		// Generate the form data from the row data
-		const addEditFormData = this.props.project.nodes.reduce((formData, node) => {
-			if (node.title === this.state.addEditFormDataKeyValue) {
-				this.setFieldsBasedOnFormSchema(node, formData);
-			}
+		// The Add/Edit form data
+		let addEditFormData = null;
 
-			return formData;
-		}, {});
+		// Are we adding an item?
+		if (this.state.addEditFormAddModeEnabled) {
+			// Set the Add/Edit form title
+			addEditFormTitle = 'Add Node';
+
+			// Create new Add/Edit form data
+			addEditFormData = this.createNewAddEditFormData();
+
+			// Set the title of the new node (if we have one)
+			addEditFormData.title = this.state.addEditFormDataKeyValue || '';
+
+			// Set the position of the new node
+			addEditFormData.position = `${this.state.addEditFormDataPositionX}, ${this.state.addEditFormDataPositionY}`;
+		} else {
+			// Set the Add/Edit form title
+			addEditFormTitle = 'Edit Node';
+
+			// Generate the form data from the nodes
+			addEditFormData = this.props.project.nodes.reduce((formData, node) => {
+				if (node.title === this.state.addEditFormDataKeyValue) {
+					this.setFieldsBasedOnFormSchema(node, formData);
+				}
+
+				return formData;
+			}, {});
+		}
 
 		// Build the existing nodes (TODO: build non-existing nodes and existing
 		// nodes by walking the incoming/outgoing links)
@@ -359,7 +432,7 @@ class VisualizationPage extends React.Component {
 					onCancel={this.onAddEditFormCancel}
 					title={addEditFormTitle}
 					open={this.state.addEditFormOpen}
-					addModeEnabled={false}
+					addModeEnabled={this.state.addEditFormAddModeEnabled}
 					schema={addEditFormSchema}
 					dataKeyValue={this.state.addEditFormDataKeyValue}
 					data={addEditFormData}
@@ -369,8 +442,10 @@ class VisualizationPage extends React.Component {
 					graphConfig={graphConfig}
 					nodeKey={NODE_KEY}
 					emptyType={EMPTY_TYPE}
+					onNodeCreate={this.onNodeCreate}
 					onNodeClicked={this.onNodeClicked}
 					onNodePositionChanged={this.onNodePositionChanged}
+					onEdgeCreate={this.onEdgeCreate}
 				/>
 			</div>
 		);
