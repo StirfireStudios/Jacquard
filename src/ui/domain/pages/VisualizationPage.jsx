@@ -110,18 +110,6 @@ const EMPTY_TYPE = 'nonExistingNode';
 const NODE_KEY = 'id';
 
 class VisualizationPage extends React.Component {
-	/*
-		TODO:
-
-		We'll have to store project state in this component, otherwise the graph
-		will try and restart every time we move a node
-
-		We'll have to sort out the select/update events, at the moment both are
-		firing at the same time
-
-		Perhaps check if we've changed position and only call the handler if
-		the x/y coordinates are actually different
-	*/
 	constructor(props) {
 		super(props);
 
