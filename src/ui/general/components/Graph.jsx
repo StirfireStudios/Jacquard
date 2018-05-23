@@ -87,7 +87,8 @@ class Graph extends React.Component {
 					nodeSubtypes={this.props.graphConfig.nodeSubtypes}
 					edgeTypes={this.props.graphConfig.edgeTypes}
 					graphControls
-					transitionTime={0}
+					enableFocus={false}
+					transitionTime={1000}
 					zoomDelay={500}
 					zoomDur={750}
 					maxTitleChars={100}
