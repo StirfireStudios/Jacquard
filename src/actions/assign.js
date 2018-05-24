@@ -1,12 +1,16 @@
 import { assignAll } from 'redux-act';
 
-import * as Data from './data'
-import * as Runtime from './runtime';
-import * as View from './view';
+import previewAssign from './preview/assign';
 
-const actions = [Data, Runtime, View];
+const subtrees = [previewAssign];
+
+const actions = [];
 
 export default function(store) {
+  subtrees.forEach((assignFunc) => {
+    assignFunc(store);
+  });
+
   actions.forEach((actionType) => {
     assignAll(actionType, store);
   })

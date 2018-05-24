@@ -293,7 +293,7 @@ class App extends Component {
 
 		const PreviewPageComplete = () => (
 			<BasePage title="Preview">
-				<PreviewPage />
+				<PreviewPage project={this.state.project}/>
 			</BasePage>
 		);
 

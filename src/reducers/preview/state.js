@@ -1,8 +1,8 @@
 import { createReducer } from 'redux-act';
 import * as JacquardRuntime from 'jacquard-runtime'
 
-import * as DataActions from '../../actions/data';
-import * as RuntimeActions from '../../actions/runtime';
+import * as DataActions from '../../actions/preview/sourceData';
+import * as RuntimeActions from '../../actions/preview/runtime';
 
 import handleShowText from './handlers/showText';
 import handleCommand from './handlers/command';
@@ -96,22 +96,18 @@ function updateWithRuntimeData(state, runMode) {
 }
 
 export default createReducer({
-  [RuntimeActions.Activate]: (state) => ({
+  [DataActions.Compiled]: (state) => ({
 	  ...state,
-	  active: state.ready,
-	}),
+	  ready: true,
+  }),
+  [DataActions.Updated]: (state) => ({
+    ...state,
+    ready: false
+  }),
   [RuntimeActions.Deactivate]: (state) => ({
 	  ...state,
 	  active: false,
-	}),
-  [DataActions.LoadComplete]: (state, data) => {
-    runtime.loadFile(data.handle);
-    return updateWithRuntimeData(state);
-  },
-  [DataActions.UnloadFile]: (state, type) => {
-    runtime.removeFile(convertType(type));
-    return updateWithRuntimeData(state);
-  },
+  }),
   [RuntimeActions.Run]: (state) => {
     return updateWithRuntimeData(state, "toOption");
   },
