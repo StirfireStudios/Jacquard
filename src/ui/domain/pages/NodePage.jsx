@@ -6,6 +6,14 @@ import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 import Icon from 'material-ui/Icon';
 import List, { ListItem, ListItemText } from 'material-ui/List';
+import Paper from 'material-ui/Paper';
+import {
+	FormControl,
+	FormGroup,
+	FormControlLabel,
+} from 'material-ui/Form';
+import TextField from 'material-ui/TextField';
+import Checkbox from 'material-ui/Checkbox';
 import ErrorIcon from '@material-ui/icons/Error';
 import WarningIcon from '@material-ui/icons/Warning';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -45,6 +53,29 @@ const styles = theme => ({
 	nodeNonExistingLinkButton: {
 		marginRight: theme.spacing.unit * 2,
 		backgroundColor: red[500],
+	},
+	searchBoxContainer: {
+		position: 'absolute',
+		zIndex: 10,
+		width: theme.spacing.unit * 64,
+		bottom: theme.spacing.unit * 3,
+		right: theme.spacing.unit * 16,
+		margin: 0,
+		padding: theme.spacing.unit * 2,
+		color: theme.palette.common.white,
+		backgroundColor: theme.palette.common.white,
+	},
+	searchBoxForm: {
+		display: 'flex',
+		flexWrap: 'wrap',
+		width: '100%',
+	},
+	searchBoxText: {
+		width: '50%',
+		marginRight: theme.spacing.unit * 2,
+	},
+	searchBoxFlag: {
+		width: '40%',
 	},
 });
 
@@ -251,6 +282,71 @@ const renderGeneralValidationResults = (projectValidationResults) => {
 };
 
 class NodeListPage extends React.Component {
+	constructor(props) {
+		super(props);
+
+		// Set up the state of the component
+		this.state = {
+			// The text we'll search nodes for
+			searchText: '',
+			// Where to search
+			searchTitle: true,
+			searchBody: true,
+			searchTags: true,
+		};
+	}
+
+	onSearchTextChange = (searchText) => {
+		this.setState({ searchText });
+	}
+
+	onSearchTitleCheckboxChange = (checked) => {
+		this.setState({ searchTitle: checked });
+	}
+
+	onSearchBodyCheckboxChange = (checked) => {
+		this.setState({ searchBody: checked });
+	}
+
+	onSearchTagsCheckboxChange = (checked) => {
+		this.setState({ searchTags: checked });
+	}
+
+	getProjectNodeHiddenStates = (projectNodes) => {
+		// If there's no search text, no nodes are missing
+		if (this.state.searchText === '') {
+			return {};
+		}
+
+		// Get the lower case version of the search text
+		const searchTextLowerCase = this.state.searchText.toLowerCase();
+
+		// Get the search flags
+		const { searchTitle, searchBody, searchTags } = this.state;
+
+		// Build the hidden states of the nodes
+		const projectNodeHiddenStates = projectNodes.reduce((hiddenStates, node) => {
+			// Get the node text as lowercase
+			const nodeTitleLowerCase = node.title.toLowerCase();
+			const nodeBodyLowerCase = node.body.toLowerCase();
+			const nodeTagsLowerCase = node.tags.toLowerCase();
+
+			// The node is hidden if we can't find the search text in the nodes
+			// title, body, or tags (each of these searches is optional)
+			// NOTE: searching is case-insensitive
+			const matchTitle = ((searchTitle) && (nodeTitleLowerCase.indexOf(searchTextLowerCase) >= 0));
+			const matchBody = ((searchBody) && (nodeBodyLowerCase.indexOf(searchTextLowerCase) >= 0));
+			const matchTags = ((searchTags) && (nodeTagsLowerCase.indexOf(searchTextLowerCase) >= 0));
+
+			// Update the hidden state of the node
+			hiddenStates[node.title] = (!matchTitle) && (!matchBody) && (!matchTags);
+
+			return hiddenStates;
+		}, {});
+
+		return projectNodeHiddenStates;
+	}
+
 	render() {
 		// Validate the project nodes
 		const projectValidationResults = yarnService
@@ -328,6 +424,9 @@ class NodeListPage extends React.Component {
 				projectFilePath={this.props.projectFilePath}
 			/>);
 
+		// Build a object representing the hidden state of each node
+		const projectNodeHiddenStates = this.getProjectNodeHiddenStates(this.props.project.nodes);
+
 		return (
 			<div>
 				<ListPage
@@ -335,6 +434,7 @@ class NodeListPage extends React.Component {
 					onDataModified={this.props.onDataModified}
 					project={this.props.project}
 					projectPropName="nodes"
+					projectPropNameHiddenStates={projectNodeHiddenStates}
 					fields={fields}
 					keyName="title"
 					addEditForm={addEditForm}
@@ -380,6 +480,47 @@ class NodeListPage extends React.Component {
 					]}
 				/>
 				{generalValidationResults}
+				<Paper className={this.props.classes.searchBoxContainer}>
+					<FormControl
+						component="fieldset"
+						className={this.props.classes.searchBoxForm}
+					>
+						<FormGroup row>
+							<TextField
+								className={this.props.classes.searchBoxText}
+								value={this.state.searchText}
+								onChange={event => this.onSearchTextChange(event.target.value)}
+							/>
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={this.state.searchTitle}
+										onChange={(event, checked) => this.onSearchTitleCheckboxChange(checked)}
+									/>
+								}
+								label="Title"
+							/>
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={this.state.searchBody}
+										onChange={(event, checked) => this.onSearchBodyCheckboxChange(checked)}
+									/>
+								}
+								label="Body"
+							/>
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={this.state.searchTags}
+										onChange={(event, checked) => this.onSearchTagsCheckboxChange(checked)}
+									/>
+								}
+								label="Tags"
+							/>
+						</FormGroup>
+					</FormControl>
+				</Paper>
 			</div>
 		);
 	}

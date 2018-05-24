@@ -12,9 +12,6 @@ const isDev = require('electron-is-dev');
 // The main window
 let mainWindow = null;
 
-// Whether we're closing the main window
-let mainWindowIsBeingClosed = false;
-
 // The project file path
 let projectCurrentFilePath = '';
 
@@ -31,15 +28,20 @@ function createWindow() {
 
 	// Handle the window being closed
 	mainWindow.on('close', (event) => {
-		// Are we not closing the main window?
-		if (!mainWindowIsBeingClosed) {
-			// Has the project been modified?
-			if (projectIsModified) {
+		// Has the project been modified?
+		if (projectIsModified) {
+			// Ask the user if they really want to close the application
+			const buttonClickIndex = dialog.showMessageBox({
+				type: 'question',
+				title: 'Warning!',
+				message: 'Changes will be lost, are you sure you want to close the application?',
+				buttons: ['Yes', 'No'],
+			});
+
+			// Did the user select 'No'?
+			if (buttonClickIndex === 1) {
 				// Prevent the window from closing
 				event.preventDefault();
-
-				// Ask the user if they really want to close the application
-				mainWindow.webContents.send('application-confirm-close');
 			}
 		}
 	});
@@ -328,14 +330,6 @@ ipcMain.on('projectExportToYarn', (event, arg) => {
 
 	// Ask the user to export the project as Yarn under a different file path
 	projectExportAsYarn(event, projectFilePath, projectYarn);
-});
-
-ipcMain.on('applicationClose', () => {
-	// We're closing the window
-	mainWindowIsBeingClosed = true;
-
-	// Close the window
-	mainWindow.close();
 });
 
 ipcMain.on('showError', (event, arg) => {

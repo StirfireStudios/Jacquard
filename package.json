@@ -1,12 +1,64 @@
 {
-  "devDependencies": {
-    "create-react-app": "^1.5.2"
+  "name": "jaquard-frontend",
+  "author": "Stirfire Studios",
+  "productName": "Jaquard",
+  "description": "Yarn-based narrative tool!",
+  "version": "0.2.0",
+  "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
+  "build": {
+    "appId": "com.jaquard",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    }
   },
   "dependencies": {
-    "material-design-icons": "^3.0.1",
+    "@material-ui/icons": "^1.0.0-beta.43",
+    "bondage": "^1.0.4",
+    "classnames": "^2.2.5",
+    "d3": "^5.4.0",
+    "electron-is-dev": "^0.3.0",
+    "jacquard-yarnparser": "^0.3.4",
     "material-ui": "^1.0.0-beta.34",
-    "material-ui-icons": "^1.0.0-beta.17",
+    "prop-types": "^15.6.0",
+    "radium": "^0.24.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-icons": "^2.2.7",
     "react-router-dom": "^4.2.2",
-    "typeface-roboto": "^0.0.54"
+    "uuid": "^3.2.1"
+  },
+  "scripts": {
+    "test": "react-app-rewired test --env=jsdom",
+    "eject": "react-scripts eject",
+    "lint": "node ./node_modules/eslint/bin/eslint.js --fix --ext .js ./src",
+    "start-dev": "node util/start-dev.js",
+    "build": "node util/electron-build.js"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "concurrently": "^3.5.1",
+    "electron": "^1.8.4",
+    "electron-builder": "^20.10.0",
+    "electron-devtools-installer": "^2.2.3",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "react-app-rewired": "1.5.2",
+    "react-scripts": "^1.1.4",
+    "wait-on": "^2.1.0"
+  },
+  "peerDependencies": {
+    "d3": "^5.3.0",
+    "radium": "^0.24.0",
+    "react-icons": "^2.2.7"
   }
 }

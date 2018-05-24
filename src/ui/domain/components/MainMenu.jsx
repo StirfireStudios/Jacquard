@@ -8,7 +8,7 @@ import { ListItemText } from 'material-ui/List';
 import orange from 'material-ui/colors/orange';
 
 import themes from '../themes';
-import packageFile from '../../../../package.json'
+import packageFile from '../../../../package.json';
 
 /* TODO: Change the links to use embedded components like so:
 class ListItemLink extends React.Component {
@@ -44,9 +44,14 @@ class MainMenu extends React.Component {
 	ProjectMenu() {
 		// Determine the Save Project class based on whether the project has been
 		// modified
-		const saveProjectClass = (this.props.projectIsModified)
-			? this.props.classes.dataChanged
-			: {};
+		const saveProjectClasses = (this.props.projectIsModified)
+			?
+			{
+				root: this.props.classes.dataChanged,
+			}
+			:
+			{
+			};
 
 		return (this.props.hasProject)
 			? (
@@ -55,6 +60,11 @@ class MainMenu extends React.Component {
 					<Link to="/run">
 						<MenuItem button>
 							<ListItemText primary="Run" />
+						</MenuItem>
+					</Link>
+					<Link to="/visualization">
+						<MenuItem button>
+							<ListItemText primary="Visualization" />
 						</MenuItem>
 					</Link>
 					<Divider />
@@ -81,9 +91,7 @@ class MainMenu extends React.Component {
 					<Divider />
 					<MenuItem
 						button
-						classes={{
-							root: saveProjectClass,
-						}}
+						classes={saveProjectClasses}
 						onClick={this.props.onSaveProject}
 					>
 						<ListItemText primary="Save Project" />
