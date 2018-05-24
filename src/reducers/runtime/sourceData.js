@@ -1,6 +1,6 @@
 import { createReducer } from 'redux-act';
 
-import * as DataActions from '../actions/data';
+import * as DataActions from '../../actions/data';
 
 function dupeArray(array) {
   return array.map((item) => (item));

@@ -1,12 +1,16 @@
 import { combineReducers } from 'redux'
-import Data from './data';
-import Runtime from './runtime';
-import View from './view';
+import runtimeSourceData from './runtime/sourceData';
+import runtimeState from './runtime/state';
+import runtimeView from './runtime/view';
 
-const rootReducer = combineReducers({
-  Data,
-  Runtime,
-  View,
-})
 
-export default rootReducer
+export default function(state, action) {
+  if (state == null) state = { Runtime: {} }
+  return {
+    Runtime: {
+      SourceData: runtimeSourceData(state.Runtime.SourceData, action),
+      State: runtimeState(state.Runtime.State),
+      View: runtimeView(state.Runtime.View, action),
+    }
+  }
+}

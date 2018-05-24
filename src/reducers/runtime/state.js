@@ -1,14 +1,14 @@
 import { createReducer } from 'redux-act';
 import * as JacquardRuntime from 'jacquard-runtime'
 
-import * as DataActions from '../actions/data';
-import * as RuntimeActions from '../actions/runtime';
+import * as DataActions from '../../actions/data';
+import * as RuntimeActions from '../../actions/runtime';
 
-import handleShowText from './runtimeHandlers/showText';
-import handleCommand from './runtimeHandlers/command';
-import handleOptions from './runtimeHandlers/options';
-import handleNodeChange from './runtimeHandlers/nodeChange';
-import handleVariable from './runtimeHandlers/variable';
+import handleShowText from './handlers/showText';
+import handleCommand from './handlers/command';
+import handleOptions from './handlers/options';
+import handleNodeChange from './handlers/nodeChange';
+import handleVariable from './handlers/variable';
 
 const runtime = new JacquardRuntime.Runtime();
 
