@@ -1,19 +1,16 @@
 import { createStore, compose } from 'redux';
-import DevTools from '../components/DevTools';
 
-import rootReducer from '../reducers'
-
-let enhancer = null
-if (process.env.NODE_ENV !== 'production') {
-  enhancer = compose(DevTools.instrument())
-}
+import reducers from '../reducers';
 
 export default function configureStore(initialState) {
   if (process.env.NODE_ENV === 'production') {
-    return createStore(rootReducer, initialState);
+    return createStore(reducers, initialState);
   }
   
-  const store = createStore(rootReducer, initialState, enhancer)
+  const store = createStore(
+    reducers, initialState, 
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  );
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers

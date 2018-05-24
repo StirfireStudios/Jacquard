@@ -24,7 +24,8 @@ const yarnLoadedMessage = 'yarn-loaded';
 
 function createWindow() {
 	mainWindow = new BrowserWindow({ width: 900, height: 680 });
-	mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, 'index.html')}`);
+	const urlBase = isDev ? 'http://localhost:3000' : `file://${__dirname}`;
+	mainWindow.loadURL(`${urlBase}/index.html`);
 
 	// Handle the window being closed
 	mainWindow.on('close', (event) => {
@@ -49,15 +50,25 @@ function createWindow() {
 	mainWindow.on('closed', () => { mainWindow = null; });
 
 	if (isDev) {
+		// open dev console in another window;
+		mainWindow.webContents.openDevTools({mode: 'undocked'});
+
 		// Install React Dev Tools
-		const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer'); // eslint-disable-line
+		const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer'); // eslint-disable-line
 		installExtension(REACT_DEVELOPER_TOOLS)
-			.then((name) => {
+		.then((name) => {
+			console.log(`Added Extension:  ${name}`);
+		})
+		.catch((err) => {
+			console.log('An error occurred: ', err);
+		});
+		installExtension(REDUX_DEVTOOLS) 
+		.then((name) => {
 				console.log(`Added Extension:  ${name}`);
-			})
-			.catch((err) => {
-				console.log('An error occurred: ', err);
-			});
+		})
+		.catch((err) => {
+				console.log('Redux Dev Tools - An error occurred: ', err);
+		});			
 	}
 }
 

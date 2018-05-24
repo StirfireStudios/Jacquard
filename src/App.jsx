@@ -25,13 +25,10 @@ import MainMenu from './ui/domain/components/MainMenu';
 import projectService from './services/projectService';
 import yarnService from './services/yarnService';
 
-//Redux
-import { Provider } from 'react-redux';
+import { Provider as ReduxStoreProvider } from 'react-redux';
 
-// Runtime
 import assignActions from './actions/assign';
 import createStore from './store';
-
 
 const theme = createMuiTheme();
 
@@ -383,13 +380,13 @@ const AppContainer = () => {
 	const AppWithRouter = withRouter(App);
 
 	return (
-		<Provider store={store}>
+		<ReduxStoreProvider store={store}>
 			<MuiThemeProvider theme={theme}>
 				<Router>
 					<AppWithRouter />
 				</Router>
 			</MuiThemeProvider>
-		</Provider>
+		</ReduxStoreProvider>
 	);
 };
 
