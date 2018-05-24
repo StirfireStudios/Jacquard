@@ -35,13 +35,8 @@
     "test": "react-app-rewired test --env=jsdom",
     "eject": "react-scripts eject",
     "lint": "node ./node_modules/eslint/bin/eslint.js --fix --ext .js ./src",
-    "dev-start": "concurrently \"BROWSER=none react-app-rewired start\" \"wait-on http://localhost:3000 && electron .\"",
-    "dev-start-win": ".\\node_modules\\.bin\\concurrently \"set BROWSER=none&&react-app-rewired start\" \".\\node_modules\\.bin\\wait-on http://localhost:3000 && .\\node_modules\\.bin\\electron .\"",
-    "prd-pack": "react-app-rewired build && electron-builder",
-    "prd-pack-win32": "react-app-rewired build && copy .\\assets\\icon.png .\\build\\ && electron-builder --win --ia32",
-    "prd-pack-win64": "react-app-rewired build && copy .\\assets\\icon.png .\\build\\ && electron-builder --win --x64",
-    "prd-pack-mac": "react-app-rewired build && cp ./assets/icon.png ./build/ && electron-builder --mac --x64",
-    "prd-pack-linux": "react-app-rewired build && cp ./assets/icon.png ./build/ && electron-builder --linux --x64"
+    "start-dev": "node util/start-dev.js",
+    "build": "node util/electron-build.js"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",

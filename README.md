@@ -36,18 +36,13 @@ Instead, it will copy all the configuration files and the transitive dependencie
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
 ### `dev-start`
-From the `frontend` directory, type `dev-start` on mac/linux and `dev-start-win` on windows. This will launch an instance of the Electron application.
+From the `frontend` directory, type `start-dev`. This will launch an instance of the Electron application.
 
 If you make modifications to the source files and wish to see your changes in the Electron application without stopping and starting it, simply refresh the content within the app using `ctrl-r`/`command-r` depending on your platform of choice.
 
 ### Packaging
-Depending on the platform you want to build for, you can use the relevant Yarn script (the build tool, not the dialog engine!) to produce a platform-specific binary:
-```
-yarn prd-pack
-yarn prd-pack-win32
-yarn prd-pack-win64
-yarn prd-pack-mac
-yarn prd-pack-linux
-```
 
-The resultant binaries are placed into the `/frontend/dist/` directory.
+To build install files execute `yarn build` - by default this will build for your current OS.
+Right now cross-platform builds are not supported.
+
+The resultant binaries are placed into the `/dist/` directory.
