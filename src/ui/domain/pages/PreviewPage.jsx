@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Import Material UI Components
 import Typography from 'material-ui/Typography';
 
 import { withStyles } from 'material-ui/styles';
@@ -25,8 +24,7 @@ class RuntimePage extends React.Component {
 	render() {
 		return (
 			<div>
-				<CurrentMode/>
-				<DevTools/>
+				I am the runtime
 			</div>
 		);
 	}

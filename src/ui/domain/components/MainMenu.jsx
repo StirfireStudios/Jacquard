@@ -126,7 +126,7 @@ class MainMenu extends React.Component {
 				<Divider />
 				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
 				<Divider />
-				<Link to="/runtime"><MenuItem button><ListItemText primary="Runtime" /></MenuItem></Link>
+				<Link to="/preview"><MenuItem button><ListItemText primary="Preview" /></MenuItem></Link>
 				<this.ProjectMenu />
 				<Divider />
 				<MenuList>

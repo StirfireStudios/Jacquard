@@ -18,7 +18,7 @@ import DefaultPage from './ui/domain/pages/DefaultPage';
 import FunctionPage from './ui/domain/pages/FunctionPage';
 import NodePage from './ui/domain/pages/NodePage';
 import VariablePage from './ui/domain/pages/VariablePage';
-import RuntimePage from './ui/domain/pages/RuntimePage';
+import PreviewPage from './ui/domain/pages/PreviewPage';
 import MainMenu from './ui/domain/components/MainMenu';
 
 
@@ -291,9 +291,9 @@ class App extends Component {
 			</BasePage>
 		);
 
-		const RuntimePageComplete = () => (
-			<BasePage title="Runtime">
-				<RuntimePage />
+		const PreviewPageComplete = () => (
+			<BasePage title="Preview">
+				<PreviewPage />
 			</BasePage>
 		);
 
@@ -369,7 +369,7 @@ class App extends Component {
 				<Route path="/functions" component={FunctionPageComplete} />
 				<Route path="/nodes" component={NodePageComplete} />
 				<Route path="/variables" component={VariablePageComplete} />
-				<Route path="/runtime" component={RuntimePageComplete} />
+				<Route path="/preview" component={PreviewPageComplete} />
 			</div>
 		);
 	}
