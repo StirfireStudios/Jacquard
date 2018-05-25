@@ -1,19 +1,42 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { withStyles } from 'material-ui/styles';
 
 import themes from '../themes';
 
-import ValidationPanel from '../components/Preview/ValidationPanel';
+import CompilePanel from '../components/Preview/CompilePanel';
+import TextWindow from '../components/Preview/TextWindow';
+import Interface from '../components/Preview/Interface';
+
+import { OptionSelect } from '../../../actions/preview/runtime';
 
 class RuntimePage extends React.Component {	
 	render() {
 		return (
 			<div>
-				<ValidationPanel project={this.props.project}/>
+				<CompilePanel project={this.props.project}/>
+				<Interface/>
+				<TextWindow 
+					key="textDisplay"
+					className="display"
+					text={this.props.text}
+					options={this.props.options}
+					optionSelect={OptionSelect}
+					halted={this.props.halted}
+				/>
 			</div>
 		);
 	}
 }
 
-export default withStyles(themes.defaultTheme)(RuntimePage);
+function mapStateToProps(state) {
+	const Runtime = state.Preview.State;
+  return {
+    options: Runtime.options,
+		text: Runtime.text,
+		halted: Runtime.halted,
+  }
+}
+
+export default connect(mapStateToProps)(withStyles(themes.defaultTheme)(RuntimePage));

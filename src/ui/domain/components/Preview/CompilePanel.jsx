@@ -17,15 +17,15 @@ function validateClicked() {
 }
 
 function renderButton() {
-	if (this.props.valid) return null;
+	let name = (this.props.valid ? "Compiled!" : "Compile");
 	return (
 		<Button
 			variant="raised"
 			size="large"
 			onClick={validateClicked.bind(this)}
-			disabled={this.props.busy}
+			disabled={this.props.busy | this.props.valid}
 		>
-			Validate
+			{name}
 	  </Button>
 	);
 }
@@ -54,7 +54,6 @@ function renderErrors() {
 class ValidationPanel extends React.Component {
 	render() {
 		if (this.props.valid && !this.props.errorsExist) return null;
-
 		return (
 			<div>
 				{renderButton.call(this)} 

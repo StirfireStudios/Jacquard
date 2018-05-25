@@ -29,12 +29,13 @@ function updateWithRuntimeData(state, runMode) {
     return {
       ...state,
       ready: false,
+      runMode: null,
+      options: null,
       characters: [],
       variables: [],
-      variableState: {},
       functions: [],
       nodeNames: [],
-      nodeHistory: [],
+      halted: false,
       text: [],
     }
   }
@@ -52,7 +53,6 @@ function updateWithRuntimeData(state, runMode) {
   while(keepRunning) {
     keepRunning = runMode !== "step";
     const message = runtime.run(runMode === "step");
-    debugger;
     if (message != null) {
       switch(message.constructor.name) {
         case "NodeChange":
@@ -76,6 +76,7 @@ function updateWithRuntimeData(state, runMode) {
           handleVariable(newState.text, message);
           break;  
         case "Halt": 
+          console.log("HALTED");
           newState.text.push({halted: true});
           newState.halted = true;
           keepRunning = false;
@@ -104,13 +105,12 @@ export default createReducer({
     runtime.loadFile(handle);
     return { ...state, ready: runtime.ready};
   },
-  [DataActions.Updated]: (state) => ({
-    ...state,
-    ready: false
-  }),
+  [DataActions.Updated]: (state) => {
+    runtime.reset();
+    return updateWithRuntimeData();
+  },
   [RuntimeActions.Deactivate]: (state) => ({
 	  ...state,
-	  active: false,
   }),
   [RuntimeActions.Run]: (state) => {
     return updateWithRuntimeData(state, "toOption");
@@ -135,7 +135,6 @@ export default createReducer({
   },
 }, {
   ready: false,
-  active: false,
   runMode: null,
   options: null,
   characters: [],
@@ -143,4 +142,5 @@ export default createReducer({
   functions: [],
   nodeNames: [],
   halted: false,
+  text: [],
 });
