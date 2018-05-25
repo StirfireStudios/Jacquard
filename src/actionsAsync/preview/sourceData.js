@@ -36,8 +36,17 @@ export function Validate(project) {
       const compiler = new Compiler();
       compiler.process(parser);
       compiler.assemble();
-      
+      compiler.writeBuffers(false, false)
+      .then((buffers) => {
+        console.log("buffer complete");
+        console.log(buffers);
+      })
+      .catch((err) => {
+        console.error(err);
+        Actions.CompileErrors([`Compile failed :( ${err.toString()}`])
+      });
     } catch (err) {
+      console.error(err);
       Actions.CompileErrors([`Compile failed :( ${err.toString()}`]);
       return;
     }
