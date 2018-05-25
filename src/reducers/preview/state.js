@@ -12,6 +12,10 @@ import handleVariable from './handlers/variable';
 
 const runtime = new JacquardRuntime.Runtime();
 
+export function getRuntime() {
+  return runtime;
+}
+
 function convertType(textType) {
   if (textType === 'logic') return JacquardRuntime.FileIO.Types.Logic;
   if (textType === 'dialogue') return JacquardRuntime.FileIO.Types.Dialogue;
@@ -96,10 +100,10 @@ function updateWithRuntimeData(state, runMode) {
 }
 
 export default createReducer({
-  [DataActions.Compiled]: (state) => ({
-	  ...state,
-	  ready: true,
-  }),
+  [RuntimeActions.LoadFile]: (state, handle) => {
+    runtime.loadFile(handle);
+    return { ...state, ready: runtime.ready};
+  },
   [DataActions.Updated]: (state) => ({
     ...state,
     ready: false

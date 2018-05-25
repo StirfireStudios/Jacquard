@@ -8,7 +8,7 @@ export default function(state, action) {
   return {
     Preview: {
       SourceData: previewSourceData(state.Preview.SourceData, action),
-      State: previewState(state.Preview.State),
+      State: previewState(state.Preview.State, action),
       View: previewView(state.Preview.View, action),
     }
   }

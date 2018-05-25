@@ -1,7 +1,9 @@
 import { Parser } from 'jacquard-yarnparser';
 import { Compiler } from 'jacquard-yarncompiler';
+import { FileIO } from 'jacquard-runtime';
 
 import * as Actions from '../../actions/preview/sourceData';
+import * as RuntimeActions from '../../actions/preview/runtime';
 
 import service from '../../services/yarnService';
 
@@ -36,10 +38,15 @@ export function Validate(project) {
       const compiler = new Compiler();
       compiler.process(parser);
       compiler.assemble();
-      compiler.writeBuffers(false, false)
+      compiler.writeBuffers(true, false)
       .then((buffers) => {
-        console.log("buffer complete");
-        console.log(buffers);
+        Actions.Compiled();
+        FileIO.Open(buffers.logic).then((handle) => {
+          RuntimeActions.LoadFile(handle);
+        });
+        FileIO.Open(buffers.dialogue).then((handle) => {
+          RuntimeActions.LoadFile(handle);
+        })
       })
       .catch((err) => {
         console.error(err);

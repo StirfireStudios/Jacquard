@@ -1,5 +1,6 @@
 import { createAction } from 'redux-act';
 
+export const LoadFile = createAction('Runtime - load data');
 export const Activate = createAction('Runtime - activate');
 export const Deactivate = createAction('Runtime - deactivate');
 export const Run = createAction('Runtime - Run to option');
