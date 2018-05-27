@@ -93,6 +93,7 @@ class ListPage extends React.Component {
 		// Is Add mode enabled?
 		if (this.state.addEditFormAddModeEnabled) {
 			// Add the form data to the projects row data
+			addEditFormUpdatedData.dirty = true;
 			rowData.push(addEditFormUpdatedData);
 		} else {
 			// Get the index of the row we'll be updating
@@ -109,6 +110,7 @@ class ListPage extends React.Component {
 
 				// Update the row fields from the form data according to the form schema
 				this.setFieldsBasedOnFormSchema(addEditFormUpdatedData, rowToUpdate);
+				rowToUpdate.dirty = true;
 			}
 		}
 
