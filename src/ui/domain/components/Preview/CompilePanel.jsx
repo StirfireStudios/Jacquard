@@ -2,11 +2,11 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import Typography from 'material-ui/Typography';
+import Typography from '@material-ui/core/Typography';
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 
 import * as AsyncActions from '../../../../actionsAsync/preview/sourceData';
 
@@ -20,8 +20,7 @@ function renderButton() {
 	let name = (this.props.valid ? "Compiled!" : "Compile");
 	return (
 		<Button
-			variant="raised"
-			size="large"
+			variant="outlined"
 			onClick={validateClicked.bind(this)}
 			disabled={this.props.busy | this.props.valid}
 		>

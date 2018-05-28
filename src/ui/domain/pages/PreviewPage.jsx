@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import themes from '../themes';
 
@@ -24,6 +24,7 @@ class RuntimePage extends React.Component {
 					options={this.props.options}
 					optionSelect={OptionSelect}
 					halted={this.props.halted}
+					endOfFile={this.props.endOfFile}
 				/>
 			</div>
 		);
@@ -36,6 +37,7 @@ function mapStateToProps(state) {
     options: Runtime.options,
 		text: Runtime.text,
 		halted: Runtime.halted,
+		endOfFile: Runtime.endOfFile,
   }
 }
 

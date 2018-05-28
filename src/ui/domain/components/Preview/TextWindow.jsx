@@ -1,27 +1,30 @@
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
   monospace: {
     "font-family": "monospace"
   },
   nodeEntry: {
-    "border": "1px solid green",
-    "padding": "2px",
-    "margin": "5px",
+    border: "1px solid green",
+    padding: "2px",
+    margin: "5px",
   },
   optionText: {
-    "border": "1px dashed grey",
-    "padding": "2px",
-    "margin": "5px",     
+    border: "1px dashed grey",
+    padding: "2px",
+    margin: "5px",     
   },
   argument: {
-    "border": "2px solid blue",
-    "padding": "2px",
-    "margin": "5px",    
-  }
+    border: "2px solid blue",
+    padding: "2px",
+    margin: "5px",    
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
 })
 
 function renderText(classes, index, string) {
@@ -85,6 +88,7 @@ function renderTextArray() {
 function renderOptions() {
   const options = [];
   const optionSelect = this.props.optionSelect;
+  const classes = this.props.classes;
   let optionIndex = 0;
 
 
@@ -92,9 +96,14 @@ function renderOptions() {
     for(let option of this.props.options) {
       const action = optionSelect.bind(null, option);
       options.push(
-        <div key={optionIndex}>
-          <button onClick={action}>{option.text[0].text}</button>
-        </div>
+        <Button 
+          className={classes.button} 
+          key={optionIndex} 
+          onClick={action} 
+          variant='raised'
+        >
+          {option.text[0].text}
+        </Button>
       )
       optionIndex++;
     }
@@ -104,8 +113,9 @@ function renderOptions() {
 }
 
 function renderHalted() {
-  if (!this.props.halted) return null;
-  return (<div>Halted</div>);
+  if (this.props.halted) return (<div>Halted</div>);
+  if (this.props.endOfFile) return (<div>End Of File</div>);
+  return null;
 }
 
 class TextWindow extends React.Component {

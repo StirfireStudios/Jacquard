@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import Drawer from 'material-ui/Drawer';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Drawer from '@material-ui/core/Drawer';
 
 import themes from '../../themes';
 
