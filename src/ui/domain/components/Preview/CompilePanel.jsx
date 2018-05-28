@@ -2,8 +2,6 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import Typography from '@material-ui/core/Typography';
-
 import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -22,7 +20,7 @@ function renderButton() {
 		<Button
 			variant="outlined"
 			onClick={validateClicked.bind(this)}
-			disabled={this.props.busy | this.props.valid}
+			disabled={this.props.busy || this.props.valid}
 		>
 			{name}
 	  </Button>

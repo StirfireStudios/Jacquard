@@ -1,7 +1,6 @@
 import React from 'react';
 import Drawer from '@material-ui/core/Drawer';
 import { withStyles } from '@material-ui/core/styles';
-import MenuList from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core//Divider';
 import { Link } from 'react-router-dom';

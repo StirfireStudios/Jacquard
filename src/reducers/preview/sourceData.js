@@ -6,10 +6,6 @@ function dupeArray(array) {
   return array.map((item) => (item));
 }
 
-function filterArray(array, removeItem) {
-  return array.filter((item) => (item !== removeItem));
-}
-
 export default createReducer({
   [DataActions.Compiling]: (state) => ({
     ...state,

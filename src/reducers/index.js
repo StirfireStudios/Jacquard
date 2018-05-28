@@ -1,4 +1,3 @@
-import { combineReducers } from 'redux'
 import previewSourceData from './preview/sourceData';
 import previewState from './preview/state';
 import previewView from './preview/view';

@@ -1,5 +1,5 @@
 import { createReducer } from 'redux-act';
-import { FileIO, Messages, Runtime } from 'jacquard-runtime'
+import { Messages, Runtime } from 'jacquard-runtime'
 
 import * as DataActions from '../../actions/preview/sourceData';
 import * as RuntimeActions from '../../actions/preview/runtime';
@@ -14,14 +14,6 @@ const runtime = new Runtime();
 
 export function getRuntime() {
   return runtime;
-}
-
-function convertType(textType) {
-  if (textType === 'logic') return FileIO.Types.Logic;
-  if (textType === 'dialogue') return FileIO.Types.Dialogue;
-  if (textType === 'sourceMap') return FileIO.Types.SourceMap;
-
-  return FileIO.Types.Unknown;
 }
 
 function updateWithRuntimeData(state, runMode) {
@@ -70,7 +62,7 @@ function updateWithRuntimeData(state, runMode) {
           handleOptions(newState, message, runtime);
           keepRunning = false;
           break;
-        case Messages.Options:
+        case Messages.EndOfFile:
           keepRunning = false;
           newState.endOfFile = true;
           break;
