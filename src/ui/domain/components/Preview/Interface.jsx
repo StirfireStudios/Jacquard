@@ -11,6 +11,7 @@ import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 import * as RuntimeActions from '../../../../actions/preview/runtime';
 import * as SourceDataActions from '../../../../actions/preview/sourceData';
+import * as ViewActions from '../../../../actions/preview/view';
 
 const styles = theme => ({
   interface: {
@@ -30,6 +31,11 @@ function onRun() {
 
 function onReset() {
   RuntimeActions.Reset();
+  this.setState({open: false});
+}
+
+function onToggle(state) {
+  ViewActions.ToggleVisibility(state);
   this.setState({open: false});
 }
 
@@ -80,6 +86,18 @@ function renderQuickRun() {
   );
 }
 
+function renderInfoItems() {
+  if (!this.props.ready) return null;
+  return (
+    <div>
+      <Divider/>
+      <MenuItem button={true} onClick={onToggle.bind(this, 'State')}>State</MenuItem>
+      <MenuItem button={true} onClick={onToggle.bind(this, 'Variables')}>Variables</MenuItem>
+      <MenuItem button={true} onClick={onToggle.bind(this, 'Nodes')}>Nodes</MenuItem>
+    </div>
+  );
+}
+
 class Interface extends React.Component {
   state = {
     open: false,
@@ -99,6 +117,7 @@ class Interface extends React.Component {
         {renderQuickRun.call(this)}
         <Drawer anchor="right" open={this.state.open} onClose={toggleDrawer.bind(this, false)}>
           {renderRunItem.call(this)}
+          {renderInfoItems.call(this)}
           <Divider/>
           {renderRestartItem.call(this)}
           <Button onClick={closeAndCallBind.call(this, SourceDataActions.Updated)}>Recompile</Button>
