@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TextField from 'material-ui/TextField';
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-// import Paper from 'material-ui/Paper';
-import Icon from 'material-ui/Icon';
-import List, { ListItem, ListItemText, ListSubheader } from 'material-ui/List';
-import red from 'material-ui/colors/red';
-import orange from 'material-ui/colors/orange';
+import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import red from '@material-ui/core/colors/red';
+import orange from '@material-ui/core/colors/orange';
 
 import uuidv4 from 'uuid/v4';
 

@@ -19,7 +19,8 @@
     }
   },
   "dependencies": {
-    "@material-ui/icons": "^1.0.0-beta.43",
+    "@material-ui/core": "^1.1.0",
+    "@material-ui/icons": "^1.1.0",
     "bondage": "^1.0.4",
     "classnames": "^2.2.5",
     "d3": "^5.4.0",
@@ -27,7 +28,6 @@
     "jacquard-runtime": "0.2.x",
     "jacquard-yarncompiler": "0.2.x",
     "jacquard-yarnparser": "^0.3.4",
-    "material-ui": "^1.0.0-beta.34",
     "prop-types": "^15.6.0",
     "radium": "^0.24.0",
     "react": "^16.2.0",
