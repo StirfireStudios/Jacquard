@@ -101,17 +101,18 @@ export default createReducer({
     const handles = Object.assign([], state.handles);
     handles.push(handle);
     runtime.loadFile(handle);
-    return { 
+    return updateWithRuntimeData({
       ...state,
       handles: handles,
-      ready: runtime.ready
-    };
+    })
   },
   [DataActions.Updated]: (state) => {
     runtime.reset();
     return updateWithRuntimeData({
       ...state,
       handles: [],
+      halted: false,
+      endOfFile: false,
     });
   },
   [RuntimeActions.Reset]: (state) => {
@@ -120,6 +121,8 @@ export default createReducer({
     return updateWithRuntimeData({
       ...state,
       runMode: null,
+      halted: false,
+      endOfFile: false,
       text: [], 
       options: null,
     });

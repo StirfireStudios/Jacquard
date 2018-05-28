@@ -8,6 +8,7 @@ import themes from '../themes';
 import CompilePanel from '../components/Preview/CompilePanel';
 import TextWindow from '../components/Preview/TextWindow';
 import Interface from '../components/Preview/Interface';
+import InfoPanel from '../components/Preview/InfoPanel';
 
 import { OptionSelect } from '../../../actions/preview/runtime';
 
@@ -26,6 +27,7 @@ class RuntimePage extends React.Component {
 					halted={this.props.halted}
 					endOfFile={this.props.endOfFile}
 				/>
+				<InfoPanel/>
 			</div>
 		);
 	}
