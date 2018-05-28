@@ -118,7 +118,20 @@ function renderHalted() {
   return null;
 }
 
+function scrollToBottom() {
+  if (this.messagesEnd == null) return;
+  this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+}
+
 class TextWindow extends React.Component {
+  componentDidMount() {
+    scrollToBottom.call(this);
+  }
+  
+  componentDidUpdate() {
+    scrollToBottom.call(this);
+  }
+
   render() {
     if (this.props.text.length === 0) return null;
     return (
@@ -126,6 +139,7 @@ class TextWindow extends React.Component {
         {renderTextArray.call(this)}
         {renderOptions.call(this)}
         {renderHalted.call(this)}
+        <div ref={(el) => { this.messagesEnd = el; }}></div>
       </div>
     )
   }
