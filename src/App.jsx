@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { HashRouter as Router, Route, withRouter } from 'react-router-dom';
 
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core//styles';
 
 // Electron Imports
 import { ipcRenderer } from 'electron'; // eslint-disable-line

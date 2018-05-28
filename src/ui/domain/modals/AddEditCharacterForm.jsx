@@ -1,6 +1,6 @@
 import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import TextField from 'material-ui/TextField';
+import { withStyles } from '@material-ui/core//styles';
+import TextField from '@material-ui/core//TextField';
 import themes from '../themes';
 import ModalDialog from '../../general/components/ModalDialog';
 

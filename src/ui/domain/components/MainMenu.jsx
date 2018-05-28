@@ -1,11 +1,12 @@
 import React from 'react';
-import Drawer from 'material-ui/Drawer';
-import { withStyles } from 'material-ui/styles';
-import { MenuList, MenuItem } from 'material-ui/Menu';
-import Divider from 'material-ui/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import { withStyles } from '@material-ui/core/styles';
+import MenuList from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Divider from '@material-ui/core//Divider';
 import { Link } from 'react-router-dom';
-import { ListItemText } from 'material-ui/List';
-import orange from 'material-ui/colors/orange';
+import ListItemText from '@material-ui/core/ListItemText';
+import orange from '@material-ui/core//colors/orange';
 
 import themes from '../themes';
 import packageFile from '../../../../package.json';
@@ -55,7 +56,7 @@ class MainMenu extends React.Component {
 
 		return (this.props.hasProject)
 			? (
-				<MenuList>
+				<div>
 					<Divider />
 					<Link to="/run">
 						<MenuItem button>
@@ -105,7 +106,7 @@ class MainMenu extends React.Component {
 					<MenuItem button onClick={this.props.onCloseProject}>
 						<ListItemText primary="Close Project" />
 					</MenuItem>
-				</MenuList>
+				</div>
 			)
 			: null;
 	}
@@ -127,11 +128,9 @@ class MainMenu extends React.Component {
 				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
 				<this.ProjectMenu />
 				<Divider />
-				<MenuList>
-					<MenuItem button onClick={this.props.onCreateNewProject}><ListItemText primary="Create New Project" /></MenuItem>
-					<MenuItem button onClick={this.props.onOpenExistingProject}><ListItemText primary="Open Existing Project" /></MenuItem>
-					<MenuItem button onClick={this.props.onImportYarnFile}><ListItemText primary="Import Project From Yarn" /></MenuItem>
-				</MenuList>
+				<MenuItem button onClick={this.props.onCreateNewProject}><ListItemText primary="Create New Project" /></MenuItem>
+				<MenuItem button onClick={this.props.onOpenExistingProject}><ListItemText primary="Open Existing Project" /></MenuItem>
+				<MenuItem button onClick={this.props.onImportYarnFile}><ListItemText primary="Import Project From Yarn" /></MenuItem>
 			</Drawer>
 		);
 	}
