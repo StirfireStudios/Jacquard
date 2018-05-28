@@ -62,7 +62,6 @@ class ValidationPanel extends React.Component {
 
 function mapStateToProps(state) {
 	const SourceData = state.Preview.SourceData;
-	console.log("Errors exist:" + (SourceData.errors.length > 0));
 	return {
 		valid: SourceData.valid,
 		busy: SourceData.compiling,

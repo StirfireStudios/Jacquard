@@ -1,13 +1,37 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
+
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
+import MenuItem from '@material-ui/core/MenuItem';
+import Divider from '@material-ui/core//Divider';
 
-import themes from '../../themes';
+import { withStyles } from '@material-ui/core/styles';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 import * as RuntimeActions from '../../../../actions/preview/runtime';
 import * as SourceDataActions from '../../../../actions/preview/sourceData';
+
+const styles = theme => ({
+  interface: {
+    "z-index": 100,
+  },
+	menuButton: {
+    position: 'absolute',
+    right: 0,
+    top: "64px",
+  },
+});
+
+function onRun() {
+  RuntimeActions.Run();
+  this.setState({open: false});
+}
+
+function onReset() {
+  RuntimeActions.Reset();
+  this.setState({open: false});
+}
 
 function closeAndCallBind(func) {
   const bindFunc = () => {
@@ -21,10 +45,39 @@ function toggleDrawer(open) {
   this.setState({open: open});
 };
 
-function renderRun() {
-  if (this.props.halted) {
-  }
-  return <Button onClick={closeAndCallBind.call(this, RuntimeActions.Run)}>Run</Button>;
+function renderRunItem() {
+  return (
+    <MenuItem 
+      button={true} disabled={this.props.disablePlayback} 
+      onClick={onRun.bind(this)}
+    >
+      Run
+    </MenuItem>
+  );
+}
+
+function renderRestartItem() {
+  const disabled = !this.props.ready || !this.props.started;
+  return (
+    <MenuItem 
+      button={true} disabled={disabled} 
+      onClick={onReset.bind(this)}
+    >
+      Reset
+    </MenuItem>
+  );
+}
+
+function renderQuickRun() {
+  if (!this.props.ready || this.props.disablePlayback || this.props.started) return null;
+  return (
+    <Button 
+      disabled={this.props.disablePlayback} onClick={onRun.bind(this)}
+      variant='outlined'
+    >
+      Run
+    </Button>
+  );
 }
 
 class Interface extends React.Component {
@@ -33,12 +86,21 @@ class Interface extends React.Component {
   };
 
   render() {
+    const classes = this.props.classes;
     if (!this.props.ready) return null;
     return (
-      <div>
-        <Button onClick={toggleDrawer.bind(this, true)}>Show Options</Button>
+      <div className={classes.interface}>
+        <Button 
+          className={classes.menuButton}  mini={true}
+            onClick={toggleDrawer.bind(this, true)} variant='fab'
+        >
+          <ChevronLeft/>
+        </Button>
+        {renderQuickRun.call(this)}
         <Drawer anchor="right" open={this.state.open} onClose={toggleDrawer.bind(this, false)}>
-          {renderRun.call(this)}
+          {renderRunItem.call(this)}
+          <Divider/>
+          {renderRestartItem.call(this)}
           <Button onClick={closeAndCallBind.call(this, SourceDataActions.Updated)}>Recompile</Button>
         </Drawer>
       </div>
@@ -53,7 +115,7 @@ function mapStateToProps(state) {
     ready: Runtime.ready,
     started: Runtime.runMode != null,
     halted: Runtime.halted,
-    disablePlayback: (Runtime.options !== null) || (Runtime.halted),
+    disablePlayback: (Runtime.options !== null) || (Runtime.halted) || (Runtime.endOfFile),
     options: Runtime.options,
     characters: Runtime.characters,
     showCharacters: View.showCharacters,
@@ -68,4 +130,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(withStyles(themes.defaultTheme)(Interface));
+export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(Interface));

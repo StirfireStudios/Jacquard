@@ -71,7 +71,6 @@ function updateWithRuntimeData(state, runMode) {
           handleVariable(newState.text, message);
           break;  
         case Messages.Halt: 
-          console.log("HALTED");
           newState.text.push({halted: true});
           newState.halted = true;
           keepRunning = false;
@@ -99,16 +98,32 @@ function updateWithRuntimeData(state, runMode) {
 
 export default createReducer({
   [RuntimeActions.LoadFile]: (state, handle) => {
+    const handles = Object.assign([], state.handles);
+    handles.push(handle);
     runtime.loadFile(handle);
-    return { ...state, ready: runtime.ready};
+    return { 
+      ...state,
+      handles: handles,
+      ready: runtime.ready
+    };
   },
   [DataActions.Updated]: (state) => {
     runtime.reset();
-    return updateWithRuntimeData();
+    return updateWithRuntimeData({
+      ...state,
+      handles: [],
+    });
   },
-  [RuntimeActions.Deactivate]: (state) => ({
-	  ...state,
-  }),
+  [RuntimeActions.Reset]: (state) => {
+    runtime.reset();
+    state.handles.forEach((handle) => { runtime.loadFile(handle) });
+    return updateWithRuntimeData({
+      ...state,
+      runMode: null,
+      text: [], 
+      options: null,
+    });
+  },
   [RuntimeActions.Run]: (state) => {
     return updateWithRuntimeData(state, "toOption");
   },
@@ -140,5 +155,6 @@ export default createReducer({
   nodeNames: [],
   halted: false,
   endOfFile: false,
+  handles: [],
   text: [],
 });

@@ -62,7 +62,7 @@ function renderVariableChange(classes, index, variableData) {
   if (variableData.type === "save") {
     return <div key={index} className="variableSave">{variableData.name} is now {variableData.value} ({type})</div>;
   } else {
-    return <div key={index} className="variableLoad">loaded {variableData.value} ({type}) from {variableData.name}</div>;
+    return <div key={index} className="variableLoad">Loaded {variableData.value} ({type}) from {variableData.name}</div>;
   }
 }
 
@@ -100,7 +100,7 @@ function renderOptions() {
           className={classes.button} 
           key={optionIndex} 
           onClick={action} 
-          variant='raised'
+          variant='outlined'
         >
           {option.text[0].text}
         </Button>
