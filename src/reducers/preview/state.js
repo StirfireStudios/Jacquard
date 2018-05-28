@@ -1,5 +1,5 @@
 import { createReducer } from 'redux-act';
-import * as JacquardRuntime from 'jacquard-runtime'
+import { FileIO, Messages, Runtime } from 'jacquard-runtime'
 
 import * as DataActions from '../../actions/preview/sourceData';
 import * as RuntimeActions from '../../actions/preview/runtime';
@@ -10,18 +10,18 @@ import handleOptions from './handlers/options';
 import handleNodeChange from './handlers/nodeChange';
 import handleVariable from './handlers/variable';
 
-const runtime = new JacquardRuntime.Runtime();
+const runtime = new Runtime();
 
 export function getRuntime() {
   return runtime;
 }
 
 function convertType(textType) {
-  if (textType === 'logic') return JacquardRuntime.FileIO.Types.Logic;
-  if (textType === 'dialogue') return JacquardRuntime.FileIO.Types.Dialogue;
-  if (textType === 'sourceMap') return JacquardRuntime.FileIO.Types.SourceMap;
+  if (textType === 'logic') return FileIO.Types.Logic;
+  if (textType === 'dialogue') return FileIO.Types.Dialogue;
+  if (textType === 'sourceMap') return FileIO.Types.SourceMap;
 
-  return JacquardRuntime.FileIO.Types.Unknown;
+  return FileIO.Types.Unknown;
 }
 
 function updateWithRuntimeData(state, runMode) {
@@ -36,6 +36,7 @@ function updateWithRuntimeData(state, runMode) {
       functions: [],
       nodeNames: [],
       halted: false,
+      endOfFile: false,
       text: [],
     }
   }
@@ -54,28 +55,30 @@ function updateWithRuntimeData(state, runMode) {
     keepRunning = runMode !== "step";
     const message = runtime.run(runMode === "step");
     if (message != null) {
-      switch(message.constructor.name) {
-        case "NodeChange":
+      switch(message.constructor) {
+        case Messages.NodeChange:
           handleNodeChange(newState.text, message);
           break;
-        case "Show":
+        case Messages.Text.Show:
           handleShowText(newState.text, message);
           break;
-        case "Command":
+        case Messages.Command:
           handleCommand(newState.text, message);
           keepRunning = keepRunning && newState.runState !== "toCommand";
           break;
-        case "Options":
+        case Messages.Options:
           handleOptions(newState, message, runtime);
           keepRunning = false;
           break;
-        case "EndOfFile":
+        case Messages.Options:
           keepRunning = false;
-        case "Save":
-        case "Load":
+          newState.endOfFile = true;
+          break;
+        case Messages.Variable.Save:
+        case Messages.Variable.Load:
           handleVariable(newState.text, message);
           break;  
-        case "Halt": 
+        case Messages.Halt: 
           console.log("HALTED");
           newState.text.push({halted: true});
           newState.halted = true;
@@ -84,6 +87,8 @@ function updateWithRuntimeData(state, runMode) {
         default:
           console.log("Got message:");
           console.log(message.constructor.name);
+          keepRunning = false;
+          newState.halted = true;
           break;
       }
     }
@@ -142,5 +147,6 @@ export default createReducer({
   functions: [],
   nodeNames: [],
   halted: false,
+  endOfFile: false,
   text: [],
 });

@@ -1,5 +1,6 @@
 import handleShowText from './showText';
 import handleCommand from './command';
+import { Messages } from 'jacquard-runtime'
 
 export default function handle(state, message, runtime) {
   state.originalIP = runtime.currentInstructionPointer;
@@ -12,12 +13,12 @@ export default function handle(state, message, runtime) {
     while(keepRunning) {
       const message = runtime.run();
       if (message != null) {
-        switch(message.constructor.name) {
-          case "Show":
+        switch(message.constructor) {
+          case Messages.Text.Show:
             handleShowText(option.text, message);
             keepRunning = false;
             break;
-          case "Command":
+            case Messages.Command:
             handleCommand(option.text, message);
             break;
           default:
