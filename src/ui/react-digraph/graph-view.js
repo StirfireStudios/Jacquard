@@ -303,7 +303,9 @@ class GraphView extends Component {
     					swapErrBack();
     				}
     			} else {
+					if (sourceNode !== hoveredNode) {
     				self.props.onCreateEdge(sourceNode, hoveredNode);
+					}
     				self.renderView();
     			}
     		} else {
