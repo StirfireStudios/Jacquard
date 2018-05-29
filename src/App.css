@@ -26,3 +26,85 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.lists {
+  position: absolute;
+  display: inline-block;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.listView {
+  position: relative;
+  display: inline-block;
+  min-height: 100px;
+  min-width: 100px;
+  max-height: 25vh;
+  overflow: scroll;
+  border: 1px solid black;
+  border-radius: 2px;
+  background-color: white;
+}
+
+.display {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 25px;
+  overflow: auto;
+}
+
+.display .nodeEntry:before {
+  content: "Entering Node: ";
+}
+
+.display .nodeEntry {
+  font-family: monospace;
+  border: 1px solid green;
+  padding: 2px;
+  margin: 5px;
+}
+
+.display .optionText:before {
+  content: "Player Selected: ";
+}
+
+.display .optionText {
+  font-family: monospace;
+  border: 1px dashed grey;
+  padding: 2px;
+  margin: 5px;
+}
+
+.display .command {
+  margin-top: 2px;
+  margin-left: 5px;
+  margin-bottom: 2px;
+}
+
+.display .command:before {
+  content: "Command: ";
+}
+
+.display .command .argument {
+  font-family: monospace;
+  border: 1px solid blue;
+  padding: 2px;
+  margin: 5px;
+}
+
+.buttons {
+  position: fixed;
+  bottom: 0;
+  height: 25px;
+}
+
+.buttons button {
+  height: 20px;
+}
+
+label.variable {
+  font-weight: bold;
+}
