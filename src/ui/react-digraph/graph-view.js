@@ -304,10 +304,10 @@ class GraphView extends Component {
     				}
     			} else {
 					if (sourceNode !== hoveredNode) {
-    				self.props.onCreateEdge(sourceNode, hoveredNode);
+						self.props.onCreateEdge(sourceNode, hoveredNode);
 					}
-    				self.renderView();
-    			}
+					self.renderView();
+				}
     		} else {
     			if (swapErrBack) {
     				swapErrBack();
@@ -457,27 +457,32 @@ class GraphView extends Component {
     			selectingNode: true,
     			drawingEdge: true,
     		});
-    	} else {
-    		const previousSelection = this.state.previousSelection;
+    	} else if (d3.event.ctrlKey) {
+			const selectedNode = (this.state.selectedNode !== d)
+				? d
+				: null;
+			const previousSelection = this.state.previousSelection;
     		this.setState({
     			selectingNode: true,
-    			selectedNode: d,
+    			selectedNode,
     			previousSelection,
-    		});
+			},
+			() => this.props.onSelectNode(selectedNode));
     	}
     }
 
     handleNodeMouseUp = (d) => {
-    	if (this.state.selectingNode) {
+    	if (!this.state.selectingNode) {
 			// Prevent d3's default as it changes the focus to the body
 			d3.event.preventDefault();
 			d3.event.stopPropagation();
 
-			this.props.onSelectNode(d);
-    		this.setState({
-    			selectingNode: false,
-    		});
-    	}
+			this.props.onClickNode(d);
+		}
+		
+		this.setState({
+			selectingNode: false,
+		});
     }
 
     handleNodeMouseEnter = (d) => {
@@ -974,12 +979,13 @@ GraphView.propTypes = {
 	emptyType: PropTypes.string.isRequired,
 	nodes: PropTypes.array.isRequired,
 	edges: PropTypes.array.isRequired,
-	selected: PropTypes.object.isRequired,
+	selected: PropTypes.object,
 	nodeTypes: PropTypes.object.isRequired,
 	nodeSubtypes: PropTypes.object.isRequired,
 	edgeTypes: PropTypes.object.isRequired,
 	getViewNode: PropTypes.func.isRequired,
 	onSelectNode: PropTypes.func.isRequired,
+	onClickNode: PropTypes.func.isRequired,
 	onCreateNode: PropTypes.func.isRequired,
 	onUpdateNode: PropTypes.func.isRequired,
 	onDeleteNode: PropTypes.func.isRequired,
@@ -1017,6 +1023,7 @@ GraphView.propTypes = {
 };
 
 GraphView.defaultProps = {
+	selected: null,
 	readOnly: false,
 	maxTitleChars: 9,
 	transitionTime: 150,

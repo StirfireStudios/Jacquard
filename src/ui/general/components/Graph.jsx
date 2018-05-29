@@ -40,8 +40,17 @@ class Graph extends React.Component {
 	onSwapEdge = () => {}
 	onDeleteEdge = () => {}
 
-	// Called when the user clicks on a view node
+	// Called when the selects a view node
 	onSelectNode = (viewNode) => {
+		console.log('onSelectNode');
+		console.log(viewNode);
+		this.setState({
+			selected: viewNode,
+		});
+	}
+
+	// Called when the user clicks on a view node
+	onClickNode = (viewNode) => {
 		// Was a view node selected?
 		if (viewNode) {
 			this.props.onNodeClicked(viewNode.title);
@@ -96,6 +105,7 @@ class Graph extends React.Component {
 					maxTitleChars={100}
 					getViewNode={this.getViewNode}
 					onSelectNode={this.onSelectNode}
+					onClickNode={this.onClickNode}
 					onCreateNode={this.onCreateNode}
 					onUpdateNode={this.onUpdateNode}
 					onDeleteNode={this.onDeleteNode}
