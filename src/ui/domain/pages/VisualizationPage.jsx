@@ -60,8 +60,18 @@ const addEditFormSchema = [
 	},
 ];
 
-// The graph configuration
-const graphConfig = {
+// The default node color
+const nodeDefaultColor = 'currentColor';
+
+// Returns a node shape
+const getNodeShape = (id, color) => (
+	<symbol viewBox="0 0 100 100" id={id} key="0">
+		<rect x="0" y="0" width="100" height="100" fill={color} />
+	</symbol>
+);
+
+// The default graph configuration
+const defaultGraphConfig = {
 	nodeTypes: {
 		nonExistingNode: {
 			typeText: '',
@@ -69,15 +79,6 @@ const graphConfig = {
 			shape: (
 				<symbol viewBox="0 0 100 100" id="nonExistingNode" key="0">
 					<rect x="0" y="0" width="100" height="100" fill="rgb(255, 0, 0)" />
-				</symbol>
-			),
-		},
-		existingNode: {
-			typeText: '',
-			shapeId: '#existingNode',
-			shape: (
-				<symbol viewBox="0 0 100 100" id="existingNode" key="0">
-					<rect x="0" y="0" width="100" height="100" />
 				</symbol>
 			),
 		},
@@ -260,6 +261,36 @@ class VisualizationPage extends React.Component {
 		});
 	}
 
+	buildNodeTypes = (projectNodes) => {
+		// Add a node type for each project node
+		const nodeTypes = projectNodes.reduce((accumulatedNodeTypes, node, nodeIndex) => {
+			// Build the node ID
+			const nodeId = `node${nodeIndex}`;
+
+			// Get the node color
+			const nodeColor = (node.colorId)
+				? node.colorId
+				: nodeDefaultColor;
+
+			// Build the node shape
+			const nodeShape = getNodeShape(nodeId, nodeColor);
+
+			// Build the node type
+			const nodeType = {
+				typeText: '',
+				shapeId: `#${nodeId}`,
+				shape: nodeShape,
+			};
+
+			// Store the node type using the node ID as they key
+			accumulatedNodeTypes[nodeId] = nodeType;
+
+			return accumulatedNodeTypes;
+		}, {});
+
+		return nodeTypes;
+	}
+
 	// TODO: Use this to build existing and non-existing nodes too
 	buildNodeEdges = (projectNodeLinks, nodeLinkKey) => {
 		// If we don't have project node links, return nothing
@@ -332,7 +363,10 @@ class VisualizationPage extends React.Component {
 
 	buildExistingNodes = projectNodes =>
 		// Add an existing node for each project node
-		projectNodes.map((node) => {
+		projectNodes.map((node, nodeIndex) => {
+			// Build the node ID
+			const nodeId = `node${nodeIndex}`;
+
 			// Get the x/y position
 			const positionArray = node.position.split(',');
 
@@ -352,7 +386,7 @@ class VisualizationPage extends React.Component {
 				title: node.title,
 				x: Number(x),
 				y: Number(y),
-				type: 'existingNode',
+				type: nodeId,
 			};
 		});
 
@@ -420,6 +454,20 @@ class VisualizationPage extends React.Component {
 		const graph = {
 			nodes,
 			edges,
+		};
+
+		// Build the node types
+		const nodeTypes = this.buildNodeTypes(this.props.project.nodes);
+
+		// Build the graph config
+		const graphConfig = {
+			...defaultGraphConfig,
+		};
+
+		// Set our node types
+		graphConfig.nodeTypes = {
+			...graphConfig.nodeTypes,
+			...nodeTypes,
 		};
 
 		return (
