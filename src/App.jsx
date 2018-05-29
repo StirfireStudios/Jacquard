@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { HashRouter as Router, Route, withRouter } from 'react-router-dom';
 
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core//styles';
 
 // Electron Imports
 import { ipcRenderer } from 'electron'; // eslint-disable-line
@@ -18,13 +18,22 @@ import DefaultPage from './ui/domain/pages/DefaultPage';
 import FunctionPage from './ui/domain/pages/FunctionPage';
 import NodePage from './ui/domain/pages/NodePage';
 import VariablePage from './ui/domain/pages/VariablePage';
+import PreviewPage from './ui/domain/pages/PreviewPage';
 import MainMenu from './ui/domain/components/MainMenu';
 
 
 import projectService from './services/projectService';
 import yarnService from './services/yarnService';
 
+import { Provider as ReduxStoreProvider } from 'react-redux';
+
+import assignActions from './actions/assign';
+import createStore from './store';
+
 const theme = createMuiTheme();
+
+const store = createStore();
+assignActions(store);
 
 class App extends Component {
 	constructor(props) {
@@ -282,6 +291,12 @@ class App extends Component {
 			</BasePage>
 		);
 
+		const PreviewPageComplete = () => (
+			<BasePage title="Preview">
+				<PreviewPage project={this.state.project}/>
+			</BasePage>
+		);
+
 		const RunPageComplete = () => (
 			<BasePage title="Run">
 				<RunPage
@@ -354,6 +369,7 @@ class App extends Component {
 				<Route path="/functions" component={FunctionPageComplete} />
 				<Route path="/nodes" component={NodePageComplete} />
 				<Route path="/variables" component={VariablePageComplete} />
+				<Route path="/preview" component={PreviewPageComplete} />
 			</div>
 		);
 	}
@@ -364,11 +380,13 @@ const AppContainer = () => {
 	const AppWithRouter = withRouter(App);
 
 	return (
-		<MuiThemeProvider theme={theme}>
-			<Router>
-				<AppWithRouter />
-			</Router>
-		</MuiThemeProvider>
+		<ReduxStoreProvider store={store}>
+			<MuiThemeProvider theme={theme}>
+				<Router>
+					<AppWithRouter />
+				</Router>
+			</MuiThemeProvider>
+		</ReduxStoreProvider>
 	);
 };
 

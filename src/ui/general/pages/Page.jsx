@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import { withStyles } from 'material-ui/styles';
-import AppBar from 'material-ui/AppBar';
-import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 
 import themes from '../../domain/themes';
 
