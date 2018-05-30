@@ -105,6 +105,32 @@ const styles = theme => ({
 	},
 });
 
+//FixMe: this is a temporary validation function and should be made better.
+function validateNodeData() {
+	return this.state.data.title != null;
+}
+
+function onInvalidNodeClick() {
+	this.setState({
+		data: null
+	});
+}
+
+function renderInvalidNodeData() {
+	return (
+		<ModalDialog
+			onOK={onInvalidNodeClick.bind(this)}
+			onCancel={onInvalidNodeClick.bind(this)}
+			title={`No node data!`}
+			open={this.state.data != null}
+			okButtonLabel="Cancel"
+			cancelButtonLabel="Cancel"
+		>
+			<div>Check that the node name is completely correct by going to that node and editing it.</div>
+		</ModalDialog>
+	);
+}
+
 class NodeEditorForm extends React.Component {
 	constructor(props) {
 		super(props);
@@ -551,6 +577,10 @@ class NodeEditorForm extends React.Component {
 
 		// Do we have any form data?
 		if (this.state.data) {
+			if (!validateNodeData.call(this)) {
+				return renderInvalidNodeData.call(this);
+			}
+
 			// Render the incoming and outgoing links
 			const incomingLinks = this.renderIncomingLinks();
 			const outgoingLinks = this.renderOutgoingLinks();
