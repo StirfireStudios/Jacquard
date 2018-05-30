@@ -42,9 +42,6 @@ class Graph extends React.Component {
 
 	// Called when the selects a view node
 	onSelectNode = (viewNode) => {
-		console.log('onSelectNode');
-		console.log(viewNode);
-
 		// Get the selected nodes
 		let { selected } = this.state;
 
