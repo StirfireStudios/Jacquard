@@ -141,6 +141,9 @@ function getDistance(pt1, pt2) {
 	return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
 }
 
+const isNodeInSelected = (d, selected) => (selected)
+	? (Object.keys(selected).findIndex(key => d === selected[key]) >= 0)
+	: false;
 
 class GraphView extends Component {
 	constructor(props) {
@@ -207,23 +210,39 @@ class GraphView extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const selectionChanged = false;
-		const selected = this.props.selected;
-		const newState = {};
+		// Is the selected object different in the new properties?
+		if (nextProps.selected !== this.props.selected) {
+			// The selection type (default to the current selection type)
+			let selectionType = this.state.selectionType;
 
-		if (nextProps.selected !== selected) {
-			newState.selected = nextProps.selected;
-			newState.previousSelection = selected;
-			newState.selectionChanged = true;
+			// Get the keys of the selected nodes
+			const selectedNodeKeys = Object.keys(nextProps.selected)
 
-			const selectionType = null;
-			if (nextProps.selected && nextProps.selected.source) {
-				newState.selectionType = 'edge';
-			} else if (nextProps.selected && nextProps.selected[this.props.nodeKey]) {
-				newState.selectionType = 'node';
+			// Do we have any selected nodes?
+			if (selectedNodeKeys.length > 0) {
+				// Get the key of the first selected node
+				const firstSelectedNodeKey = selectedNodeKeys[0];
+
+				// Get the first selected node
+				const firstSelectedNode = nextProps.selected[firstSelectedNodeKey];
+
+				// Do we have any selected nodes, and does the first one have the
+				// 'source' property?
+				if (firstSelectedNode.source) {
+					selectionType = 'edge';
+				} else if (firstSelectedNode[this.props.nodeKey]) {
+					// Does the first node have a property with the name stored
+					// in the 'nodeKey' prop?         
+					selectionType = 'node';
+				}
 			}
 
-			this.setState(newState);
+			this.setState({
+				selected: nextProps.selected,
+				previousSelection: this.props.selected,
+				selectionChanged: true,
+				selectionType,
+			});
 		}
 	}
 
@@ -382,16 +401,52 @@ class GraphView extends Component {
     }
 
     handleDelete = () => {
-    	if (this.props.readOnly) return;
-    	if (this.props.selected) {
-    		const selected = this.props.selected;
-    		if (!selected.source && this.props.canDeleteNode(selected)) {
-    			this.props.onDeleteNode(selected);
-    			this.props.onSelectNode(null);
-    		} else if (selected.source && this.props.canDeleteEdge(selected)) {
-    			this.props.onDeleteEdge(selected);
-    			this.props.onSelectNode(null);
-    		}
+		// If we're read-only, do nothing
+		if (this.props.readOnly) return;
+		
+		// Get the keys of the selected nodes
+		const selectedNodeKeys = Object.keys(this.props.selected)
+
+		// Do we have any selected nodes?
+		if (selectedNodeKeys.length > 0) {
+			// Get the key of the first selected node
+			const firstSelectedNodeKey = selectedNodeKeys[0];
+
+			// Get the first selected node
+			const firstSelectedNode = this.props.selected[firstSelectedNodeKey];
+
+			// Do we have any selected nodes, and does the first one have the
+			// 'source' property?
+			if (firstSelectedNode.source) {
+				// Does the first node have a property with the name stored
+				// in the 'nodeKey' prop?         
+				selectedNodeKeys.forEach((selectedNodeKey) => {
+					// Get the selected node
+					const selectedNode = this.props.selected[selectedNodeKey];
+
+					// Can we delete the node edge?
+					if (this.props.canDeleteEdge(selectedNode)) {
+						// Delete the node edge
+						this.props.onDeleteEdge(selectedNode);		
+					}
+				});
+			} else if (firstSelectedNode[this.props.nodeKey]) {
+				// Does the first node have a property with the name stored
+				// in the 'nodeKey' prop?         
+				selectedNodeKeys.forEach((selectedNodeKey) => {
+					// Get the selected node
+					const selectedNode = this.props.selected[selectedNodeKey];
+
+					// Can we delete the node?
+					if (this.props.canDeleteNode(selectedNode)) {
+						// Delete the node
+						this.props.onDeleteNode(selectedNode);		
+					}
+				});
+			}
+
+			// Notify that the node(s) are no longer selected
+    		this.props.onSelectNode(null);
     	}
     }
 
@@ -445,27 +500,29 @@ class GraphView extends Component {
 
     	// Prevent d3's default as it changes the focus to the body
     	d3.event.preventDefault();
-    	d3.event.stopPropagation();
+		d3.event.stopPropagation();
+		
+		// If the view wrapper is not the active element, set focus on it
     	if (document.activeElement != this.viewWrapper) {
     		this.viewWrapper.focus();
     	}
 
+		// Is the SHIFT key held down?
     	if (d3.event.shiftKey) {
+			// We're drawing an edge
     		this.setState({
     			selectingNode: true,
     			drawingEdge: true,
     		});
     	} else if (d3.event.ctrlKey) {
-			const selectedNode = (this.state.selectedNode !== d)
-				? d
-				: null;
-			const previousSelection = this.state.previousSelection;
-    		this.setState({
+			// Is the CTRL key held down?
+
+			// Record that we're selecting a node in our state and notify that
+			// the node was selected
+			this.setState({
     			selectingNode: true,
-    			selectedNode,
-    			previousSelection,
 			},
-			() => this.props.onSelectNode(selectedNode));
+			() => this.props.onSelectNode(d));
     	}
     }
 
@@ -706,17 +763,19 @@ class GraphView extends Component {
     // Returns a d3 transformation string from node data
     getNodeTransformation = node => `translate(${node.x},${node.y})`
 
-    getNodeStyle = (d, selected) => (d === selected ?
+	isNodeInSelec	
+
+    getNodeStyle = (d, selected) => isNodeInSelected(d, selected) ?
     	this.state.styles.node.selectedString :
-    	this.state.styles.node.baseString)
+    	this.state.styles.node.baseString;
 
-    getEdgeStyle = (d, selected) => (d === selected ?
+    getEdgeStyle = (d, selected) => isNodeInSelected(d, selected) ?
     	this.state.styles.edge.selectedString :
-    	this.state.styles.edge.baseString)
+    	this.state.styles.edge.baseString;
 
-    getTextStyle = (d, selected) => (d === selected ?
+    getTextStyle = (d, selected) => isNodeInSelected(d, selected) ?
     	this.state.styles.text.selectedString :
-    	this.state.styles.text.baseString)
+    	this.state.styles.text.baseString;
 
     // Renders 'node.title' into node element
     renderNodeText = (d, domNode) => {
@@ -863,8 +922,8 @@ class GraphView extends Component {
 
     	// Update Selected and Unselected
     	// New or Removed
-    	const selected = nodesSelection.filter(d => (d === this.props.selected ||
-          d === this.state.previousSelection));
+    	const selected = nodesSelection.filter(d => (isNodeInSelected(d, this.props.selected) ||
+			isNodeInSelected(d, this.state.previousSelection)));
 
     	/*
         The commented code below would prevent nodes from rendering

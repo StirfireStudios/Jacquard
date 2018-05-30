@@ -44,8 +44,30 @@ class Graph extends React.Component {
 	onSelectNode = (viewNode) => {
 		console.log('onSelectNode');
 		console.log(viewNode);
+
+		// Get the selected nodes
+		let { selected } = this.state;
+
+		// Do we have a selected node?
+		if (viewNode) {
+			// Get the node ID
+			const nodeId = viewNode.id;
+
+			// Is the node already selected?
+			if ((Object.prototype.hasOwnProperty.call(selected, nodeId))) {
+				// Unselected it
+				delete selected[nodeId];
+			} else {
+				// Select it
+				selected[nodeId] = viewNode;
+			}
+		} else {
+			// Clear all selected nodes
+			selected = {};
+		}
+
 		this.setState({
-			selected: viewNode,
+			selected,
 		});
 	}
 
