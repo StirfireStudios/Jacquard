@@ -222,8 +222,8 @@ const getProjectNodeHiddenStates = (
 	searchTags,
 	projectNodes,
 ) => {
-	// If there's no search text, there's no hidden states
-	if (searchText === '') {
+	// If there's no search text or project nodes, there's no hidden states
+	if ((searchText === '') || (!projectNodes)) {
 		return {};
 	}
 
@@ -253,9 +253,14 @@ const getProjectNodeHiddenStates = (
 	return projectNodeHiddenStates;
 };
 
-const renderGeneralValidationErrors = projectValidationResults =>
+const renderGeneralValidationErrors = (projectValidationResults) => {
+	// Don't do anything if we have no validation results
+	if ((!projectValidationResults) || (!projectValidationResults.generalErrors)) {
+		return null;
+	}
+
 	// Build the validation errors
-	projectValidationResults.generalErrors.map((validationError) => {
+	return projectValidationResults.generalErrors.map((validationError) => {
 		// Build the location
 		const location = yarnService.buildLocationString(validationError.location);
 
@@ -266,10 +271,16 @@ const renderGeneralValidationErrors = projectValidationResults =>
 			</ListItem>
 		);
 	});
+};
 
-const renderGeneralValidationWarnings = projectValidationResults =>
+const renderGeneralValidationWarnings = (projectValidationResults) => {
+	// Don't do anything if we have no validation results
+	if ((!projectValidationResults) || (!projectValidationResults.generalWarnings)) {
+		return null;
+	}
+
 	// Build the validation warnings
-	projectValidationResults.generalWarnings.map((validationWarning) => {
+	return projectValidationResults.generalWarnings.map((validationWarning) => {
 		// Build the location
 		const location = yarnService.buildLocationString(validationWarning.location);
 
@@ -283,6 +294,7 @@ const renderGeneralValidationWarnings = projectValidationResults =>
 			</ListItem>
 		);
 	});
+};
 
 const renderGeneralValidationResults = (projectValidationResults) => {
 	// Render the validation errors and warnings
@@ -324,21 +336,25 @@ class NodeListPage extends React.Component {
 		super(props);
 
 		// Validate the project nodes
-		const projectValidationResults = yarnService
-			.validateProjectNodes(props.projectFilePath, props.project.nodes);
+		const projectValidationResults = ((props.project) && (props.project.nodes))
+			? yarnService.validateProjectNodes(props.projectFilePath, props.project.nodes)
+			: {};
 
 		// Get the project node links
-		const projectNodeLinks = yarnService
-			.getProjectNodeLinks(props.projectFilePath, props.project.nodes);
+		const projectNodeLinks = ((props.project) && (props.project.nodes))
+			? yarnService.getProjectNodeLinks(props.projectFilePath, props.project.nodes)
+			: {};
 
 		// Build a object representing the hidden state of each node
-		const projectNodeHiddenStates = getProjectNodeHiddenStates(
-			'',
-			true,
-			true,
-			true,
-			this.props.project.nodes,
-		);
+		const projectNodeHiddenStates = ((props.project) && (props.project.nodes))
+			? getProjectNodeHiddenStates(
+				'',
+				true,
+				true,
+				true,
+				this.props.project.nodes,
+			)
+			: {};
 
 		// Set up the state of the component
 		this.state = {
@@ -365,21 +381,25 @@ class NodeListPage extends React.Component {
 		if ((this.props.projectFilePath !== nextProps.projectFilePath) ||
 			(JSON.stringify(this.props.project.nodes) !== (JSON.stringify(nextProps.project.nodes)))) {
 			// Validate the project nodes
-			const projectValidationResults = yarnService
-				.validateProjectNodes(nextProps.projectFilePath, nextProps.project.nodes);
+			const projectValidationResults = ((nextProps.project) && (nextProps.project.nodes))
+				? yarnService.validateProjectNodes(nextProps.projectFilePath, nextProps.project.nodes)
+				: {};
 
 			// Get the project node links
-			const projectNodeLinks = yarnService
-				.getProjectNodeLinks(nextProps.projectFilePath, nextProps.project.nodes);
+			const projectNodeLinks = ((nextProps.project) && (nextProps.project.nodes))
+				? yarnService.getProjectNodeLinks(nextProps.projectFilePath, nextProps.project.nodes)
+				: {};
 
 			// Build a object representing the hidden state of each node
-			const projectNodeHiddenStates = getProjectNodeHiddenStates(
-				this.state.searchText,
-				this.state.searchTitle,
-				this.state.searchBody,
-				this.state.searchTags,
-				this.props.project.nodes,
-			);
+			const projectNodeHiddenStates = ((nextProps.project) && (nextProps.project.nodes))
+				? getProjectNodeHiddenStates(
+					this.state.searchText,
+					this.state.searchTitle,
+					this.state.searchBody,
+					this.state.searchTags,
+					this.props.project.nodes,
+				)
+				: {};
 
 			// Update the validation results, node links, and hidden states in our state
 			this.setState({
@@ -391,67 +411,79 @@ class NodeListPage extends React.Component {
 	}
 
 	onSearchTextChange = (searchText) => {
-		// Build a object representing the hidden state of each node
-		const projectNodeHiddenStates = getProjectNodeHiddenStates(
-			searchText,
-			this.state.searchTitle,
-			this.state.searchBody,
-			this.state.searchTags,
-			this.props.project.nodes,
-		);
+		// Only search if we have a project
+		if ((this.props.project) && (this.props.project.nodes)) {
+			// Build a object representing the hidden state of each node
+			const projectNodeHiddenStates = getProjectNodeHiddenStates(
+				searchText,
+				this.state.searchTitle,
+				this.state.searchBody,
+				this.state.searchTags,
+				this.props.project.nodes,
+			);
 
-		this.setState({
-			searchText,
-			projectNodeHiddenStates,
-		});
+			this.setState({
+				searchText,
+				projectNodeHiddenStates,
+			});
+		}
 	}
 
 	onSearchTitleCheckboxChange = (checked) => {
-		// Build a object representing the hidden state of each node
-		const projectNodeHiddenStates = getProjectNodeHiddenStates(
-			this.state.searchText,
-			checked,
-			this.state.searchBody,
-			this.state.searchTags,
-			this.props.project.nodes,
-		);
+		// Only search if we have a project
+		if ((this.props.project) && (this.props.project.nodes)) {
+			// Build a object representing the hidden state of each node
+			const projectNodeHiddenStates = getProjectNodeHiddenStates(
+				this.state.searchText,
+				checked,
+				this.state.searchBody,
+				this.state.searchTags,
+				this.props.project.nodes,
+			);
 
-		this.setState({
-			searchTitle: checked,
-			projectNodeHiddenStates,
-		});
+			this.setState({
+				searchTitle: checked,
+				projectNodeHiddenStates,
+			});
+		}
 	}
 
 	onSearchBodyCheckboxChange = (checked) => {
-		// Build a object representing the hidden state of each node
-		const projectNodeHiddenStates = getProjectNodeHiddenStates(
-			this.state.searchText,
-			this.state.searchTitle,
-			checked,
-			this.state.searchTags,
-			this.props.project.nodes,
-		);
+		// Only search if we have a project
+		if ((this.props.project) && (this.props.project.nodes)) {
+			// Build a object representing the hidden state of each node
+			const projectNodeHiddenStates = getProjectNodeHiddenStates(
+				this.state.searchText,
+				this.state.searchTitle,
+				checked,
+				this.state.searchTags,
+				this.props.project.nodes,
+			);
 
-		this.setState({
-			searchBody: checked,
-			projectNodeHiddenStates,
-		});
+			this.setState({
+				searchBody: checked,
+				projectNodeHiddenStates,
+			});
+		}
 	}
 
 	onSearchTagsCheckboxChange = (checked) => {
-		// Build a object representing the hidden state of each node
-		const projectNodeHiddenStates = getProjectNodeHiddenStates(
-			this.state.searchText,
-			this.state.searchTitle,
-			this.state.searchBody,
-			checked,
-			this.props.project.nodes,
-		);
+		// Only search if we have a project
+		if ((this.props.project) && (this.props.project.nodes)) {
+			// Build a object representing the hidden state of each node
+			const projectNodeHiddenStates = getProjectNodeHiddenStates(
+				this.state.searchText,
+				this.state.searchTitle,
+				this.state.searchBody,
+				checked,
+				this.props.project.nodes,
+			);
 
-		this.setState({
-			searchTags: checked,
-			projectNodeHiddenStates,
-		});
+			this.setState({
+				searchTags: checked,
+				projectNodeHiddenStates,
+			});
+		}
 	}
 
 	render() {
