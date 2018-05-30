@@ -2,7 +2,6 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Grid from '@material-ui/core/Grid';
@@ -49,7 +48,7 @@ function onNodeStartAt(name, confirmed) {
 }
 
 function renderNodes() {
-  if (!this.props.visible.nodes) return null;
+  if (!this.props.visibleSection.nodes) return null;
 
   const items = this.props.nodes.map((nodeName) => {
     return (
@@ -73,7 +72,7 @@ function renderNodes() {
 }
 
 function renderState() {
-  if (!this.props.visible.state) return null;
+  if (!this.props.visibleSection.state) return null;
 
   const history = [];
   for(let index = 0; index < this.props.state.history.length; index++) {
@@ -131,7 +130,7 @@ function renderStartConfirmModal() {
 }
 
 function renderVariables() {
-  if (!this.props.visible.variables) return null;
+  if (!this.props.visibleSection.variables) return null;
 
   const items = this.props.variables.map((name) => {
     return renderVariable.call(this, name);
@@ -198,7 +197,7 @@ function mapStateToProps(state) {
       history: State.nodeHistory,
       variables: State.variableState,
     },
-    visible: {
+    visibleSection: {
       state: View.showState,
       nodes: View.showNodes,
       variables: View.showVariables, 

@@ -126,7 +126,7 @@ function renderInvalidNodeData() {
 			okButtonLabel="Cancel"
 			cancelButtonLabel="Cancel"
 		>
-			<div>Check that the node name is completely correct by going to that node and editing it.</div>
+			<div>Check that the node name {this.props.dataKeyValue} is completely correct by going to that node and editing it.</div>
 		</ModalDialog>
 	);
 }
