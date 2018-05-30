@@ -346,7 +346,10 @@ class GraphView extends Component {
 		
     	let oldSibling = null;
     	function dragged(d) {
-    		if (self.props.readOnly) return;
+			if (self.props.readOnly) return;
+			
+			// Get the selected node ID
+			const selectedNodeId = d.id;
 
 			const selectedNode = d3.select(this);
 
@@ -360,9 +363,29 @@ class GraphView extends Component {
     			d.x += d3.event.dx;
     			d.y += d3.event.dy;
     			return `translate(${d.x},${d.y})`;
-    		});
-    		self.render();
-    	}
+			});
+			
+			// Get the nodes
+			const nodes = d3.select(self.entities).selectAll('g.node');
+
+			// Drag every selected node
+			nodes.each((nodeDatum, nodeIndex, nodesGroup) => {
+				// Ignore it if it's the node we're dragging
+				if (nodeDatum.id !== selectedNodeId) {
+					// Is the node selected
+					if (isNodeInSelected(nodeDatum, self.props.selected)) {
+						d3.select(nodesGroup[nodeIndex])
+							.attr('transform', (d) => {
+								d.x += d3.event.dx;
+								d.y += d3.event.dy;
+								return `translate(${d.x},${d.y})`;
+							});
+					}
+				}
+			});
+
+			self.render();
+		}
 
     	function ended() {
     		el.classed('dragging', false);
@@ -378,10 +401,21 @@ class GraphView extends Component {
 				// Did we move?
 				if ((dragXDistance !== 0) || (dragYDistance !== 0)) {
 					// Move the node back to the original z-index
-					if (oldSibling) {
+					if ((oldSibling) && (oldSibling.parentElement)) {
 						oldSibling.parentElement.insertBefore(this, oldSibling);
 					}
+
 					self.props.onUpdateNode(selectedNode);
+
+					Object.keys(self.props.selected).forEach((nodeKey) => {
+						// Get the node
+						const node = self.props.selected[nodeKey];
+		
+						// Ignore it if it's the node we're dragging
+						if (node !== selectedNode) {
+							self.props.onUpdateNode(node);
+						}
+					});
 				} else {
 					// Fire a mouse up event to trigger selection
 					d3.select(this).node().dispatchEvent(new Event('mouseup'));					
