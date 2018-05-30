@@ -101,9 +101,20 @@ function makeStyles(primary = 'dodgerblue', light = 'white', dark = 'black', bac
 				markerEnd: 'url(#end-arrow)',
 				cursor: 'pointer',
 			},
-			selected: {
+			dragged: {
+				color: light,
+				stroke: primary,
+				strokeWidth: '4px',
+			},
+			selectedSource: {
 				color: primary,
 				stroke: primary,
+				strokeWidth: '4px',
+			},
+			selectedTarget: {
+				color: dark,
+				stroke: dark,
+				strokeWidth: '4px',
 			},
 		},
 		arrow: {
@@ -117,7 +128,9 @@ function makeStyles(primary = 'dodgerblue', light = 'white', dark = 'black', bac
 	styles.text.baseString = styleToString(styles.text.base);
 	styles.text.selectedString = styleToString({ ...styles.text.base, ...styles.text.selected });
 	styles.edge.baseString = styleToString(styles.edge.base);
-	styles.edge.selectedString = styleToString({ ...styles.edge.base, ...styles.edge.selected });
+	styles.edge.draggedString = styleToString({ ...styles.edge.base, ...styles.edge.dragged });
+	styles.edge.selectedSourceString = styleToString({ ...styles.edge.base, ...styles.edge.selectedSource });
+	styles.edge.selectedTargetString = styleToString({ ...styles.edge.base, ...styles.edge.selectedTarget });
 
 	return styles;
 }
@@ -143,6 +156,10 @@ function getDistance(pt1, pt2) {
 
 const isNodeInSelected = (d, selected) => (selected)
 	? (Object.keys(selected).findIndex(key => d === selected[key]) >= 0)
+	: false;
+
+const isEdgeInSelected = (edgeNodeId, selected) => (selected)
+	? (Object.keys(selected).findIndex(key => edgeNodeId === key) >= 0)
 	: false;
 
 class GraphView extends Component {
@@ -287,7 +304,7 @@ class GraphView extends Component {
     	const dragEdge = d3.select(this.entities).append('svg:path');
 
     	dragEdge.attr('class', 'link dragline')
-    		.attr('style', this.state.styles.edge.selectedString)
+    		.attr('style', this.state.styles.edge.draggedString)
     		.attr('d', this.lineFunction([
     			{ x: sourceNode.x, y: sourceNode.y },
     			{ x: d3.event.x, y: d3.event.y },
@@ -860,9 +877,15 @@ class GraphView extends Component {
     	this.state.styles.node.selectedString :
     	this.state.styles.node.baseString;
 
-    getEdgeStyle = (d, selected) => isNodeInSelected(d, selected) ?
-    	this.state.styles.edge.selectedString :
-    	this.state.styles.edge.baseString;
+    getEdgeStyle = (d, selected) => {
+		if (isEdgeInSelected(d.source, selected)) {
+			return this.state.styles.edge.selectedSourceString;
+		} else if (isEdgeInSelected(d.target, selected)) {
+			return this.state.styles.edge.selectedTargetString;
+		}
+
+		return this.state.styles.edge.baseString;
+	}
 
     getTextStyle = (d, selected) => isNodeInSelected(d, selected) ?
     	this.state.styles.text.selectedString :
