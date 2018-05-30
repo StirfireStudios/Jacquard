@@ -175,6 +175,8 @@ class GraphView extends Component {
 
 		this.nodeTimeouts = {};
 		this.edgeTimeouts = {};
+
+		this.handleSvgClicked = this.handleSvgClicked.bind(this);
 	}
 
 	componentDidMount() {
@@ -500,20 +502,75 @@ class GraphView extends Component {
     }
 
     handleSvgClicked = (d, i) => {
-    	if (this.isPartOfEdge(d3.event.target)) return; // If any part of the edge is clicked, return
+		// If any part of the edge is clicked, return
+    	if (this.isPartOfEdge(d3.event.target)) return;
 
+		// Are we selecting a node?
     	if (this.state.selectingNode) {
+			// We're no longer selecting a node
     		this.setState({
     			selectingNode: false,
     		});
     	} else {
-    		this.props.onSelectNode(null);
+			// Clear any selection
+			this.props.onSelectNode(null);
+			
+			// Store our 'this'
+			const self = this;
 
-    		if (!this.props.readOnly && d3.event.shiftKey) {
-    			const xycoords = d3.mouse(event.target);
-    			this.props.onCreateNode(xycoords[0], xycoords[1]);
-    			this.renderView();
-    		}
+			// Are we not read-only?
+    		if (!this.props.readOnly) {
+				// Is the SHIFT key held down?
+				if (d3.event.shiftKey) {
+					// Create a new node at the current mouse position
+					const xycoords = d3.mouse(event.target);
+					this.props.onCreateNode(xycoords[0], xycoords[1]);
+					this.renderView();
+				} else if (d3.event.ctrlKey) {
+					// Is the CTRL key held down?
+
+					// Get the width and height of the graph
+					const parent = d3.select(this.viewWrapper).node();
+					const width = parent.clientWidth;
+					const height = parent.clientHeight;		
+
+					// Get the nodes
+					const nodes = d3.select(this.entities).selectAll('g.node')
+					const nodesData = nodes.data();
+
+					// Get the links
+					const links = this.props.edges.map(link => ({
+						source: `${nodesData.findIndex(node => node.id === link.source)}`,
+						target: `${nodesData.findIndex(node => node.id === link.target)}`
+					}));
+
+					// Set up the force simulation
+					const simulation = d3.forceSimulation(nodesData)
+						.alphaDecay(0.125)
+						.force('center', d3.forceCenter(0, 0))
+						.force('charge', d3.forceManyBody().strength(-10000))
+						.force("link", d3.forceLink(links))
+						.on('tick', () => {
+							// Re-position each node
+							nodes.each((nodeDatum, nodeIndex, nodesGroup) => {
+								d3.select(nodesGroup[nodeIndex])
+								.attr('transform', (d) => {
+									return `translate(${d.x},${d.y})`;
+								});
+							});
+
+							// Re-render the graph
+							self.render();
+						})
+						.on('end', () => {
+							// Notify that each of the nodes have updated
+							self.props.nodes.forEach((node) => {
+								// Notify that the node has updated
+								self.props.onUpdateNode(node);
+							});
+						});
+				}
+			}
     	}
     }
 
