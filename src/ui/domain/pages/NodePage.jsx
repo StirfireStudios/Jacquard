@@ -215,6 +215,44 @@ const getValidationResultIcon = (projectValidationResults, classes, item) => {
 	return validationResultIcon;
 };
 
+const getProjectNodeHiddenStates = (
+	searchText,
+	searchTitle,
+	searchBody,
+	searchTags,
+	projectNodes,
+) => {
+	// If there's no search text, there's no hidden states
+	if (searchText === '') {
+		return {};
+	}
+
+	// Get the lower case version of the search text
+	const searchTextLowerCase = searchText.toLowerCase();
+
+	// Build the hidden states of the nodes
+	const projectNodeHiddenStates = projectNodes.reduce((hiddenStates, node) => {
+		// Get the node text as lowercase
+		const nodeTitleLowerCase = node.title.toLowerCase();
+		const nodeBodyLowerCase = node.body.toLowerCase();
+		const nodeTagsLowerCase = node.tags.toLowerCase();
+
+		// The node is hidden if we can't find the search text in the nodes
+		// title, body, or tags (each of these searches is optional)
+		// NOTE: searching is case-insensitive
+		const matchTitle = ((searchTitle) && (nodeTitleLowerCase.indexOf(searchTextLowerCase) >= 0));
+		const matchBody = ((searchBody) && (nodeBodyLowerCase.indexOf(searchTextLowerCase) >= 0));
+		const matchTags = ((searchTags) && (nodeTagsLowerCase.indexOf(searchTextLowerCase) >= 0));
+
+		// Update the hidden state of the node
+		hiddenStates[node.title] = (!matchTitle) && (!matchBody) && (!matchTags);
+
+		return hiddenStates;
+	}, {});
+
+	return projectNodeHiddenStates;
+};
+
 const renderGeneralValidationErrors = projectValidationResults =>
 	// Build the validation errors
 	projectValidationResults.generalErrors.map((validationError) => {
@@ -285,8 +323,31 @@ class NodeListPage extends React.Component {
 	constructor(props) {
 		super(props);
 
+		// Validate the project nodes
+		const projectValidationResults = yarnService
+			.validateProjectNodes(props.projectFilePath, props.project.nodes);
+
+		// Get the project node links
+		const projectNodeLinks = yarnService
+			.getProjectNodeLinks(props.projectFilePath, props.project.nodes);
+
+		// Build a object representing the hidden state of each node
+		const projectNodeHiddenStates = getProjectNodeHiddenStates(
+			'',
+			true,
+			true,
+			true,
+			this.props.project.nodes,
+		);
+
 		// Set up the state of the component
 		this.state = {
+			// The project validation results
+			projectValidationResults,
+			// The project node links
+			projectNodeLinks,
+			// The project node hidden states
+			projectNodeHiddenStates,
 			// The text we'll search nodes for
 			searchText: '',
 			// Where to search
@@ -296,68 +357,106 @@ class NodeListPage extends React.Component {
 		};
 	}
 
+	componentWillReceiveProps(nextProps) {
+		// Has the project changed?
+		// NOTE: We're using JSON.stringify to deep compare the project nodes,
+		// so we rely on all keys always being in the same order. If this
+		// changes, we'll need to use another comparison method.
+		if ((this.props.projectFilePath !== nextProps.projectFilePath) ||
+			(JSON.stringify(this.props.project.nodes) !== (JSON.stringify(nextProps.project.nodes)))) {
+			// Validate the project nodes
+			const projectValidationResults = yarnService
+				.validateProjectNodes(nextProps.projectFilePath, nextProps.project.nodes);
+
+			// Get the project node links
+			const projectNodeLinks = yarnService
+				.getProjectNodeLinks(nextProps.projectFilePath, nextProps.project.nodes);
+
+			// Build a object representing the hidden state of each node
+			const projectNodeHiddenStates = getProjectNodeHiddenStates(
+				this.state.searchText,
+				this.state.searchTitle,
+				this.state.searchBody,
+				this.state.searchTags,
+				this.props.project.nodes,
+			);
+
+			// Update the validation results, node links, and hidden states in our state
+			this.setState({
+				projectValidationResults,
+				projectNodeLinks,
+				projectNodeHiddenStates,
+			});
+		}
+	}
+
 	onSearchTextChange = (searchText) => {
-		this.setState({ searchText });
+		// Build a object representing the hidden state of each node
+		const projectNodeHiddenStates = getProjectNodeHiddenStates(
+			searchText,
+			this.state.searchTitle,
+			this.state.searchBody,
+			this.state.searchTags,
+			this.props.project.nodes,
+		);
+
+		this.setState({
+			searchText,
+			projectNodeHiddenStates,
+		});
 	}
 
 	onSearchTitleCheckboxChange = (checked) => {
-		this.setState({ searchTitle: checked });
+		// Build a object representing the hidden state of each node
+		const projectNodeHiddenStates = getProjectNodeHiddenStates(
+			this.state.searchText,
+			checked,
+			this.state.searchBody,
+			this.state.searchTags,
+			this.props.project.nodes,
+		);
+
+		this.setState({
+			searchTitle: checked,
+			projectNodeHiddenStates,
+		});
 	}
 
 	onSearchBodyCheckboxChange = (checked) => {
-		this.setState({ searchBody: checked });
+		// Build a object representing the hidden state of each node
+		const projectNodeHiddenStates = getProjectNodeHiddenStates(
+			this.state.searchText,
+			this.state.searchTitle,
+			checked,
+			this.state.searchTags,
+			this.props.project.nodes,
+		);
+
+		this.setState({
+			searchBody: checked,
+			projectNodeHiddenStates,
+		});
 	}
 
 	onSearchTagsCheckboxChange = (checked) => {
-		this.setState({ searchTags: checked });
-	}
+		// Build a object representing the hidden state of each node
+		const projectNodeHiddenStates = getProjectNodeHiddenStates(
+			this.state.searchText,
+			this.state.searchTitle,
+			this.state.searchBody,
+			checked,
+			this.props.project.nodes,
+		);
 
-	getProjectNodeHiddenStates = (projectNodes) => {
-		// If there's no search text, no nodes are missing
-		if (this.state.searchText === '') {
-			return {};
-		}
-
-		// Get the lower case version of the search text
-		const searchTextLowerCase = this.state.searchText.toLowerCase();
-
-		// Get the search flags
-		const { searchTitle, searchBody, searchTags } = this.state;
-
-		// Build the hidden states of the nodes
-		const projectNodeHiddenStates = projectNodes.reduce((hiddenStates, node) => {
-			// Get the node text as lowercase
-			const nodeTitleLowerCase = node.title.toLowerCase();
-			const nodeBodyLowerCase = node.body.toLowerCase();
-			const nodeTagsLowerCase = node.tags.toLowerCase();
-
-			// The node is hidden if we can't find the search text in the nodes
-			// title, body, or tags (each of these searches is optional)
-			// NOTE: searching is case-insensitive
-			const matchTitle = ((searchTitle) && (nodeTitleLowerCase.indexOf(searchTextLowerCase) >= 0));
-			const matchBody = ((searchBody) && (nodeBodyLowerCase.indexOf(searchTextLowerCase) >= 0));
-			const matchTags = ((searchTags) && (nodeTagsLowerCase.indexOf(searchTextLowerCase) >= 0));
-
-			// Update the hidden state of the node
-			hiddenStates[node.title] = (!matchTitle) && (!matchBody) && (!matchTags);
-
-			return hiddenStates;
-		}, {});
-
-		return projectNodeHiddenStates;
+		this.setState({
+			searchTags: checked,
+			projectNodeHiddenStates,
+		});
 	}
 
 	render() {
-		// Validate the project nodes
-		const projectValidationResults = yarnService
-			.validateProjectNodes(this.props.projectFilePath, this.props.project.nodes);
-
-		// Get the project node links
-		const projectNodeLinks = yarnService
-			.getProjectNodeLinks(this.props.projectFilePath, this.props.project.nodes);
-
 		// Render the general validation results
-		const generalValidationResults = renderGeneralValidationResults(projectValidationResults);
+		const generalValidationResults = renderGeneralValidationResults(this.state.projectValidationResults);
 
 		// The list fields
 		const fields = [
@@ -381,7 +480,7 @@ class NodeListPage extends React.Component {
 				displayName: 'Incoming Links',
 				getContentCallback: (item, field, onAddItemClick, onEditItemClick) =>
 					getIncomingLinkButtons(
-						projectNodeLinks,
+						this.state.projectNodeLinks,
 						this.props.classes,
 						item,
 						field,
@@ -394,7 +493,7 @@ class NodeListPage extends React.Component {
 				displayName: 'Outgoing Links',
 				getContentCallback: (item, field, onAddItemClick, onEditItemClick) =>
 					getOutgoingLinkButtons(
-						projectNodeLinks,
+						this.state.projectNodeLinks,
 						this.props.classes,
 						item,
 						field,
@@ -407,7 +506,7 @@ class NodeListPage extends React.Component {
 				displayName: 'Validation',
 				getContentCallback: (item, field, onAddItemClick, onEditItemClick) =>
 					getValidationResultIcon(
-						projectValidationResults,
+						this.state.projectValidationResults,
 						this.props.classes,
 						item,
 						field,
@@ -420,12 +519,9 @@ class NodeListPage extends React.Component {
 		const addEditForm = props => (
 			<NodeEditorForm
 				{...props}
-				projectNodeLinks={projectNodeLinks}
+				projectNodeLinks={this.state.projectNodeLinks}
 				projectFilePath={this.props.projectFilePath}
 			/>);
-
-		// Build a object representing the hidden state of each node
-		const projectNodeHiddenStates = this.getProjectNodeHiddenStates(this.props.project.nodes);
 
 		return (
 			<div>
@@ -434,7 +530,7 @@ class NodeListPage extends React.Component {
 					onDataModified={this.props.onDataModified}
 					project={this.props.project}
 					projectPropName="nodes"
-					projectPropNameHiddenStates={projectNodeHiddenStates}
+					projectPropNameHiddenStates={this.state.projectNodeHiddenStates}
 					fields={fields}
 					keyName="title"
 					addEditForm={addEditForm}
