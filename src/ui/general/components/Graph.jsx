@@ -121,6 +121,8 @@ class Graph extends React.Component {
 					transitionTime={0}
 					zoomDelay={500}
 					zoomDur={750}
+					minZoom={0.05}
+					maxZoom={1.5}
 					maxTitleChars={100}
 					getViewNode={this.getViewNode}
 					onSelectNode={this.onSelectNode}
