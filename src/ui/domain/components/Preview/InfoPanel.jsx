@@ -11,6 +11,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import ModalDialog from '../../../general/components/ModalDialog';
 
+import * as RuntimeActions from '../../../../actions/preview/runtime';
 
 const styles = theme => ({
   root: {
@@ -33,18 +34,14 @@ const styles = theme => ({
 
 function onNodeStartAt(name, confirmed) {
   if (confirmed == null) {
-    this.setState({
-      nodeName: name,
-    });
+    this.setState({ nodeName: name, });
     return;
   }
 
-  this.setState({
-    nodeName: null,
-  });
+  this.setState({ nodeName: null, });
 
   if (confirmed) {
-    console.log(`Start at ${name}`);
+    RuntimeActions.MoveToNode(name);
   }
 }
 
