@@ -595,6 +595,9 @@ class GraphView extends Component {
 					for (let i = 0, n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n; ++i) {
 						simulation.tick();
 					}
+
+					// Zoom to fit the entire graph on screen
+					this.handleZoomToFit();
 				}
 			}
     	}
