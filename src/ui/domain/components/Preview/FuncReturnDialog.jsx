@@ -9,6 +9,22 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 
 import { withStyles } from '@material-ui/core/styles';
 
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    position: 'relative',
+  },
+  argLabel: {
+    'font-weight': 'bold',
+    padding: '2px',
+  },
+  arg: {
+    'font-weight': 'bold',
+    border: "1px solid grey",
+    padding: '2px',
+  },
+});
+
 const types = {
   'String': { valid: () => {return true;}, conv: (value) => {return value.toString();} },
   'Null': { valid: validNull, conv: () => {return null;} },
@@ -42,13 +58,6 @@ function convBool(value) {
   if (value.toLowerCase().startsWith('y')) return true;
   return false;
 }
-
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    position: 'relative',
-  },
-});
 
 function onValueChange(event) {
   this.setState({value: event.target.value});
@@ -105,6 +114,25 @@ function renderType() {
   );
 }
 
+function renderArgs() {
+  if (this.props.func.args == null) return;
+  if (this.props.func.args.length === 0) return;
+  const args = this.props.func.args.map((arg, index) => {
+    return (
+      <span className={this.props.classes.arg} key={`arg${index}`}>{arg}</span>
+    );
+  });
+
+  const labelText = args.length === 1 ? "argument" : "arguments"
+
+  return (
+    <Grid item xs={12} key="arg">
+      <span className={this.props.classes.argLabel} key="label">{args.length} {labelText}: </span>
+      {args}
+    </Grid>
+  );
+}
+
 class FuncReturnDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -116,14 +144,14 @@ class FuncReturnDialog extends React.Component {
 
   render() {
     const funcName = this.props.func.name;
-    const funcArgs = this.props.func.args;
 
     return (
       <div className={this.props.classes.root}>
         <Grid container spacing={0} justify="center">
-          <Grid item xs={12}>Enter return value for function call "{funcName}"</Grid>
-          <Grid item xs={6}>{renderInput.call(this)}{renderSubmit.call(this)}</Grid>
-          <Grid item xs={6}>{renderType.call(this)}</Grid>
+          <Grid item xs={12} key="text">Enter return value for function call "{funcName}"</Grid>
+          {renderArgs.call(this)}
+          <Grid item xs={6} key="input1">{renderInput.call(this)}{renderSubmit.call(this)}</Grid>
+          <Grid item xs={6} key="input2">{renderType.call(this)}</Grid>
         </Grid>
       </div>
     )
