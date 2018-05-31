@@ -583,13 +583,6 @@ class GraphView extends Component {
 							// Re-render the graph
 							self.render();
 						})
-						.on('end', () => {
-							// Notify that each of the nodes have updated
-							self.props.nodes.forEach((node) => {
-								// Notify that the node has updated
-								self.props.onUpdateNode(node);
-							});
-						})
 						.stop();
 
 					// See https://github.com/d3/d3-force/blob/master/README.md#simulation_tick
@@ -598,7 +591,12 @@ class GraphView extends Component {
 					}
 
 					// Zoom to fit the entire graph on screen
-					this.handleZoomToFit();
+					self.handleZoomToFit(() => {
+						console.log('updating');
+
+						// Notify that each the nodes have been updated
+						self.props.onUpdateNodes(d3.select(this.entities).selectAll('g.node').data());
+					});
 				}
 			}
     	}
