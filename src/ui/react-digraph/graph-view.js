@@ -569,7 +569,7 @@ class GraphView extends Component {
 					const simulation = d3.forceSimulation(nodesData)
 						.alphaDecay(0.125)
 						.force('center', d3.forceCenter(0, 0))
-						.force('charge', d3.forceManyBody().strength(-10000))
+						.force('charge', d3.forceManyBody().strength(-5000))
 						.force("link", d3.forceLink(filteredLinks))
 						.on('tick', () => {
 							// Re-position each node
