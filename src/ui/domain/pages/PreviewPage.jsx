@@ -10,7 +10,7 @@ import TextWindow from '../components/Preview/TextWindow';
 import Interface from '../components/Preview/Interface';
 import InfoPanel from '../components/Preview/InfoPanel';
 
-import { OptionSelect } from '../../../actions/preview/runtime';
+import { OptionSelect, FuncValue } from '../../../actions/preview/runtime';
 
 class RuntimePage extends React.Component {	
 	render() {
@@ -24,6 +24,8 @@ class RuntimePage extends React.Component {
 					text={this.props.text}
 					options={this.props.options}
 					optionSelect={OptionSelect}
+					func={this.props.func}
+					funcValue={FuncValue}
 					halted={this.props.halted}
 					endOfFile={this.props.endOfFile}
 				/>
@@ -37,6 +39,7 @@ function mapStateToProps(state) {
 	const Runtime = state.Preview.State;
   return {
     options: Runtime.options,
+		func: Runtime.currentFunc,
 		text: Runtime.text,
 		halted: Runtime.halted,
 		endOfFile: Runtime.endOfFile,

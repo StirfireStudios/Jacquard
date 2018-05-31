@@ -11,7 +11,6 @@ import { ipcRenderer } from 'electron'; // eslint-disable-line
 import Page from './ui/general/pages/Page';
 
 // Page Imports
-import RunPage from './ui/domain/pages/RunPage';
 import VisualizationPage from './ui/domain/pages/VisualizationPage';
 import CharacterPage from './ui/domain/pages/CharacterPage';
 import DefaultPage from './ui/domain/pages/DefaultPage';
@@ -297,14 +296,6 @@ class App extends Component {
 			</BasePage>
 		);
 
-		const RunPageComplete = () => (
-			<BasePage title="Run">
-				<RunPage
-					yarnNodes={yarnNodes}
-				/>
-			</BasePage>
-		);
-
 		const VisualizationPageComplete = () => (
 			<BasePage title="Visualization">
 				<VisualizationPage
@@ -363,7 +354,6 @@ class App extends Component {
 		return (
 			<div>
 				<Route exact path="/" component={HomePageComplete} />
-				<Route path="/run" component={RunPageComplete} />
 				<Route path="/visualization" component={VisualizationPageComplete} />
 				<Route path="/characters" component={CharacterPageComplete} />
 				<Route path="/functions" component={FunctionPageComplete} />

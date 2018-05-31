@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 
+import FuncReturnDialog from './FuncReturnDialog';
+
 const styles = theme => ({
   monospace: {
     "font-family": "monospace"
@@ -86,30 +88,31 @@ function renderTextArray() {
 }
 
 function renderOptions() {
-  const options = [];
+  if (this.props.options == null) return null;
+
   const optionSelect = this.props.optionSelect;
   const classes = this.props.classes;
-  let optionIndex = 0;
 
+  return this.props.options.map((option, index) => {
+    const action = optionSelect.bind(null, option);
+    return(
+      <Button 
+        className={classes.button} 
+        key={index} 
+        onClick={action} 
+        variant='outlined'
+      >
+        {option.text[0].text}
+      </Button>
+    )
+  });
+}
 
-  if (this.props.options != null) {
-    for(let option of this.props.options) {
-      const action = optionSelect.bind(null, option);
-      options.push(
-        <Button 
-          className={classes.button} 
-          key={optionIndex} 
-          onClick={action} 
-          variant='outlined'
-        >
-          {option.text[0].text}
-        </Button>
-      )
-      optionIndex++;
-    }
-  }
-
-  return options;
+function renderFunc() {
+  if (this.props.func == null) return null;
+  return (
+    <FuncReturnDialog func={this.props.func} returnValueAction={this.props.funcValue} />
+  );
 }
 
 function renderHalted() {
@@ -138,6 +141,7 @@ class TextWindow extends React.Component {
       <div key={this.props.key} className={this.props.className}>
         {renderTextArray.call(this)}
         {renderOptions.call(this)}
+        {renderFunc.call(this)}
         {renderHalted.call(this)}
         <div ref={(el) => { this.messagesEnd = el; }}></div>
       </div>
