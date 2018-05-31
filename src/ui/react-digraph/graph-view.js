@@ -537,14 +537,14 @@ class GraphView extends Component {
 
 			// Are we not read-only?
     		if (!this.props.readOnly) {
-				// Is the SHIFT key held down?
-				if (d3.event.shiftKey) {
+				// Is the SHIFT key held down but not the CTRL key?
+				if ((d3.event.shiftKey) && (!d3.event.ctrlKey)) {
 					// Create a new node at the current mouse position
 					const xycoords = d3.mouse(event.target);
 					this.props.onCreateNode(xycoords[0], xycoords[1]);
 					this.renderView();
-				} else if (d3.event.ctrlKey) {
-					// Is the CTRL key held down?
+				} else if ((d3.event.shiftKey) && (d3.event.ctrlKey)) {
+					// Are the SHIFT key and CTRL key both held down?
 
 					// Get the width and height of the graph
 					const parent = d3.select(this.viewWrapper).node();
