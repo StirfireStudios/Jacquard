@@ -774,7 +774,7 @@ class GraphView extends Component {
     		x = viewBBox.x + viewBBox.width / 2,
     		y = viewBBox.y + viewBBox.height / 2;
 
-    		next.k = 0.9 / Math.max(dx / width, dy / height);
+    		next.k = 0.9 / (Math.max(dx / width, dy / height) * 2);
 
     		if (next.k < this.props.minZoom) {
     			next.k = this.props.minZoom;
@@ -788,8 +788,8 @@ class GraphView extends Component {
     		next.k = (this.props.minZoom + this.props.maxZoom) / 2;
     		next.x = 0;
     		next.y = 0;
-    	}
-
+		}
+		
     	this.setZoom(next.k, next.x, next.y, this.props.zoomDur, cb);
     }
 
