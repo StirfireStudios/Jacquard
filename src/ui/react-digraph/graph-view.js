@@ -1176,6 +1176,8 @@ GraphView.propTypes = {
 	onClickNode: PropTypes.func.isRequired,
 	onCreateNode: PropTypes.func.isRequired,
 	onUpdateNode: PropTypes.func.isRequired,
+	onUpdateNodes: PropTypes.func.isRequired,
+	onUpdateNodes: PropTypes.func.isRequired,
 	onDeleteNode: PropTypes.func.isRequired,
 	onSelectEdge: PropTypes.func.isRequired,
 	onCreateEdge: PropTypes.func.isRequired,

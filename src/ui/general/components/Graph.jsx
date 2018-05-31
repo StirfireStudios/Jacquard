@@ -88,6 +88,22 @@ class Graph extends React.Component {
 		}
 	}
 
+	// Called when the nodes are updated in bulk
+	onUpdateNodes = (viewNodes) => {
+		// Were view nodes updated?
+		if (viewNodes) {
+			// Build the changed nodes
+			const nodes = viewNodes.map(viewNode => ({
+				title: viewNode.title,
+				x: viewNode.x,
+				y: viewNode.y,
+			}));
+
+			// Build update the nodes
+			this.props.onNodePositionsChanged(nodes);
+		}
+	}
+
 	// Given a nodeKey, return the corresponding node
 	getViewNode = (nodeKeyValue) => {
 		// Find the node index
@@ -129,6 +145,7 @@ class Graph extends React.Component {
 					onClickNode={this.onClickNode}
 					onCreateNode={this.onCreateNode}
 					onUpdateNode={this.onUpdateNode}
+					onUpdateNodes={this.onUpdateNodes}
 					onDeleteNode={this.onDeleteNode}
 					onSelectEdge={this.onSelectEdge}
 					onCreateEdge={this.onCreateEdge}
@@ -144,6 +161,7 @@ Graph.propTypes = {
 	onNodeCreate: PropTypes.func.isRequired,
 	onNodeClicked: PropTypes.func.isRequired,
 	onNodePositionChanged: PropTypes.func.isRequired,
+	onNodePositionsChanged: PropTypes.func.isRequired,
 	onEdgeCreate: PropTypes.func.isRequired,
 
 	graph: PropTypes.object,

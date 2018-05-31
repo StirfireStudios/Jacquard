@@ -134,6 +134,7 @@ class VisualizationPage extends React.Component {
 		this.onNodeCreate = this.onNodeCreate.bind(this);
 		this.onNodeClicked = this.onNodeClicked.bind(this);
 		this.onNodePositionChanged = this.onNodePositionChanged.bind(this);
+		this.onNodePositionsChanged = this.onNodePositionsChanged.bind(this);
 		this.onEdgeCreate = this.onEdgeCreate.bind(this);
 	}
 
@@ -223,6 +224,34 @@ class VisualizationPage extends React.Component {
 			this.props.onProjectUpdated(project);
 		}
 	}
+
+	onNodePositionsChanged = (nodes) => {
+		// Get a copy of the project
+		const project = { ...this.props.project };
+
+		// Get the project nodes we'll be updating
+		const projectNodes = project.nodes;
+
+		// Update each of the node positions
+		nodes.forEach((node) => {
+			// Get the index of the node we'll be updating
+			const nodeToUpdateIndex = this.props.project.nodes
+				.findIndex(foundNode =>
+					foundNode.title === node.title);
+
+			// If we found the node, update it
+			if (nodeToUpdateIndex !== -1) {
+				// Get the node we'll be updating
+				const nodeToUpdate = projectNodes[nodeToUpdateIndex];
+
+				// Set the position
+				nodeToUpdate.position = `${node.x}, ${node.y}`;
+			}
+		});
+
+		// Notify the callback that the project has changed
+		this.props.onProjectUpdated(project);
+	}	
 
 	onEdgeCreate = (sourceNode, destinationNode) => {
 		// Get the source node index
@@ -496,6 +525,7 @@ class VisualizationPage extends React.Component {
 					onNodeCreate={this.onNodeCreate}
 					onNodeClicked={this.onNodeClicked}
 					onNodePositionChanged={this.onNodePositionChanged}
+					onNodePositionsChanged={this.onNodePositionsChanged}
 					onEdgeCreate={this.onEdgeCreate}
 				/>
 			</div>
