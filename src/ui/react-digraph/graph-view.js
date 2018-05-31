@@ -561,12 +561,15 @@ class GraphView extends Component {
 						target: `${nodesData.findIndex(node => node.id === link.target)}`
 					}));
 
+					// Filter out any broken links
+					const filteredLinks = links.filter(link => (link.source !== '-1') && (link.target !== '-1'));
+
 					// Set up the force simulation
 					const simulation = d3.forceSimulation(nodesData)
 						.alphaDecay(0.125)
 						.force('center', d3.forceCenter(0, 0))
 						.force('charge', d3.forceManyBody().strength(-10000))
-						.force("link", d3.forceLink(links))
+						.force("link", d3.forceLink(filteredLinks))
 						.on('tick', () => {
 							// Re-position each node
 							nodes.each((nodeDatum, nodeIndex, nodesGroup) => {
