@@ -588,7 +588,13 @@ class GraphView extends Component {
 								// Notify that the node has updated
 								self.props.onUpdateNode(node);
 							});
-						});
+						})
+						.stop();
+
+					// See https://github.com/d3/d3-force/blob/master/README.md#simulation_tick
+					for (let i = 0, n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n; ++i) {
+						simulation.tick();
+					}
 				}
 			}
     	}
