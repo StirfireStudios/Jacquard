@@ -268,9 +268,12 @@ class VisualizationPage extends React.Component {
 			const nodeId = `node${nodeIndex}`;
 
 			// Get the node color
-			const nodeColor = (node.colorId)
-				? node.colorId
-				: nodeDefaultColor;
+			let nodeColor = nodeDefaultColor;
+			if (node.colorId) {
+				nodeColor = node.colorId;
+			} else if (node.colorId === '') {
+				nodeColor = 0;
+			}
 
 			// Build the node shape
 			const nodeShape = getNodeShape(nodeId, nodeColor);
