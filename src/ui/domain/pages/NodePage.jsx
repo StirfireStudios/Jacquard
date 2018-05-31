@@ -1,26 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from 'material-ui/styles';
-import Button from 'material-ui/Button';
-import Tooltip from 'material-ui/Tooltip';
-import Icon from 'material-ui/Icon';
-import List, { ListItem, ListItemText } from 'material-ui/List';
-import Paper from 'material-ui/Paper';
-import {
-	FormControl,
-	FormGroup,
-	FormControlLabel,
-} from 'material-ui/Form';
-import TextField from 'material-ui/TextField';
-import Checkbox from 'material-ui/Checkbox';
+import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import Icon from '@material-ui/core/Icon';
+import List, { ListItem, ListItemText } from '@material-ui/core/List';
+import Paper from '@material-ui/core/Paper';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import TextField from '@material-ui/core/TextField';
+import Checkbox from '@material-ui/core/Checkbox';
 import ErrorIcon from '@material-ui/icons/Error';
 import WarningIcon from '@material-ui/icons/Warning';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
-import red from 'material-ui/colors/red';
-import orange from 'material-ui/colors/orange';
-import green from 'material-ui/colors/green';
+import red from '@material-ui/core/colors/red';
+import orange from '@material-ui/core/colors/orange';
+import green from '@material-ui/core/colors/green';
 
 import uuidv4 from 'uuid/v4';
 
