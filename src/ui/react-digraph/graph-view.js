@@ -194,6 +194,7 @@ class GraphView extends Component {
 		this.edgeTimeouts = {};
 
 		this.handleSvgClicked = this.handleSvgClicked.bind(this);
+		this.handleZoomToFit = this.handleZoomToFit.bind(this);
 	}
 
 	componentDidMount() {
@@ -752,7 +753,7 @@ class GraphView extends Component {
     }
 
     // Zooms to contents of this.refs.entities
-    handleZoomToFit = () => {
+    handleZoomToFit = (cb = () => {}) => {
     	const parent = d3.select(this.viewWrapper).node();
     	const entities = d3.select(this.entities).node();
 
@@ -791,7 +792,7 @@ class GraphView extends Component {
     		next.y = 0;
     	}
 
-    	this.setZoom(next.k, next.x, next.y, this.props.zoomDur);
+    	this.setZoom(next.k, next.x, next.y, this.props.zoomDur, cb);
     }
 
     // Updates current viewTransform with some delta
@@ -823,7 +824,7 @@ class GraphView extends Component {
     }
 
     // Programmatically resets zoom
-    setZoom = (k = 1, x = 0, y = 0, dur = 0) => {
+    setZoom = (k = 1, x = 0, y = 0, dur = 0, cb = () => {}) => {
 		const t = d3.zoomIdentity.translate(x, y).scale(k);
 		
 		d3.select(this.viewWrapper)
@@ -831,7 +832,8 @@ class GraphView extends Component {
 			.call(this.zoom.transform, this.state.viewTransform)
     		.transition()
     		.duration(dur)
-    		.call(this.zoom.transform, t);
+			.call(this.zoom.transform, t)
+			.on("end", cb);
     }
 
     /*
