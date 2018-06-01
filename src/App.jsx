@@ -260,11 +260,6 @@ class App extends Component {
 		// Get the project file path
 		const projectFilePath = projectService.getFilePath();
 
-		// Get the yarn nodes (if any)
-		const yarnNodes = (hasProject)
-			? this.state.project.nodes
-			: [];
-
 		// Build the app components
 		const Menu = () =>	(<MainMenu
 			hasProject={hasProject}

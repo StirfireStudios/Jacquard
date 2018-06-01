@@ -2,7 +2,6 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Grid from '@material-ui/core/Grid';
@@ -166,7 +165,7 @@ class InfoPanel extends React.Component {
 
 	render() {
     if (!this.props.ready) return null;
-    if (!this.props.visible) return null;
+    if (!this.props.visible.any) return null;
     
     return (
       <div>
@@ -190,12 +189,12 @@ function mapStateToProps(state) {
     ready: State.ready,
     nodes: State.nodeNames,
     variables: State.variables,
-    visible: View.showState || View.showNodes || View.showVariables,
     state: {
       history: State.nodeHistory,
       variables: State.variableState,
     },
     visible: {
+      any: View.showState || View.showNodes || View.showVariables,
       state: View.showState,
       nodes: View.showNodes,
       variables: View.showVariables, 
