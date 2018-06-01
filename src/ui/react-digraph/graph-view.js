@@ -41,7 +41,7 @@ function styleToString(style) {
 }
 
 
-function makeStyles(primary = 'dodgerblue', light = 'white', dark = 'black', background = '#F9F9F9') {
+function makeStyles(primary = 'green', light = 'white', dark = 'black', background = '#F9F9F9') {
 	const styles = {
 		wrapper: {
 			base: {
@@ -108,17 +108,17 @@ function makeStyles(primary = 'dodgerblue', light = 'white', dark = 'black', bac
 			},
 			selectedSource: {
 				color: primary,
-				stroke: primary,
-				strokeWidth: '4px',
+				stroke: 'blue',
+				strokeWidth: '8px',
 			},
 			selectedTarget: {
 				color: dark,
-				stroke: dark,
-				strokeWidth: '4px',
+				stroke: 'orange',
+				strokeWidth: '8px',
 			},
 		},
 		arrow: {
-			fill: primary,
+			fill: 'black',
 		},
 	};
 
@@ -1217,7 +1217,7 @@ GraphView.defaultProps = {
 	readOnly: false,
 	maxTitleChars: 9,
 	transitionTime: 150,
-	primary: 'dodgerblue',
+	primary: 'gray',
 	light: '#FFF',
 	dark: '#000',
 	background: '#F9F9F9',
