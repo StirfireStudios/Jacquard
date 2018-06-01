@@ -72,7 +72,7 @@ const importProjectFromYarn = (yarn) => {
 						if (keyAndValue.length === 2) {
 							// Get the key and value
 							const key = keyAndValue[0];
-							const value = keyAndValue[1];
+							const value = keyAndValue[1].trim();
 
 							// Is the key one of the header properties we're looking for?
 							if (Object.prototype.hasOwnProperty.call(headerProperties, key)) {
