@@ -105,6 +105,9 @@ const importProjectFromYarn = (yarn) => {
 					// Record the body in the node
 					node.body = body;
 
+					// Nodes are dirty by default as they haven't been parsed
+					node.dirty = true;
+
 					// Add the node to the projects nodes
 					nodes.push(node);
 				}
@@ -167,24 +170,48 @@ const validateProjectNodes = (projectFilePath, projectNodes) => {
 		generalWarnings: [],
 	};
 
+	let dirty = false;
+
+	for(let index = 0; index < projectNodes.length; index++) {
+		const node = projectNodes[index];
+		if (node.dirty) {
+			dirty = true;
+			break;
+		}
+	}
+
 	try {
 		// Build a dummy project with only the single node
 		const project = {
 			nodes: projectNodes,
 		};
 
-		// Export the project to Yarn
-		const projectYarn = exportProjectToYarn(project);
+		let errors = [];
+		let warnings = [];
 
-		// Create a parser
-		const parser = new Parser();
+		if (dirty) {
+			// Export the project to Yarn
+			const projectYarn = exportProjectToYarn(project);
 
-		// Parse the node (ignoring the return value as it's really only for a
-		// compiler toolchain)
-		parser.parse(projectYarn, false, projectFilePath);
+			// Create a parser
+			const parser = new Parser();
+
+			// Parse the node (ignoring the return value as it's really only for a
+			// compiler toolchain)
+			parser.parse(projectYarn, false, projectFilePath);
+
+			for(let index = 0; index < projectNodes.length; index++) {
+				projectNodes[index].dirty = false;
+			}
+
+			console.log("Validated!");
+
+			errors = parser.errors;
+			warnings = parser.warnings;
+		}
 
 		// Get the errors
-		projectNodeValidationResults = parser.errors.reduce((validationResults, validationError) => {
+		projectNodeValidationResults = errors.reduce((validationResults, validationError) => {
 			// Get the node name of the error
 			const { nodeName } = validationError.location;
 
@@ -215,7 +242,7 @@ const validateProjectNodes = (projectFilePath, projectNodes) => {
 		}, projectNodeValidationResults);
 
 		// Get the warnings
-		projectNodeValidationResults = parser.warnings.reduce((validationResults, validationWarning) => {
+		projectNodeValidationResults = warnings.reduce((validationResults, validationWarning) => {
 			// Get the node name of the warning
 			const { nodeName } = validationWarning.location;
 
@@ -244,6 +271,7 @@ const validateProjectNodes = (projectFilePath, projectNodes) => {
 
 			return validationResults;
 		}, projectNodeValidationResults);
+
 	} catch (error) {
 		console.log(error);
 	}
