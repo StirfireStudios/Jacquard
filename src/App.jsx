@@ -11,7 +11,6 @@ import { ipcRenderer } from 'electron'; // eslint-disable-line
 import Page from './ui/general/pages/Page';
 
 // Page Imports
-import RunPage from './ui/domain/pages/RunPage';
 import VisualizationPage from './ui/domain/pages/VisualizationPage';
 import CharacterPage from './ui/domain/pages/CharacterPage';
 import DefaultPage from './ui/domain/pages/DefaultPage';
@@ -261,11 +260,6 @@ class App extends Component {
 		// Get the project file path
 		const projectFilePath = projectService.getFilePath();
 
-		// Get the yarn nodes (if any)
-		const yarnNodes = (hasProject)
-			? this.state.project.nodes
-			: [];
-
 		// Build the app components
 		const Menu = () =>	(<MainMenu
 			hasProject={hasProject}
@@ -294,14 +288,6 @@ class App extends Component {
 		const PreviewPageComplete = () => (
 			<BasePage title="Preview">
 				<PreviewPage project={this.state.project}/>
-			</BasePage>
-		);
-
-		const RunPageComplete = () => (
-			<BasePage title="Run">
-				<RunPage
-					yarnNodes={yarnNodes}
-				/>
 			</BasePage>
 		);
 
@@ -363,7 +349,6 @@ class App extends Component {
 		return (
 			<div>
 				<Route exact path="/" component={HomePageComplete} />
-				<Route path="/run" component={RunPageComplete} />
 				<Route path="/visualization" component={VisualizationPageComplete} />
 				<Route path="/characters" component={CharacterPageComplete} />
 				<Route path="/functions" component={FunctionPageComplete} />

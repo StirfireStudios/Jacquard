@@ -60,8 +60,18 @@ const addEditFormSchema = [
 	},
 ];
 
-// The graph configuration
-const graphConfig = {
+// The default node color
+const nodeDefaultColor = 'currentColor';
+
+// Returns a node shape
+const getNodeShape = (id, color) => (
+	<symbol viewBox="0 0 100 100" id={id} key="0">
+		<rect x="0" y="0" width="100" height="100" fill={color} />
+	</symbol>
+);
+
+// The default graph configuration
+const defaultGraphConfig = {
 	nodeTypes: {
 		nonExistingNode: {
 			typeText: '',
@@ -69,15 +79,6 @@ const graphConfig = {
 			shape: (
 				<symbol viewBox="0 0 100 100" id="nonExistingNode" key="0">
 					<rect x="0" y="0" width="100" height="100" fill="rgb(255, 0, 0)" />
-				</symbol>
-			),
-		},
-		existingNode: {
-			typeText: '',
-			shapeId: '#existingNode',
-			shape: (
-				<symbol viewBox="0 0 100 100" id="existingNode" key="0">
-					<rect x="0" y="0" width="100" height="100" />
 				</symbol>
 			),
 		},
@@ -133,6 +134,7 @@ class VisualizationPage extends React.Component {
 		this.onNodeCreate = this.onNodeCreate.bind(this);
 		this.onNodeClicked = this.onNodeClicked.bind(this);
 		this.onNodePositionChanged = this.onNodePositionChanged.bind(this);
+		this.onNodePositionsChanged = this.onNodePositionsChanged.bind(this);
 		this.onEdgeCreate = this.onEdgeCreate.bind(this);
 	}
 
@@ -223,6 +225,34 @@ class VisualizationPage extends React.Component {
 		}
 	}
 
+	onNodePositionsChanged = (nodes) => {
+		// Get a copy of the project
+		const project = { ...this.props.project };
+
+		// Get the project nodes we'll be updating
+		const projectNodes = project.nodes;
+
+		// Update each of the node positions
+		nodes.forEach((node) => {
+			// Get the index of the node we'll be updating
+			const nodeToUpdateIndex = this.props.project.nodes
+				.findIndex(foundNode =>
+					foundNode.title === node.title);
+
+			// If we found the node, update it
+			if (nodeToUpdateIndex !== -1) {
+				// Get the node we'll be updating
+				const nodeToUpdate = projectNodes[nodeToUpdateIndex];
+
+				// Set the position
+				nodeToUpdate.position = `${node.x}, ${node.y}`;
+			}
+		});
+
+		// Notify the callback that the project has changed
+		this.props.onProjectUpdated(project);
+	}	
+
 	onEdgeCreate = (sourceNode, destinationNode) => {
 		// Get the source node index
 		const nodeToUpdateIndex = this.props.project.nodes
@@ -258,6 +288,39 @@ class VisualizationPage extends React.Component {
 		this.setState({
 			addEditFormOpen: false,
 		});
+	}
+
+	buildNodeTypes = (projectNodes) => {
+		// Add a node type for each project node
+		const nodeTypes = projectNodes.reduce((accumulatedNodeTypes, node, nodeIndex) => {
+			// Build the node ID
+			const nodeId = `node${nodeIndex}`;
+
+			// Get the node color
+			let nodeColor = nodeDefaultColor;
+			if (node.colorId) {
+				nodeColor = node.colorId;
+			} else if (node.colorId === '') {
+				nodeColor = 0;
+			}
+
+			// Build the node shape
+			const nodeShape = getNodeShape(nodeId, nodeColor);
+
+			// Build the node type
+			const nodeType = {
+				typeText: '',
+				shapeId: `#${nodeId}`,
+				shape: nodeShape,
+			};
+
+			// Store the node type using the node ID as they key
+			accumulatedNodeTypes[nodeId] = nodeType;
+
+			return accumulatedNodeTypes;
+		}, {});
+
+		return nodeTypes;
 	}
 
 	// TODO: Use this to build existing and non-existing nodes too
@@ -332,7 +395,10 @@ class VisualizationPage extends React.Component {
 
 	buildExistingNodes = projectNodes =>
 		// Add an existing node for each project node
-		projectNodes.map((node) => {
+		projectNodes.map((node, nodeIndex) => {
+			// Build the node ID
+			const nodeId = `node${nodeIndex}`;
+
 			// Get the x/y position
 			const positionArray = node.position.split(',');
 
@@ -352,7 +418,7 @@ class VisualizationPage extends React.Component {
 				title: node.title,
 				x: Number(x),
 				y: Number(y),
-				type: 'existingNode',
+				type: nodeId,
 			};
 		});
 
@@ -422,6 +488,20 @@ class VisualizationPage extends React.Component {
 			edges,
 		};
 
+		// Build the node types
+		const nodeTypes = this.buildNodeTypes(this.props.project.nodes);
+
+		// Build the graph config
+		const graphConfig = {
+			...defaultGraphConfig,
+		};
+
+		// Set our node types
+		graphConfig.nodeTypes = {
+			...graphConfig.nodeTypes,
+			...nodeTypes,
+		};
+
 		return (
 			<div className={this.props.classes.page}>
 				<AddEditForm
@@ -445,6 +525,7 @@ class VisualizationPage extends React.Component {
 					onNodeCreate={this.onNodeCreate}
 					onNodeClicked={this.onNodeClicked}
 					onNodePositionChanged={this.onNodePositionChanged}
+					onNodePositionsChanged={this.onNodePositionsChanged}
 					onEdgeCreate={this.onEdgeCreate}
 				/>
 			</div>

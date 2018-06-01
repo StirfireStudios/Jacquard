@@ -57,11 +57,6 @@ class MainMenu extends React.Component {
 			? (
 				<div>
 					<Divider />
-					<Link to="/run">
-						<MenuItem button>
-							<ListItemText primary="Run" />
-						</MenuItem>
-					</Link>
 					<Link to="/visualization">
 						<MenuItem button>
 							<ListItemText primary="Visualization" />

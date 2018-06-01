@@ -6,6 +6,7 @@ import * as RuntimeActions from '../../actions/preview/runtime';
 
 import handleShowText from './handlers/showText';
 import handleCommand from './handlers/command';
+import handleFunction from './handlers/function';
 import handleOptions from './handlers/options';
 import handleNodeChange from './handlers/nodeChange';
 import handleVariable from './handlers/variable';
@@ -23,6 +24,7 @@ function updateWithRuntimeData(state, runMode) {
       ready: false,
       runMode: null,
       options: null,
+      currentFunc: null,
       characters: [],
       variables: [],
       functions: [],
@@ -74,6 +76,9 @@ function updateWithRuntimeData(state, runMode) {
           newState.text.push({halted: true});
           newState.halted = true;
           keepRunning = false;
+          break;
+        case Messages.Function:
+          if (handleFunction(newState, message)) keepRunning = false;
           break;
         default:
           console.log("Got message:");
@@ -148,9 +153,15 @@ export default createReducer({
       return state;
     }
   },
+  [RuntimeActions.FuncValue]: (state, value) => {
+    state.currentFunc = null;
+    runtime.functionReturnValue(value);
+    return updateWithRuntimeData(state);
+  }
 }, {
   ready: false,
   runMode: null,
+  currentFunc: null,
   options: null,
   characters: [],
   variables: [],

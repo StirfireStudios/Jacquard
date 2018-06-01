@@ -10,6 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import ModalDialog from '../../../general/components/ModalDialog';
 
+import * as RuntimeActions from '../../../../actions/preview/runtime';
 
 const styles = theme => ({
   root: {
@@ -32,23 +33,19 @@ const styles = theme => ({
 
 function onNodeStartAt(name, confirmed) {
   if (confirmed == null) {
-    this.setState({
-      nodeName: name,
-    });
+    this.setState({ nodeName: name, });
     return;
   }
 
-  this.setState({
-    nodeName: null,
-  });
+  this.setState({ nodeName: null, });
 
   if (confirmed) {
-    console.log(`Start at ${name}`);
+    RuntimeActions.MoveToNode(name);
   }
 }
 
 function renderNodes() {
-  if (!this.props.visibleSection.nodes) return null;
+  if (!this.props.visible.nodes) return null;
 
   const items = this.props.nodes.map((nodeName) => {
     return (
@@ -72,7 +69,7 @@ function renderNodes() {
 }
 
 function renderState() {
-  if (!this.props.visibleSection.state) return null;
+  if (!this.props.visible.state) return null;
 
   const history = [];
   for(let index = 0; index < this.props.state.history.length; index++) {
@@ -130,7 +127,7 @@ function renderStartConfirmModal() {
 }
 
 function renderVariables() {
-  if (!this.props.visibleSection.variables) return null;
+  if (!this.props.visible.variables) return null;
 
   const items = this.props.variables.map((name) => {
     return renderVariable.call(this, name);
@@ -168,7 +165,7 @@ class InfoPanel extends React.Component {
 
 	render() {
     if (!this.props.ready) return null;
-    if (!this.props.visible) return null;
+    if (!this.props.visible.any) return null;
     
     return (
       <div>
@@ -192,12 +189,12 @@ function mapStateToProps(state) {
     ready: State.ready,
     nodes: State.nodeNames,
     variables: State.variables,
-    visible: View.showState || View.showNodes || View.showVariables,
     state: {
       history: State.nodeHistory,
       variables: State.variableState,
     },
-    visibleSection: {
+    visible: {
+      any: View.showState || View.showNodes || View.showVariables,
       state: View.showState,
       nodes: View.showNodes,
       variables: View.showVariables, 

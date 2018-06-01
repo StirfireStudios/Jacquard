@@ -41,7 +41,7 @@ function styleToString(style) {
 }
 
 
-function makeStyles(primary = 'dodgerblue', light = 'white', dark = 'black', background = '#F9F9F9') {
+function makeStyles(primary = 'green', light = 'white', dark = 'black', background = '#F9F9F9') {
 	const styles = {
 		wrapper: {
 			base: {
@@ -101,13 +101,24 @@ function makeStyles(primary = 'dodgerblue', light = 'white', dark = 'black', bac
 				markerEnd: 'url(#end-arrow)',
 				cursor: 'pointer',
 			},
-			selected: {
-				color: primary,
+			dragged: {
+				color: light,
 				stroke: primary,
+				strokeWidth: '4px',
+			},
+			selectedSource: {
+				color: primary,
+				stroke: 'blue',
+				strokeWidth: '8px',
+			},
+			selectedTarget: {
+				color: dark,
+				stroke: 'orange',
+				strokeWidth: '8px',
 			},
 		},
 		arrow: {
-			fill: primary,
+			fill: 'black',
 		},
 	};
 
@@ -117,7 +128,9 @@ function makeStyles(primary = 'dodgerblue', light = 'white', dark = 'black', bac
 	styles.text.baseString = styleToString(styles.text.base);
 	styles.text.selectedString = styleToString({ ...styles.text.base, ...styles.text.selected });
 	styles.edge.baseString = styleToString(styles.edge.base);
-	styles.edge.selectedString = styleToString({ ...styles.edge.base, ...styles.edge.selected });
+	styles.edge.draggedString = styleToString({ ...styles.edge.base, ...styles.edge.dragged });
+	styles.edge.selectedSourceString = styleToString({ ...styles.edge.base, ...styles.edge.selectedSource });
+	styles.edge.selectedTargetString = styleToString({ ...styles.edge.base, ...styles.edge.selectedTarget });
 
 	return styles;
 }
@@ -141,6 +154,13 @@ function getDistance(pt1, pt2) {
 	return Math.sqrt(Math.pow(pt2.x - pt1.x, 2) + Math.pow(pt2.y - pt1.y, 2));
 }
 
+const isNodeInSelected = (d, selected) => (selected)
+	? (Object.keys(selected).findIndex(key => d === selected[key]) >= 0)
+	: false;
+
+const isEdgeInSelected = (edgeNodeId, selected) => (selected)
+	? (Object.keys(selected).findIndex(key => edgeNodeId === key) >= 0)
+	: false;
 
 class GraphView extends Component {
 	constructor(props) {
@@ -172,6 +192,9 @@ class GraphView extends Component {
 
 		this.nodeTimeouts = {};
 		this.edgeTimeouts = {};
+
+		this.handleSvgClicked = this.handleSvgClicked.bind(this);
+		this.handleZoomToFit = this.handleZoomToFit.bind(this);
 	}
 
 	componentDidMount() {
@@ -191,14 +214,12 @@ class GraphView extends Component {
 		// until componentDidMount. Manually render the first view.
 		this.renderView();
 
-		// It seems Electron/JSDom's mocking of the SVG API is incomplete
-		// and causes D3 to error out when zooming to fit in tests.
-		if (process.env.NODE_ENV !== 'test') {
-			setTimeout(() => {
-				if (this.viewWrapper != null) {
-					this.handleZoomToFit();
-				}
-			}, this.props.zoomDelay);
+		// Set the zoom (required to force drawing of edges)
+		if (this.viewWrapper != null) {
+			this.setZoom(this.state.viewTransform.k,
+				this.state.viewTransform.x,
+				this.state.viewTransform.y,
+				0);
 		}
 	}
 
@@ -209,23 +230,39 @@ class GraphView extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		const selectionChanged = false;
-		const selected = this.props.selected;
-		const newState = {};
+		// Is the selected object different in the new properties?
+		if (nextProps.selected !== this.props.selected) {
+			// The selection type (default to the current selection type)
+			let selectionType = this.state.selectionType;
 
-		if (nextProps.selected !== selected) {
-			newState.selected = nextProps.selected;
-			newState.previousSelection = selected;
-			newState.selectionChanged = true;
+			// Get the keys of the selected nodes
+			const selectedNodeKeys = Object.keys(nextProps.selected)
 
-			const selectionType = null;
-			if (nextProps.selected && nextProps.selected.source) {
-				newState.selectionType = 'edge';
-			} else if (nextProps.selected && nextProps.selected[this.props.nodeKey]) {
-				newState.selectionType = 'node';
+			// Do we have any selected nodes?
+			if (selectedNodeKeys.length > 0) {
+				// Get the key of the first selected node
+				const firstSelectedNodeKey = selectedNodeKeys[0];
+
+				// Get the first selected node
+				const firstSelectedNode = nextProps.selected[firstSelectedNodeKey];
+
+				// Do we have any selected nodes, and does the first one have the
+				// 'source' property?
+				if (firstSelectedNode.source) {
+					selectionType = 'edge';
+				} else if (firstSelectedNode[this.props.nodeKey]) {
+					// Does the first node have a property with the name stored
+					// in the 'nodeKey' prop?         
+					selectionType = 'node';
+				}
 			}
 
-			this.setState(newState);
+			this.setState({
+				selected: nextProps.selected,
+				previousSelection: this.props.selected,
+				selectionChanged: true,
+				selectionType,
+			});
 		}
 	}
 
@@ -268,7 +305,7 @@ class GraphView extends Component {
     	const dragEdge = d3.select(this.entities).append('svg:path');
 
     	dragEdge.attr('class', 'link dragline')
-    		.attr('style', this.state.styles.edge.selectedString)
+    		.attr('style', this.state.styles.edge.draggedString)
     		.attr('d', this.lineFunction([
     			{ x: sourceNode.x, y: sourceNode.y },
     			{ x: d3.event.x, y: d3.event.y },
@@ -303,9 +340,11 @@ class GraphView extends Component {
     					swapErrBack();
     				}
     			} else {
-    				self.props.onCreateEdge(sourceNode, hoveredNode);
-    				self.renderView();
-    			}
+					if (sourceNode !== hoveredNode) {
+						self.props.onCreateEdge(sourceNode, hoveredNode);
+					}
+					self.renderView();
+				}
     		} else {
     			if (swapErrBack) {
     				swapErrBack();
@@ -327,7 +366,10 @@ class GraphView extends Component {
 		
     	let oldSibling = null;
     	function dragged(d) {
-    		if (self.props.readOnly) return;
+			if (self.props.readOnly) return;
+			
+			// Get the selected node ID
+			const selectedNodeId = d.id;
 
 			const selectedNode = d3.select(this);
 
@@ -341,9 +383,29 @@ class GraphView extends Component {
     			d.x += d3.event.dx;
     			d.y += d3.event.dy;
     			return `translate(${d.x},${d.y})`;
-    		});
-    		self.render();
-    	}
+			});
+			
+			// Get the nodes
+			const nodes = d3.select(self.entities).selectAll('g.node');
+
+			// Drag every selected node
+			nodes.each((nodeDatum, nodeIndex, nodesGroup) => {
+				// Ignore it if it's the node we're dragging
+				if (nodeDatum.id !== selectedNodeId) {
+					// Is the node selected
+					if (isNodeInSelected(nodeDatum, self.props.selected)) {
+						d3.select(nodesGroup[nodeIndex])
+							.attr('transform', (d) => {
+								d.x += d3.event.dx;
+								d.y += d3.event.dy;
+								return `translate(${d.x},${d.y})`;
+							});
+					}
+				}
+			});
+
+			self.render();
+		}
 
     	function ended() {
     		el.classed('dragging', false);
@@ -359,10 +421,21 @@ class GraphView extends Component {
 				// Did we move?
 				if ((dragXDistance !== 0) || (dragYDistance !== 0)) {
 					// Move the node back to the original z-index
-					if (oldSibling) {
+					if ((oldSibling) && (oldSibling.parentElement)) {
 						oldSibling.parentElement.insertBefore(this, oldSibling);
 					}
+
 					self.props.onUpdateNode(selectedNode);
+
+					Object.keys(self.props.selected).forEach((nodeKey) => {
+						// Get the node
+						const node = self.props.selected[nodeKey];
+		
+						// Ignore it if it's the node we're dragging
+						if (node !== selectedNode) {
+							self.props.onUpdateNode(node);
+						}
+					});
 				} else {
 					// Fire a mouse up event to trigger selection
 					d3.select(this).node().dispatchEvent(new Event('mouseup'));					
@@ -382,16 +455,52 @@ class GraphView extends Component {
     }
 
     handleDelete = () => {
-    	if (this.props.readOnly) return;
-    	if (this.props.selected) {
-    		const selected = this.props.selected;
-    		if (!selected.source && this.props.canDeleteNode(selected)) {
-    			this.props.onDeleteNode(selected);
-    			this.props.onSelectNode(null);
-    		} else if (selected.source && this.props.canDeleteEdge(selected)) {
-    			this.props.onDeleteEdge(selected);
-    			this.props.onSelectNode(null);
-    		}
+		// If we're read-only, do nothing
+		if (this.props.readOnly) return;
+		
+		// Get the keys of the selected nodes
+		const selectedNodeKeys = Object.keys(this.props.selected)
+
+		// Do we have any selected nodes?
+		if (selectedNodeKeys.length > 0) {
+			// Get the key of the first selected node
+			const firstSelectedNodeKey = selectedNodeKeys[0];
+
+			// Get the first selected node
+			const firstSelectedNode = this.props.selected[firstSelectedNodeKey];
+
+			// Do we have any selected nodes, and does the first one have the
+			// 'source' property?
+			if (firstSelectedNode.source) {
+				// Does the first node have a property with the name stored
+				// in the 'nodeKey' prop?         
+				selectedNodeKeys.forEach((selectedNodeKey) => {
+					// Get the selected node
+					const selectedNode = this.props.selected[selectedNodeKey];
+
+					// Can we delete the node edge?
+					if (this.props.canDeleteEdge(selectedNode)) {
+						// Delete the node edge
+						this.props.onDeleteEdge(selectedNode);		
+					}
+				});
+			} else if (firstSelectedNode[this.props.nodeKey]) {
+				// Does the first node have a property with the name stored
+				// in the 'nodeKey' prop?         
+				selectedNodeKeys.forEach((selectedNodeKey) => {
+					// Get the selected node
+					const selectedNode = this.props.selected[selectedNodeKey];
+
+					// Can we delete the node?
+					if (this.props.canDeleteNode(selectedNode)) {
+						// Delete the node
+						this.props.onDeleteNode(selectedNode);		
+					}
+				});
+			}
+
+			// Notify that the node(s) are no longer selected
+    		this.props.onSelectNode(null);
     	}
     }
 
@@ -411,20 +520,85 @@ class GraphView extends Component {
     }
 
     handleSvgClicked = (d, i) => {
-    	if (this.isPartOfEdge(d3.event.target)) return; // If any part of the edge is clicked, return
+		// If any part of the edge is clicked, return
+    	if (this.isPartOfEdge(d3.event.target)) return;
 
+		// Are we selecting a node?
     	if (this.state.selectingNode) {
+			// We're no longer selecting a node
     		this.setState({
     			selectingNode: false,
     		});
     	} else {
-    		this.props.onSelectNode(null);
+			// Clear any selection
+			this.props.onSelectNode(null);
+			
+			// Store our 'this'
+			const self = this;
 
-    		if (!this.props.readOnly && d3.event.shiftKey) {
-    			const xycoords = d3.mouse(event.target);
-    			this.props.onCreateNode(xycoords[0], xycoords[1]);
-    			this.renderView();
-    		}
+			// Are we not read-only?
+    		if (!this.props.readOnly) {
+				// Is the SHIFT key held down but not the CTRL key?
+				if ((d3.event.shiftKey) && (!d3.event.ctrlKey)) {
+					// Create a new node at the current mouse position
+					const xycoords = d3.mouse(event.target);
+					this.props.onCreateNode(xycoords[0], xycoords[1]);
+					this.renderView();
+				} else if ((d3.event.shiftKey) && (d3.event.ctrlKey)) {
+					// Are the SHIFT key and CTRL key both held down?
+
+					// Get the width and height of the graph
+					const parent = d3.select(this.viewWrapper).node();
+					const width = parent.clientWidth;
+					const height = parent.clientHeight;		
+
+					// Get the nodes
+					const nodes = d3.select(this.entities).selectAll('g.node')
+					const nodesData = nodes.data();
+
+					// Get the links
+					const links = this.props.edges.map(link => ({
+						source: `${nodesData.findIndex(node => node.id === link.source)}`,
+						target: `${nodesData.findIndex(node => node.id === link.target)}`
+					}));
+
+					// Filter out any broken links
+					const filteredLinks = links.filter(link => (link.source !== '-1') && (link.target !== '-1'));
+
+					// Set up the force simulation
+					const simulation = d3.forceSimulation(nodesData)
+						.alphaDecay(0.125)
+						.force('center', d3.forceCenter(0, 0))
+						.force('charge', d3.forceManyBody().strength(-5000))
+						.force("link", d3.forceLink(filteredLinks))
+						.on('tick', () => {
+							// Re-position each node
+							nodes.each((nodeDatum, nodeIndex, nodesGroup) => {
+								d3.select(nodesGroup[nodeIndex])
+								.attr('transform', (d) => {
+									return `translate(${d.x},${d.y})`;
+								});
+							});
+
+							// Re-render the graph
+							self.render();
+						})
+						.stop();
+
+					// See https://github.com/d3/d3-force/blob/master/README.md#simulation_tick
+					for (let i = 0, n = Math.ceil(Math.log(simulation.alphaMin()) / Math.log(1 - simulation.alphaDecay())); i < n; ++i) {
+						simulation.tick();
+					}
+
+					// Zoom to fit the entire graph on screen
+					self.handleZoomToFit(() => {
+						console.log('updating');
+
+						// Notify that each the nodes have been updated
+						self.props.onUpdateNodes(d3.select(this.entities).selectAll('g.node').data());
+					});
+				}
+			}
     	}
     }
 
@@ -445,37 +619,44 @@ class GraphView extends Component {
 
     	// Prevent d3's default as it changes the focus to the body
     	d3.event.preventDefault();
-    	d3.event.stopPropagation();
+		d3.event.stopPropagation();
+		
+		// If the view wrapper is not the active element, set focus on it
     	if (document.activeElement != this.viewWrapper) {
     		this.viewWrapper.focus();
     	}
 
+		// Is the SHIFT key held down?
     	if (d3.event.shiftKey) {
+			// We're drawing an edge
     		this.setState({
     			selectingNode: true,
     			drawingEdge: true,
     		});
-    	} else {
-    		const previousSelection = this.state.previousSelection;
-    		this.setState({
+    	} else if (d3.event.ctrlKey) {
+			// Is the CTRL key held down?
+
+			// Record that we're selecting a node in our state and notify that
+			// the node was selected
+			this.setState({
     			selectingNode: true,
-    			selectedNode: d,
-    			previousSelection,
-    		});
+			},
+			() => this.props.onSelectNode(d));
     	}
     }
 
     handleNodeMouseUp = (d) => {
-    	if (this.state.selectingNode) {
+    	if (!this.state.selectingNode) {
 			// Prevent d3's default as it changes the focus to the body
 			d3.event.preventDefault();
 			d3.event.stopPropagation();
 
-			this.props.onSelectNode(d);
-    		this.setState({
-    			selectingNode: false,
-    		});
-    	}
+			this.props.onClickNode(d);
+		}
+		
+		this.setState({
+			selectingNode: false,
+		});
     }
 
     handleNodeMouseEnter = (d) => {
@@ -557,15 +738,20 @@ class GraphView extends Component {
     // View 'zoom' handler
     handleZoom = () => {
     	if (this.state.focused) {
+			const viewTransform = d3.event.transform;
+			const viewTransformJSON = (viewTransform)
+				? JSON.stringify(viewTransform)
+				: '';
+
     		this.setState({
-    			viewTransform: d3.event.transform,
+    			viewTransform,
 			},
-			() => sessionStorage.setItem("graphViewTransform", JSON.stringify(d3.event.transform)));
+			() => sessionStorage.setItem("graphViewTransform", viewTransformJSON));
     	}
     }
 
     // Zooms to contents of this.refs.entities
-    handleZoomToFit = () => {
+    handleZoomToFit = (cb = () => {}) => {
     	const parent = d3.select(this.viewWrapper).node();
     	const entities = d3.select(this.entities).node();
 
@@ -588,7 +774,7 @@ class GraphView extends Component {
     		x = viewBBox.x + viewBBox.width / 2,
     		y = viewBBox.y + viewBBox.height / 2;
 
-    		next.k = 0.9 / Math.max(dx / width, dy / height);
+    		next.k = 0.9 / (Math.max(dx / width, dy / height) * 2);
 
     		if (next.k < this.props.minZoom) {
     			next.k = this.props.minZoom;
@@ -602,9 +788,9 @@ class GraphView extends Component {
     		next.k = (this.props.minZoom + this.props.maxZoom) / 2;
     		next.x = 0;
     		next.y = 0;
-    	}
-
-    	this.setZoom(next.k, next.x, next.y, this.props.zoomDur);
+		}
+		
+    	this.setZoom(next.k, next.x, next.y, this.props.zoomDur, cb);
     }
 
     // Updates current viewTransform with some delta
@@ -636,7 +822,7 @@ class GraphView extends Component {
     }
 
     // Programmatically resets zoom
-    setZoom = (k = 1, x = 0, y = 0, dur = 0) => {
+    setZoom = (k = 1, x = 0, y = 0, dur = 0, cb = () => {}) => {
 		const t = d3.zoomIdentity.translate(x, y).scale(k);
 		
 		d3.select(this.viewWrapper)
@@ -644,7 +830,8 @@ class GraphView extends Component {
 			.call(this.zoom.transform, this.state.viewTransform)
     		.transition()
     		.duration(dur)
-    		.call(this.zoom.transform, t);
+			.call(this.zoom.transform, t)
+			.on("end", cb);
     }
 
     /*
@@ -696,17 +883,25 @@ class GraphView extends Component {
     // Returns a d3 transformation string from node data
     getNodeTransformation = node => `translate(${node.x},${node.y})`
 
-    getNodeStyle = (d, selected) => (d === selected ?
+	isNodeInSelec	
+
+    getNodeStyle = (d, selected) => isNodeInSelected(d, selected) ?
     	this.state.styles.node.selectedString :
-    	this.state.styles.node.baseString)
+    	this.state.styles.node.baseString;
 
-    getEdgeStyle = (d, selected) => (d === selected ?
-    	this.state.styles.edge.selectedString :
-    	this.state.styles.edge.baseString)
+    getEdgeStyle = (d, selected) => {
+		if (isEdgeInSelected(d.source, selected)) {
+			return this.state.styles.edge.selectedSourceString;
+		} else if (isEdgeInSelected(d.target, selected)) {
+			return this.state.styles.edge.selectedTargetString;
+		}
 
-    getTextStyle = (d, selected) => (d === selected ?
+		return this.state.styles.edge.baseString;
+	}
+
+    getTextStyle = (d, selected) => isNodeInSelected(d, selected) ?
     	this.state.styles.text.selectedString :
-    	this.state.styles.text.baseString)
+    	this.state.styles.text.baseString;
 
     // Renders 'node.title' into node element
     renderNodeText = (d, domNode) => {
@@ -853,8 +1048,8 @@ class GraphView extends Component {
 
     	// Update Selected and Unselected
     	// New or Removed
-    	const selected = nodesSelection.filter(d => (d === this.props.selected ||
-          d === this.state.previousSelection));
+    	const selected = nodesSelection.filter(d => (isNodeInSelected(d, this.props.selected) ||
+			isNodeInSelected(d, this.state.previousSelection)));
 
     	/*
         The commented code below would prevent nodes from rendering
@@ -972,14 +1167,17 @@ GraphView.propTypes = {
 	emptyType: PropTypes.string.isRequired,
 	nodes: PropTypes.array.isRequired,
 	edges: PropTypes.array.isRequired,
-	selected: PropTypes.object.isRequired,
+	selected: PropTypes.object,
 	nodeTypes: PropTypes.object.isRequired,
 	nodeSubtypes: PropTypes.object.isRequired,
 	edgeTypes: PropTypes.object.isRequired,
 	getViewNode: PropTypes.func.isRequired,
 	onSelectNode: PropTypes.func.isRequired,
+	onClickNode: PropTypes.func.isRequired,
 	onCreateNode: PropTypes.func.isRequired,
 	onUpdateNode: PropTypes.func.isRequired,
+	onUpdateNodes: PropTypes.func.isRequired,
+	onUpdateNodes: PropTypes.func.isRequired,
 	onDeleteNode: PropTypes.func.isRequired,
 	onSelectEdge: PropTypes.func.isRequired,
 	onCreateEdge: PropTypes.func.isRequired,
@@ -1015,10 +1213,11 @@ GraphView.propTypes = {
 };
 
 GraphView.defaultProps = {
+	selected: null,
 	readOnly: false,
 	maxTitleChars: 9,
 	transitionTime: 150,
-	primary: 'dodgerblue',
+	primary: 'gray',
 	light: '#FFF',
 	dark: '#000',
 	background: '#F9F9F9',

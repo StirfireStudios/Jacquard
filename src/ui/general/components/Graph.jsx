@@ -40,8 +40,36 @@ class Graph extends React.Component {
 	onSwapEdge = () => {}
 	onDeleteEdge = () => {}
 
-	// Called when the user clicks on a view node
+	// Called when the selects a view node
 	onSelectNode = (viewNode) => {
+		// Get the selected nodes
+		let { selected } = this.state;
+
+		// Do we have a selected node?
+		if (viewNode) {
+			// Get the node ID
+			const nodeId = viewNode.id;
+
+			// Is the node already selected?
+			if ((Object.prototype.hasOwnProperty.call(selected, nodeId))) {
+				// Unselected it
+				delete selected[nodeId];
+			} else {
+				// Select it
+				selected[nodeId] = viewNode;
+			}
+		} else {
+			// Clear all selected nodes
+			selected = {};
+		}
+
+		this.setState({
+			selected,
+		});
+	}
+
+	// Called when the user clicks on a view node
+	onClickNode = (viewNode) => {
 		// Was a view node selected?
 		if (viewNode) {
 			this.props.onNodeClicked(viewNode.title);
@@ -57,6 +85,22 @@ class Graph extends React.Component {
 				viewNode.x,
 				viewNode.y,
 			);
+		}
+	}
+
+	// Called when the nodes are updated in bulk
+	onUpdateNodes = (viewNodes) => {
+		// Were view nodes updated?
+		if (viewNodes) {
+			// Build the changed nodes
+			const nodes = viewNodes.map(viewNode => ({
+				title: viewNode.title,
+				x: viewNode.x,
+				y: viewNode.y,
+			}));
+
+			// Build update the nodes
+			this.props.onNodePositionsChanged(nodes);
 		}
 	}
 
@@ -93,11 +137,15 @@ class Graph extends React.Component {
 					transitionTime={0}
 					zoomDelay={500}
 					zoomDur={750}
+					minZoom={0.05}
+					maxZoom={1.5}
 					maxTitleChars={100}
 					getViewNode={this.getViewNode}
 					onSelectNode={this.onSelectNode}
+					onClickNode={this.onClickNode}
 					onCreateNode={this.onCreateNode}
 					onUpdateNode={this.onUpdateNode}
+					onUpdateNodes={this.onUpdateNodes}
 					onDeleteNode={this.onDeleteNode}
 					onSelectEdge={this.onSelectEdge}
 					onCreateEdge={this.onCreateEdge}
@@ -113,6 +161,7 @@ Graph.propTypes = {
 	onNodeCreate: PropTypes.func.isRequired,
 	onNodeClicked: PropTypes.func.isRequired,
 	onNodePositionChanged: PropTypes.func.isRequired,
+	onNodePositionsChanged: PropTypes.func.isRequired,
 	onEdgeCreate: PropTypes.func.isRequired,
 
 	graph: PropTypes.object,
