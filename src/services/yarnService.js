@@ -204,8 +204,6 @@ const validateProjectNodes = (projectFilePath, projectNodes) => {
 				projectNodes[index].dirty = false;
 			}
 
-			console.log("Validated!");
-
 			errors = parser.errors;
 			warnings = parser.warnings;
 		}
