@@ -4743,16 +4743,22 @@ items@2.x.x:
   resolved "https://registry.yarnpkg.com/items/-/items-2.1.1.tgz#8bd16d9c83b19529de5aea321acaada78364a198"
 
 jacquard-runtime@0.3.x:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/jacquard-runtime/-/jacquard-runtime-0.3.0.tgz#038f5e94c28401daf0c6b201ba77cd38ca4984ca"
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/jacquard-runtime/-/jacquard-runtime-0.3.1.tgz#77198b53a02fb3238fc54ec30edeaa7f62a59188"
   dependencies:
     utf-8 "^2.0.0"
 
 jacquard-yarncompiler@0.2.x:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/jacquard-yarncompiler/-/jacquard-yarncompiler-0.2.3.tgz#aada0aeb0c9573437a0f02bfd3e5585b5c9b737c"
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/jacquard-yarncompiler/-/jacquard-yarncompiler-0.2.4.tgz#ccf0de3670d1f73293f523a814554618c73e49c8"
   dependencies:
     jacquard-yarnparser "^0.3.4"
+
+jacquard-yarnparser@0.3.x:
+  version "0.3.11"
+  resolved "https://registry.yarnpkg.com/jacquard-yarnparser/-/jacquard-yarnparser-0.3.11.tgz#b91311e119f814d34e1b540914178eb3ab917519"
+  dependencies:
+    antlr4 "^4.7.1"
 
 jacquard-yarnparser@^0.3.4:
   version "0.3.10"
