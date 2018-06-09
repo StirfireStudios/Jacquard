@@ -1,7 +1,7 @@
 {
   "name": "jaquard-frontend",
   "author": "Stirfire Studios",
-  "productName": "Jaquard",
+  "productName": "Jacquard",
   "description": "Yarn-based narrative tool!",
   "version": "0.4.2",
   "private": true,
