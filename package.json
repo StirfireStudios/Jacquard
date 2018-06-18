@@ -1,14 +1,14 @@
 {
-  "name": "jaquard-frontend",
+  "name": "Jacquard-Editor",
   "author": "Stirfire Studios",
-  "productName": "Jaquard",
+  "productName": "Jacquard",
   "description": "Yarn-based narrative tool!",
   "version": "0.4.2",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
   "build": {
-    "appId": "com.jaquard",
+    "appId": "com.jacquard.editor",
     "files": [
       "build/**/*",
       "node_modules/**/*",
