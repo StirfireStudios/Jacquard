@@ -4754,15 +4754,9 @@ jacquard-yarncompiler@0.2.x:
   dependencies:
     jacquard-yarnparser "^0.3.4"
 
-jacquard-yarnparser@0.3.x:
+jacquard-yarnparser@0.3.x, jacquard-yarnparser@^0.3.4:
   version "0.3.11"
   resolved "https://registry.yarnpkg.com/jacquard-yarnparser/-/jacquard-yarnparser-0.3.11.tgz#b91311e119f814d34e1b540914178eb3ab917519"
-  dependencies:
-    antlr4 "^4.7.1"
-
-jacquard-yarnparser@^0.3.4:
-  version "0.3.10"
-  resolved "https://registry.yarnpkg.com/jacquard-yarnparser/-/jacquard-yarnparser-0.3.10.tgz#0813444924169148677a8028920c59acae3fe90f"
   dependencies:
     antlr4 "^4.7.1"
 

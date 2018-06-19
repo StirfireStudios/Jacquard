@@ -107,7 +107,7 @@ const styles = theme => ({
 
 //FixMe: this is a temporary validation function and should be made better.
 function validateNodeData() {
-	return this.state.data.title != null;
+	return this.state.data.title !== null;
 }
 
 function onInvalidNodeClick() {
