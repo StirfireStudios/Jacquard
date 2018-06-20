@@ -4748,15 +4748,15 @@ jacquard-runtime@0.3.x:
   dependencies:
     utf-8 "^2.0.0"
 
-jacquard-yarncompiler@0.2.x:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/jacquard-yarncompiler/-/jacquard-yarncompiler-0.2.4.tgz#ccf0de3670d1f73293f523a814554618c73e49c8"
+jacquard-yarncompiler@0.3.x:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/jacquard-yarncompiler/-/jacquard-yarncompiler-0.3.3.tgz#051b074eff7473dceb3e3b8d54d15914cfd32801"
   dependencies:
-    jacquard-yarnparser "^0.3.4"
+    jacquard-yarnparser "0.5.x"
 
-jacquard-yarnparser@0.3.x, jacquard-yarnparser@^0.3.4:
-  version "0.3.11"
-  resolved "https://registry.yarnpkg.com/jacquard-yarnparser/-/jacquard-yarnparser-0.3.11.tgz#b91311e119f814d34e1b540914178eb3ab917519"
+jacquard-yarnparser@0.5.x:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/jacquard-yarnparser/-/jacquard-yarnparser-0.5.3.tgz#b545d0a931e6740d56b534cffa01835c9d24c826"
   dependencies:
     antlr4 "^4.7.1"
 
