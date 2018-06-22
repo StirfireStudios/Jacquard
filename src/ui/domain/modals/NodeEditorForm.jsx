@@ -137,7 +137,7 @@ class NodeEditorForm extends React.Component {
 
 		// Validate the node (if it's not being added)
 		const validationResult = (!props.addModeEnabled)
-			? this.validateNode(props.projectFilePath, props.data)
+			? this.validateNode(props.projectFilePath, props.data, props.projectOptions)
 			: {
 				errors: [],
 				warnings: [],
@@ -233,7 +233,7 @@ class NodeEditorForm extends React.Component {
 
 	componentWillReceiveProps(nextProps) {
 		// Validate the node
-		const validationResult = this.validateNode(nextProps.projectFilePath, nextProps.data);
+		const validationResult = this.validateNode(nextProps.projectFilePath, nextProps.data, nextProps.projectOptions);
 
 		// Record the new validation errors and warnings, and the links
 		this.setState({
@@ -354,9 +354,9 @@ class NodeEditorForm extends React.Component {
 		this.setState({ editNodeConfirmationDialogIsOpen: false });
 	}
 
-	validateNode = (projectFilePath, node) => {
+	validateNode = (projectFilePath, node, options) => {
 		// Validate the project node
-		const validationResult = yarnService.validateProjectNode(projectFilePath, node);
+		const validationResult = yarnService.validateProjectNode(projectFilePath, node, options);
 
 		// Get the validation errors
 		const errors = (validationResult)
