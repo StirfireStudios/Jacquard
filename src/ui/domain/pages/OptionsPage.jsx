@@ -10,7 +10,7 @@ import Switch from '@material-ui/core/Switch';
 import themes from '../themes';
 
 const optionNames = [
-  {name: "Dialog segments separated by blank space", field: "dialogSegments"},
+  {name: "Dialog segments separated by blank space", field: "dialogSegmentsRequireBlank"},
   {name: "Character support", field: "characterSupport"},
 ]
 

@@ -131,7 +131,10 @@ const importProjectFromYarn = (yarn) => {
 function configFromProjectOptions(projectOptions) {
 	console.log("project Options: ");
 	console.log(projectOptions);
-	return {};
+	return {
+		dialogSegmentPerLine: projectOptions != null && !projectOptions.dialogSegmentsRequireBlank,
+		characterSupport: projectOptions != null && projectOptions.characterSupport,
+	};
 }
 
 const validateProjectNode = (projectFilePath, projectNode, projectOptions) => {
