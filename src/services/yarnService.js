@@ -122,12 +122,19 @@ const importProjectFromYarn = (yarn) => {
 		characters: [],
 		functions: [],
 		variables: [],
+		options: {},
 	};
 
 	return project;
 };
 
-const validateProjectNode = (projectFilePath, projectNode) => {
+function configFromProjectOptions(projectOptions) {
+	console.log("project Options: ");
+	console.log(projectOptions);
+	return {};
+}
+
+const validateProjectNode = (projectFilePath, projectNode, projectOptions) => {
 	// The errors and warnings
 	let parserErrors = [];
 	let parserWarnings = [];
@@ -136,13 +143,14 @@ const validateProjectNode = (projectFilePath, projectNode) => {
 		// Build a dummy project with only the single node
 		const project = {
 			nodes: [projectNode],
+			options: projectOptions,
 		};
 
 		// Export the project to Yarn
 		const projectYarn = exportProjectToYarn(project);
 
 		// Create a parser
-		const parser = new Parser();
+		const parser = new Parser(configFromProjectOptions(projectOptions));
 
 		// Parse the node (ignoring the return value as it's really only for a
 		// compiler toolchain)
@@ -162,7 +170,7 @@ const validateProjectNode = (projectFilePath, projectNode) => {
 	};
 };
 
-const validateProjectNodes = (projectFilePath, projectNodes) => {
+const validateProjectNodes = (projectFilePath, projectNodes, projectOptions) => {
 	// The project nodes validation results
 	let projectNodeValidationResults = {
 		nodes: {},
@@ -194,7 +202,7 @@ const validateProjectNodes = (projectFilePath, projectNodes) => {
 			const projectYarn = exportProjectToYarn(project);
 
 			// Create a parser
-			const parser = new Parser();
+			const parser = new Parser(configFromProjectOptions(projectOptions));
 
 			// Parse the node (ignoring the return value as it's really only for a
 			// compiler toolchain)
@@ -277,7 +285,7 @@ const validateProjectNodes = (projectFilePath, projectNodes) => {
 	return projectNodeValidationResults;
 };
 
-const getProjectNodeLinks = (projectFilePath, projectNodes) => {
+const getProjectNodeLinks = (projectFilePath, projectNodes, projectOptions) => {
 	// The project node links
 	let projectNodeLinks = null;
 
@@ -291,7 +299,7 @@ const getProjectNodeLinks = (projectFilePath, projectNodes) => {
 		const projectYarn = exportProjectToYarn(project);
 
 		// Create a parser
-		const parser = new Parser();
+		const parser = new Parser(configFromProjectOptions(projectOptions));
 
 		// Parse the node (ignoring the return value as it's really only for a
 		// compiler toolchain)
