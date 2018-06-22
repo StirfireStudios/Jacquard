@@ -129,8 +129,6 @@ const importProjectFromYarn = (yarn) => {
 };
 
 function configFromProjectOptions(projectOptions) {
-	console.log("project Options: ");
-	console.log(projectOptions);
 	return {
 		dialogSegmentPerLine: projectOptions != null && !projectOptions.dialogSegmentsRequireBlank,
 		characterSupport: projectOptions != null && projectOptions.characterSupport,
@@ -344,6 +342,7 @@ const buildLocationString = location => `${location.fileID}
  (${location.end.line}, ${location.end.column})`;
 
 const exportYarnService = {
+	configFromProjectOptions,
 	exportProjectToYarn,
 	importProjectFromYarn,
 	validateProjectNode,
