@@ -337,12 +337,12 @@ class NodeListPage extends React.Component {
 
 		// Validate the project nodes
 		const projectValidationResults = ((props.project) && (props.project.nodes))
-			? yarnService.validateProjectNodes(props.projectFilePath, props.project.nodes)
+			? yarnService.validateProjectNodes(props.projectFilePath, props.project.nodes, props.project.options)
 			: {};
 
 		// Get the project node links
 		const projectNodeLinks = ((props.project) && (props.project.nodes))
-			? yarnService.getProjectNodeLinks(props.projectFilePath, props.project.nodes)
+			? yarnService.getProjectNodeLinks(props.projectFilePath, props.project.nodes, props.project.options)
 			: {};
 
 		// Build a object representing the hidden state of each node
@@ -382,12 +382,12 @@ class NodeListPage extends React.Component {
 			(JSON.stringify(this.props.project.nodes) !== (JSON.stringify(nextProps.project.nodes)))) {
 			// Validate the project nodes
 			const projectValidationResults = ((nextProps.project) && (nextProps.project.nodes))
-				? yarnService.validateProjectNodes(nextProps.projectFilePath, nextProps.project.nodes)
+				? yarnService.validateProjectNodes(nextProps.projectFilePath, nextProps.project.nodes, nextProps.project.options)
 				: {};
 
 			// Get the project node links
 			const projectNodeLinks = ((nextProps.project) && (nextProps.project.nodes))
-				? yarnService.getProjectNodeLinks(nextProps.projectFilePath, nextProps.project.nodes)
+				? yarnService.getProjectNodeLinks(nextProps.projectFilePath, nextProps.project.nodes, nextProps.project.options)
 				: {};
 
 			// Build a object representing the hidden state of each node
