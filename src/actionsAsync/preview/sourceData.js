@@ -12,7 +12,6 @@ export function Validate(project) {
   // avoid Zalgo
   setTimeout(() => {
     const yarnString = service.exportProjectToYarn(project);
-    console.log(service.configFromProjectOptions(project.options));
     const parser = new Parser(service.configFromProjectOptions(project.options));
     if (parser.parse(yarnString, false, "project.yarn.txt")) {
       Actions.CompileErrors(parser.errors);
