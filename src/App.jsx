@@ -315,7 +315,9 @@ class App extends Component {
 
 		const OptionsPageComplete = () => (
 			<BasePage title="Project Options">
-				<OptionsPage project={this.state.project}/>
+				<OptionsPage project={this.state.project}
+					onProjectUpdated={this.onProjectUpdated}
+				/>
 			</BasePage>
 		);
 
