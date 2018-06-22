@@ -24,7 +24,7 @@ export function Validate(project) {
       const links = node.outgoingLinks;
       Object.keys(links).forEach((linkName) => {
         if (links[linkName] == null) {
-          errors.push(`Node ${linkName} has a link to ${linkName} which doesn't exist!`);
+          errors.push(`Node ${name} has a link to ${linkName} which doesn't exist!`);
         }
       })
     });
