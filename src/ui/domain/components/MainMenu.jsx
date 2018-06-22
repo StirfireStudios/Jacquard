@@ -74,13 +74,18 @@ class MainMenu extends React.Component {
 						</MenuItem>
 					</Link>
 					<Link to="/functions">
-						<MenuItem button>
+						<MenuItem button disabled={true}>
 							<ListItemText primary="Functions" />
 						</MenuItem>
 					</Link>
 					<Link to="/variables">
-						<MenuItem button>
+						<MenuItem button disabled={true}>
 							<ListItemText primary="Variables" />
+						</MenuItem>
+					</Link>
+					<Link to="/options">
+						<MenuItem button>
+							<ListItemText primary="Options" />
 						</MenuItem>
 					</Link>
 					<Divider />
