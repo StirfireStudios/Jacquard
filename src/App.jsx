@@ -16,10 +16,10 @@ import CharacterPage from './ui/domain/pages/CharacterPage';
 import DefaultPage from './ui/domain/pages/DefaultPage';
 import FunctionPage from './ui/domain/pages/FunctionPage';
 import NodePage from './ui/domain/pages/NodePage';
+import OptionsPage from './ui/domain/pages/OptionsPage';
 import VariablePage from './ui/domain/pages/VariablePage';
 import PreviewPage from './ui/domain/pages/PreviewPage';
 import MainMenu from './ui/domain/components/MainMenu';
-
 
 import projectService from './services/projectService';
 import yarnService from './services/yarnService';
@@ -313,6 +313,12 @@ class App extends Component {
 			</BasePage>
 		);
 
+		const OptionsPageComplete = () => (
+			<BasePage title="Project Options">
+				<OptionsPage project={this.state.project}/>
+			</BasePage>
+		);
+
 		const FunctionPageComplete = () => (
 			<BasePage title="Functions">
 				<FunctionPage
@@ -355,6 +361,7 @@ class App extends Component {
 				<Route path="/nodes" component={NodePageComplete} />
 				<Route path="/variables" component={VariablePageComplete} />
 				<Route path="/preview" component={PreviewPageComplete} />
+				<Route path="/options" component={OptionsPageComplete} />
 			</div>
 		);
 	}

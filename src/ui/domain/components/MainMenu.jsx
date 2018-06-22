@@ -85,7 +85,7 @@ class MainMenu extends React.Component {
 					</Link>
 					<Link to="/options">
 						<MenuItem button>
-							<ListItemText primary="Options" />
+							<ListItemText primary="Project Options" />
 						</MenuItem>
 					</Link>
 					<Divider />
