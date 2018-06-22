@@ -1,48 +1,35 @@
-The [Jacquard Wiki](https://github.com/StirfireStudios/Jacquard/wiki) contains information relating to the entire project.
+# Jacquard
+###### *A Yarn authoring tool for narrative game development.*
 
-This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). Take a look  [here](CreateReactAppREADME.md) for that documentation.
+Jacquard is a tool for authoring [Yarn](https://github.com/thesecretlab/YarnSpinner) documents, to be used in game engines like Unity and Unreal Engine. It's built to be a spiritual successor of sorts to [Twine](http://twinery.org), so if you've used that before, Jacquard should feel familiar. Yarn syntax is inspired by [SugarCube](http://www.motoslave.net/sugarcube/2/docs/markup.html), and a full reference can be found [here](https://github.com/thesecretlab/YarnSpinner/blob/development/Documentation/YarnSpinner-Dialogue/Yarn-Syntax.md).
 
-## Table of Contents
-- [Available Scripts](#available-scripts)
-  - [test](#test)
-  - [lint](#lint)
-  - [eject](#eject)
-  - [dev-start](#dev-start)
-  - [Packaging](#packaging)
+**Features:**
+- Node-based drag-and-drop editing
+- Automatic syntax validation
 
+**Planned features:**
+- Bytecode export
+- Syntax highlighting
+- Localization and voiceover reference support
+- Arbitrary text segment tagging
 
-## Available Scripts
+**Downloads:** To download the latest version of Jacquard, visit our **[releases page](https://github.com/StirfireStudios/Jacquard/releases)**.
 
-In the project directory, you can run these commands using `npm` or `yarn` although `yarn` is preferred do to the performance benefits:
+![Jacquard visual node view UI](https://i.imgur.com/rHzoBoB.jpg])
 
-### `test`
+### Using Jacquard
 
-Currently this project has no tests. They will be added at a future date.
+Jacquard is designed to empower writers and narrative designers to get their interactive scripts into a game engine as quickly and as easily as possible. User documentation can be found **[here](Documentation/README.md)**. If you're looking for a way to parse Yarn files in Unity, we recommend [YarnSpinner](https://github.com/thesecretlab/YarnSpinner).
 
-Launches the test runner in the interactive watch mode.<br>
+![Jacquard debug log UI](https://i.imgur.com/HoLZqoy.jpg)
 
-### `lint`
+### Developing Jacquard
 
-Runs the linter
+Jacquard was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app), and its version-specific documentation can be found **[here](Documentation/CreateReactApp.md)**.
 
-### `eject`
+#### Related Projects
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-### `dev-start`
-From the `frontend` directory, type `start-dev`. This will launch an instance of the Electron application.
-
-If you make modifications to the source files and wish to see your changes in the Electron application without stopping and starting it, simply refresh the content within the app using `ctrl-r`/`command-r` depending on your platform of choice.
-
-### Packaging
-
-To build install files execute `yarn build` - by default this will build for your current OS.
-Right now cross-platform builds are not supported.
-
-The resultant binaries are placed into the `/dist/` directory.
+- [Jacquard-YarnParser](https://github.com/StirfireStudios/Jacquard-YarnParser)
+- [Jacquard-YarnCompiler](https://github.com/StirfireStudios/Jacquard-YarnCompiler)
+- [Jacquard-js-Runtime](https://github.com/StirfireStudios/Jacquard-js-Runtime)
+- [bondage.js](https://github.com/StirfireStudios/bondage.js)
