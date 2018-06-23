@@ -4743,14 +4743,14 @@ items@2.x.x:
   resolved "https://registry.yarnpkg.com/items/-/items-2.1.1.tgz#8bd16d9c83b19529de5aea321acaada78364a198"
 
 jacquard-runtime@0.3.x:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/jacquard-runtime/-/jacquard-runtime-0.3.1.tgz#77198b53a02fb3238fc54ec30edeaa7f62a59188"
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/jacquard-runtime/-/jacquard-runtime-0.3.2.tgz#cc5ed5135a9db2bf8bc639129cd1e4f5d907f1e5"
   dependencies:
     utf-8 "^2.0.0"
 
 jacquard-yarncompiler@0.4.x:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/jacquard-yarncompiler/-/jacquard-yarncompiler-0.4.0.tgz#9856fe0b25f233e06924932cd39eae007447e15d"
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/jacquard-yarncompiler/-/jacquard-yarncompiler-0.4.2.tgz#df57423aa3c7f413a50885959f55d0013a361c5f"
   dependencies:
     jacquard-yarnparser "0.6.x"
 
