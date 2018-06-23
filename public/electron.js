@@ -1,5 +1,7 @@
 const electron = require('electron'); // eslint-disable-line
 
+const menu = require('./menu');
+
 const {
 	ipcMain, dialog, app, BrowserWindow,
 } = electron;
@@ -48,6 +50,8 @@ function createWindow() {
 	});
 
 	mainWindow.on('closed', () => { mainWindow = null; });
+
+	menu.createMenu(app);
 
 	if (isDev) {
 		// open dev console in another window;
