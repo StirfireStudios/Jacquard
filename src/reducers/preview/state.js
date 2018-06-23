@@ -154,6 +154,8 @@ export default createReducer({
     if (runtime.moveInstructionPointerToNode(nodeName)) {
       state.options = null;
       state.text = [];
+      state.currentFunc = null;
+      if (state.runMode == null) state.runMode = 'toOption';
       return updateWithRuntimeData(state);  
     } else {
       return state;
