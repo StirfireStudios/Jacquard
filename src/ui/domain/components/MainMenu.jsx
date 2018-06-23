@@ -68,21 +68,21 @@ class MainMenu extends React.Component {
 							<ListItemText primary="Nodes" />
 						</MenuItem>
 					</Link>
-					<Link to="/characters">
-						<MenuItem button>
+{/*					<Link to="/characters"> */}
+						<MenuItem button disabled={true}>
 							<ListItemText primary="Characters" />
 						</MenuItem>
-					</Link>
-					<Link to="/functions">
+{/*					</Link> */}
+{/*					<Link to="/functions"> */}
 						<MenuItem button disabled={true}>
 							<ListItemText primary="Functions" />
 						</MenuItem>
-					</Link>
-					<Link to="/variables">
+{/*					</Link> */}
+{/*				<Link to="/variables"> */}
 						<MenuItem button disabled={true}>
 							<ListItemText primary="Variables" />
 						</MenuItem>
-					</Link>
+{/*				</Link> */}
 					<Link to="/options">
 						<MenuItem button>
 							<ListItemText primary="Project Options" />
