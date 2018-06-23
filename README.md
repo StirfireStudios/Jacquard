@@ -12,6 +12,7 @@ Jacquard is a tool for authoring [Yarn](https://github.com/thesecretlab/YarnSpin
 - Syntax highlighting
 - Localization and voiceover reference support
 - Arbitrary text segment tagging
+- Built-in versioning and collaboration features
 
 **Downloads:** To download the latest version of Jacquard, visit our **[releases page](https://github.com/StirfireStudios/Jacquard/releases)**.
 
@@ -26,6 +27,8 @@ Jacquard is designed to empower writers and narrative designers to get their int
 ### Developing Jacquard
 
 Jacquard was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app), and its version-specific documentation can be found **[here](Documentation/CreateReactApp.md)**.
+
+If you'd like to help with Jacquard, the most helpful thing you can do is download the application, test it out, and report [issues](https://github.com/StirfireStudios/Jacquard/issues). For Jacquard discussion, join the #jacquard channel on the [Narrative Game Dev Slack](http://lab.to/narrativegamedev).
 
 #### Related Projects
 

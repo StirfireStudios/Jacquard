@@ -13,6 +13,12 @@ Calling visited("Start") should return True now, since we have visited this node
     Called visited("Start") and confirmed that we've visited Start!
 <<endif>>
 
+Calling visited("Node4") should return False, because we haven't been there yet.
+
+<<if visited("Node4")>>
+    Our validation is broken! Oh no!
+<<endif>>
+
 <<set $variable1 to true>>
 
 A variable named "variable1" is now set to True, and the debug log should reflect this.
