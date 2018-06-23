@@ -1,10 +1,11 @@
-import React from 'react';
+  import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import CharacterChangeIcon from '@material-ui/icons/ChatBubbleOutline';
 import ChoiceIcon from '@material-ui/icons/CallSplit';
 import CommandIcon from '@material-ui/icons/Code';
+import FunctionIcon from '@material-ui/icons/SettingsEthernet';
 import HaltedIcon from '@material-ui/icons/Done';
 import NodeChangeIcon from '@material-ui/icons/Timeline';
 import VarSaveIcon from '@material-ui/icons/Save';
@@ -84,9 +85,7 @@ function renderVariableChange(classes, index, variableData) {
 
   let value = variableData.value;
 
-  if (type === 'boolean') {
-    value = variableData.value ? "true" : "false";
-  }
+  if (type === 'boolean') value = value ? "true" : "false";
 
   if (variableData.type === "save") {
     return (
@@ -108,6 +107,37 @@ function renderVariableChange(classes, index, variableData) {
   }
 }
 
+function renderFunctionCall(classes, index, functionData) {
+  const { name, args, returnValue, returnRequired } = functionData;
+  const parts = [];
+
+  parts.push(<span key="name" className={classes.monospace}>{name}</span>);
+  if (args.length > 0) {
+    const renderedArgs = args.map((arg, index) => { 
+      return <span key={index} className={classes.monospace}>{arg}</span>
+    });
+    parts.push(<span key="args">arguments: {renderedArgs}</span>);
+  }
+
+  if (returnValue != null) {
+    const type = typeof(functionData.returnValue);
+    let value = returnValue;
+    if (type === 'boolean') value = value ? "true" : "false";
+    parts.push(<span key="return">returned <span className="monospace">{value}</span> ({type})</span>);
+  }
+
+  if (returnRequired && returnValue != null) {
+    parts.push(<span key="returnUser">Value from input</span>);
+  }
+
+  return (
+    <div key={index}>
+      <FunctionIcon className={classes.icon}/>
+      {parts}
+    </div>
+  );
+}
+
 function renderTextArray() {
   const renderedText = [];
   let currentCharacter = null;
@@ -123,6 +153,8 @@ function renderTextArray() {
       renderedText.push(renderSelectedOption(this.props.classes, index, text.optionSelected));
     } else if (text.variable != null) {
       renderedText.push(renderVariableChange(this.props.classes, index, text.variable));
+    } else if (text.function != null) {
+      renderedText.push(renderFunctionCall(this.props.classes, index, text.function));
     }
   }
   return renderedText;

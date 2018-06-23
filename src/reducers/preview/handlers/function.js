@@ -4,6 +4,7 @@ export default function handle(newState, message) {
     index: message.index,
     args: message.args,
     returnValue: message.returnValue,
+    returnRequired: message.returnRequired,
   }
   if (!message.returnRequired) {
     newState.text.push({function: funcObj});
