@@ -17,7 +17,7 @@ export function getRuntime() {
   return runtime;
 }
 
-function updateWithRuntimeData(state, runMode) {
+function updateWithRuntimeData(state, runMode, returnValue) {
   if (!runtime.ready) {
     return {
       ...state,
@@ -43,6 +43,12 @@ function updateWithRuntimeData(state, runMode) {
     text: state.text.map((item) => (item)),
   };
    
+  if (returnValue != null) {
+    newState.currentFunc.returnValue = returnValue;
+    newState.text.push({function: newState.currentFunc});
+    newState.currentFunc = null;
+  }
+
   let keepRunning = newState.ready && newState.runMode != null;
   keepRunning = keepRunning && newState.options == null;
   while(keepRunning) {
@@ -154,9 +160,8 @@ export default createReducer({
     }
   },
   [RuntimeActions.FuncValue]: (state, value) => {
-    state.currentFunc = null;
     runtime.functionReturnValue(value);
-    return updateWithRuntimeData(state);
+    return updateWithRuntimeData(state, state.runMode, value);
   }
 }, {
   ready: false,

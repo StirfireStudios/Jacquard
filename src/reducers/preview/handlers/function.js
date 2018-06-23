@@ -3,6 +3,7 @@ export default function handle(newState, message) {
     name: message.name,
     index: message.index,
     args: message.args,
+    returnValue: message.returnValue,
   }
   if (!message.returnRequired) {
     newState.text.push({function: funcObj});
