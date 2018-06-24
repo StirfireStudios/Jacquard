@@ -48,11 +48,13 @@ const styles = theme => ({
 		color: green[500],
 	},
 	nodeExistingLinkButton: {
-		marginRight: theme.spacing.unit * 2,
+		margin: theme.spacing.unit * 2,
+		'text-transform': "none",
 	},
 	nodeNonExistingLinkButton: {
-		marginRight: theme.spacing.unit * 2,
+		margin: theme.spacing.unit * 2,
 		backgroundColor: red[500],
+		'text-transform': "none",
 	},
 	searchBoxContainer: {
 		position: 'absolute',
@@ -114,6 +116,7 @@ const getIncomingLinkButtons = (projectNodeLinks, classes, item, field, onAddIte
 				className={buttonClass}
 				variant="raised"
 				onClick={buttonOnClick}
+				size="Small"
 			>
 				{incomingLinkKey}
 			</Button>
@@ -156,6 +159,7 @@ const getOutgoingLinkButtons = (projectNodeLinks, classes, item, field, onAddIte
 				className={buttonClass}
 				variant="raised"
 				onClick={buttonOnClick}
+				size="small"
 			>
 				{outgoingLinkKey}
 			</Button>
