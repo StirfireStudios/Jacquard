@@ -5,7 +5,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core//Divider';
 import { Link } from 'react-router-dom';
 import ListItemText from '@material-ui/core/ListItemText';
-import orange from '@material-ui/core//colors/orange';
+import orange from '@material-ui/core/colors/orange';
+import Typography from '@material-ui/core/Typography';
 
 import themes from '../themes';
 import packageFile from '../../../../package.json';
@@ -89,6 +90,7 @@ class MainMenu extends React.Component {
 						</MenuItem>
 					</Link>
 					<Divider />
+
 					<MenuItem
 						button
 						classes={saveProjectClasses}
@@ -120,8 +122,8 @@ class MainMenu extends React.Component {
 					paper: classes.drawerPaper,
 				}}
 			>
-				<div className={classes.drawerHeader}>
-					<h2>Jacquard {packageFile.version}</h2>
+				<div>
+					<Typography variant="title" align="center">Jacquard {packageFile.version}</Typography>
 				</div>
 				<Divider />
 				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
@@ -129,9 +131,15 @@ class MainMenu extends React.Component {
 				<Link to="/preview"><MenuItem button><ListItemText primary="Preview" /></MenuItem></Link>
 				<this.ProjectMenu />
 				<Divider />
-				<MenuItem button onClick={this.props.onCreateNewProject}><ListItemText primary="Create New Project" /></MenuItem>
-				<MenuItem button onClick={this.props.onOpenExistingProject}><ListItemText primary="Open Existing Project" /></MenuItem>
-				<MenuItem button onClick={this.props.onImportYarnFile}><ListItemText primary="Import Project From Yarn" /></MenuItem>
+				<MenuItem button onClick={this.props.onCreateNewProject}>
+					<ListItemText primary="Create New Project" />
+				</MenuItem>
+				<MenuItem button onClick={this.props.onOpenExistingProject}>
+					<ListItemText primary="Open Existing Project" />
+				</MenuItem>
+				<MenuItem button onClick={this.props.onImportYarnFile}>
+					<ListItemText primary="Import Project From Yarn" />
+				</MenuItem>
 			</Drawer>
 		);
 	}
