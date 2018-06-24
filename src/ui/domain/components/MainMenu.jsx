@@ -1,12 +1,15 @@
 import React from 'react';
-import Drawer from '@material-ui/core/Drawer';
-import { withStyles } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import Divider from '@material-ui/core//Divider';
 import { Link } from 'react-router-dom';
+
+import Divider from '@material-ui/core//Divider';
+import Drawer from '@material-ui/core/Drawer';
+import MenuItem from '@material-ui/core/MenuItem';
+import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
 import orange from '@material-ui/core/colors/orange';
 import Typography from '@material-ui/core/Typography';
+
+import { withStyles } from '@material-ui/core/styles';
 
 import themes from '../themes';
 import packageFile from '../../../../package.json';
@@ -58,55 +61,60 @@ class MainMenu extends React.Component {
 			? (
 				<div>
 					<Divider />
-					<Link to="/visualization">
-						<MenuItem button>
-							<ListItemText primary="Visualization" />
-						</MenuItem>
-					</Link>
+					<List>
+						<Link to="/visualization">
+							<MenuItem button>
+								<ListItemText primary="Visualization" />
+							</MenuItem>
+						</Link>
+					</List>
 					<Divider />
-					<Link to="/nodes">
-						<MenuItem button>
-							<ListItemText primary="Nodes" />
-						</MenuItem>
-					</Link>
-{/*					<Link to="/characters"> */}
-						<MenuItem button disabled={true}>
-							<ListItemText primary="Characters" />
-						</MenuItem>
-{/*					</Link> */}
-{/*					<Link to="/functions"> */}
-						<MenuItem button disabled={true}>
-							<ListItemText primary="Functions" />
-						</MenuItem>
-{/*					</Link> */}
-{/*				<Link to="/variables"> */}
-						<MenuItem button disabled={true}>
-							<ListItemText primary="Variables" />
-						</MenuItem>
-{/*				</Link> */}
-					<Link to="/options">
-						<MenuItem button>
-							<ListItemText primary="Project Options" />
-						</MenuItem>
-					</Link>
+					<List>
+						<Link to="/nodes">
+							<MenuItem button>
+								<ListItemText primary="Nodes" />
+							</MenuItem>
+						</Link>
+	{/*					<Link to="/characters"> */}
+							<MenuItem button disabled={true}>
+								<ListItemText primary="Characters" />
+							</MenuItem>
+	{/*					</Link> */}
+	{/*					<Link to="/functions"> */}
+							<MenuItem button disabled={true}>
+								<ListItemText primary="Functions" />
+							</MenuItem>
+	{/*					</Link> */}
+	{/*				<Link to="/variables"> */}
+							<MenuItem button disabled={true}>
+								<ListItemText primary="Variables" />
+							</MenuItem>
+	{/*				</Link> */}
+						<Link to="/options">
+							<MenuItem button>
+								<ListItemText primary="Project Options" />
+							</MenuItem>
+						</Link>
+					</List>
 					<Divider />
-
-					<MenuItem
-						button
-						classes={saveProjectClasses}
-						onClick={this.props.onSaveProject}
-					>
-						<ListItemText primary="Save Project" />
-					</MenuItem>
-					<MenuItem button onClick={this.props.onSaveProjectAs}>
-						<ListItemText primary="Save Project As..." />
-					</MenuItem>
-					<MenuItem button onClick={this.props.onExportYarnFile}>
-						<ListItemText primary="Export Project To Yarn" />
-					</MenuItem>
-					<MenuItem button onClick={this.props.onCloseProject}>
-						<ListItemText primary="Close Project" />
-					</MenuItem>
+					<List>
+						<MenuItem
+							button
+							classes={saveProjectClasses}
+							onClick={this.props.onSaveProject}
+						>
+							<ListItemText primary="Save Project" />
+						</MenuItem>
+						<MenuItem button onClick={this.props.onSaveProjectAs}>
+							<ListItemText primary="Save Project As..." />
+						</MenuItem>
+						<MenuItem button onClick={this.props.onExportYarnFile}>
+							<ListItemText primary="Export Project To Yarn" />
+						</MenuItem>
+						<MenuItem button onClick={this.props.onCloseProject}>
+							<ListItemText primary="Close Project" />
+						</MenuItem>
+					</List>
 				</div>
 			)
 			: null;
@@ -131,15 +139,17 @@ class MainMenu extends React.Component {
 				<Link to="/preview"><MenuItem button><ListItemText primary="Preview" /></MenuItem></Link>
 				<this.ProjectMenu />
 				<Divider />
-				<MenuItem button onClick={this.props.onCreateNewProject}>
-					<ListItemText primary="Create New Project" />
-				</MenuItem>
-				<MenuItem button onClick={this.props.onOpenExistingProject}>
-					<ListItemText primary="Open Existing Project" />
-				</MenuItem>
-				<MenuItem button onClick={this.props.onImportYarnFile}>
-					<ListItemText primary="Import Project From Yarn" />
-				</MenuItem>
+				<List>
+					<MenuItem button onClick={this.props.onCreateNewProject}>
+						<ListItemText primary="Create New Project" />
+					</MenuItem>
+					<MenuItem button onClick={this.props.onOpenExistingProject}>
+						<ListItemText primary="Open Existing Project" />
+					</MenuItem>
+					<MenuItem button onClick={this.props.onImportYarnFile}>
+						<ListItemText primary="Import Project From Yarn" />
+					</MenuItem>
+				</List>
 			</Drawer>
 		);
 	}
