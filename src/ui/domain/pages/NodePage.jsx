@@ -553,7 +553,7 @@ class NodeListPage extends React.Component {
 				{...props}
 				projectNodeLinks={this.state.projectNodeLinks}
 				projectFilePath={this.props.projectFilePath}
-				projectOptions={this.props.project.options}
+				projectOptions={this.props.project != null ? this.props.project.options : null}
 			/>);
 
 		return (
