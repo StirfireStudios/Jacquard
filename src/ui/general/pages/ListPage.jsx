@@ -10,6 +10,8 @@ import green from '@material-ui/core//colors/green';
 // import ListDeleteButton from '../../general/components/ListDeleteButton';
 import FieldListTable from '../components/FieldListTable';
 
+import ModalDialog from '../../general/components/ModalDialog';
+
 // Assumes that you are going to have a list of some sort that you can edit.
 // Takes a list of fields that you want to show, a form that will act as the add/edit form and
 // the name of the array from project that you want to deal with
@@ -25,6 +27,32 @@ const styles = theme => ({
 	},
 });
 
+function deleteItemConfirm(keyPath) {
+	const project = { ...this.props.project };
+	const rowData = project[this.props.projectPropName];
+	const filteredRowData = rowData.filter(row => row[this.props.keyName] !== keyPath);
+	project[this.props.projectPropName] = filteredRowData;
+	this.props.onProjectUpdated(project);
+	this.setState({ deleteModalItem: null	});
+}
+
+function renderDeleteConfirmModal() {
+	if (this.state.deleteModalItem === null) return null;
+	const keyPath = this.state.deleteModalItem;
+	return (
+		<ModalDialog
+			onOK={deleteItemConfirm.bind(this, keyPath)}
+			onCancel={() => this.setState({deleteModalItem: null})}
+			title={`Really delete "${keyPath}"`}
+			open={true}
+			okButtonLabel="Delete"
+			cancelButtonLabel="Cancel"
+		>
+			<div>Are you sure you want to delete "{keyPath}"</div>
+		</ModalDialog>
+	);
+}
+
 class ListPage extends React.Component {
 	constructor(props) {
 		super(props);
@@ -37,12 +65,12 @@ class ListPage extends React.Component {
 			addEditFormAddModeEnabled: true,
 			// The value referenced by the key of the Add/Edit forms data
 			addEditFormDataKeyValue: null,
+			deleteModalItem: null,
 		};
 
 		// Bind our handlers
 		this.onAddItemClick = this.onAddItemClick.bind(this);
 		this.onEditItemClick = this.onEditItemClick.bind(this);
-		this.onDeleteItemClick = this.onDeleteItemClick.bind(this);
 
 		this.onAddEditFormOK = this.onAddEditFormOK.bind(this);
 		this.onAddEditFormCancel = this.onAddEditFormCancel.bind(this);
@@ -64,23 +92,6 @@ class ListPage extends React.Component {
 			addEditFormAddModeEnabled: false,
 			addEditFormDataKeyValue: keyValue,
 		});
-	};
-
-	onDeleteItemClick = (keyValue) => {
-		// Get a copy of the project
-		const project = { ...this.props.project };
-
-		// Get the row data we'll be deleting from
-		const rowData = project[this.props.projectPropName];
-
-		// Delete the item
-		const filteredRowData = rowData.filter(row => row[this.props.keyName] !== keyValue);
-
-		// Update the project with the new row data
-		project[this.props.projectPropName] = filteredRowData;
-
-		// Notify the callback that the project has changed
-		this.props.onProjectUpdated(project);
 	};
 
 	onAddEditFormOK = (addEditFormDataPreviousKeyValue, addEditFormUpdatedData) => {
@@ -192,6 +203,7 @@ class ListPage extends React.Component {
 
 		return (
 			<div>
+				{renderDeleteConfirmModal.call(this)}
 				<Button
 					className={this.props.classes.fab}
 					variant="fab"
@@ -219,7 +231,7 @@ class ListPage extends React.Component {
 					keyName={this.props.keyName}
 					onAddItemClick={() => this.onAddItemClick('')}
 					onEditItemClick={this.onEditItemClick}
-					onDeleteItemClick={this.onDeleteItemClick}
+					onDeleteItemClick={(keyValue) => { this.setState({deleteModalItem: keyValue}) }}
 				/>
 			</div>
 		);
