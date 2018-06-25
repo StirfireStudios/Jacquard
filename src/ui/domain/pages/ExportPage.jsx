@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { withStyles } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -46,6 +47,7 @@ function renderOption(stateName, field, text) {
       control={
         <Switch
           label={text}
+          disabled={this.props.exporting}
           checked={value}
           onChange={changeOptionFunc.bind(this, stateName, field, true)}
         />
@@ -53,6 +55,11 @@ function renderOption(stateName, field, text) {
       label={text}
     />
   );
+}
+
+function renderError(error) {
+  if (error == null) return null;
+  return <Typography key="error" className="error">{error}</Typography>;
 }
 
 function renderBytecode() {
@@ -67,10 +74,12 @@ function renderBytecode() {
       <Typography key="warning">
         Warning: this will erase any similarly named files in the selected location
       </Typography>
+      {renderError(this.props.error)}
       <div key="file">
         <TextField
           id="prefix"
           label="File Prefix"
+          disabled={this.props.exporting}
           value={this.state.bytecode.prefix}
           onChange={changeOptionFunc.bind(this, "bytecode", "prefix", false)}
           className="input"
@@ -80,7 +89,7 @@ function renderBytecode() {
           }}
           margin="normal"
 				/>
-        <Button variant="raised" children="Save" onClick={saveFunc}/>
+        <Button variant="raised"  disabled={this.props.exporting} children="Save" onClick={saveFunc}/>
       </div>
     </Paper>
   );
@@ -103,4 +112,12 @@ class ExportPage extends React.Component {
   }
 }
 
-export default withStyles(themes.defaultTheme)(ExportPage);
+function mapStateToProps(state) {
+  const bytecodeData = state.Export.Bytecode;
+  return {
+    exporting: bytecodeData.exporting,
+    error: bytecodeData.error,
+  }
+}
+
+export default withStyles(themes.defaultTheme)(connect(mapStateToProps)(ExportPage));
