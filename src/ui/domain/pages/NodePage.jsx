@@ -15,7 +15,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import ErrorIcon from '@material-ui/icons/Error';
-import WarningIcon from '@material-ui/icons/Warning';
+import WarningIcon from '@material-ui/icons/SpeakerNotesOff';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 import red from '@material-ui/core/colors/red';
@@ -48,11 +48,13 @@ const styles = theme => ({
 		color: green[500],
 	},
 	nodeExistingLinkButton: {
-		marginRight: theme.spacing.unit * 2,
+		margin: theme.spacing.unit * 2,
+		'text-transform': "none",
 	},
 	nodeNonExistingLinkButton: {
-		marginRight: theme.spacing.unit * 2,
+		margin: theme.spacing.unit * 2,
 		backgroundColor: red[500],
+		'text-transform': "none",
 	},
 	searchBoxContainer: {
 		position: 'absolute',
@@ -114,6 +116,7 @@ const getIncomingLinkButtons = (projectNodeLinks, classes, item, field, onAddIte
 				className={buttonClass}
 				variant="raised"
 				onClick={buttonOnClick}
+				size="Small"
 			>
 				{incomingLinkKey}
 			</Button>
@@ -156,6 +159,7 @@ const getOutgoingLinkButtons = (projectNodeLinks, classes, item, field, onAddIte
 				className={buttonClass}
 				variant="raised"
 				onClick={buttonOnClick}
+				size="small"
 			>
 				{outgoingLinkKey}
 			</Button>
@@ -337,12 +341,12 @@ class NodeListPage extends React.Component {
 
 		// Validate the project nodes
 		const projectValidationResults = ((props.project) && (props.project.nodes))
-			? yarnService.validateProjectNodes(props.projectFilePath, props.project.nodes)
+			? yarnService.validateProjectNodes(props.projectFilePath, props.project.nodes, props.project.options)
 			: {};
 
 		// Get the project node links
 		const projectNodeLinks = ((props.project) && (props.project.nodes))
-			? yarnService.getProjectNodeLinks(props.projectFilePath, props.project.nodes)
+			? yarnService.getProjectNodeLinks(props.projectFilePath, props.project.nodes, props.project.options)
 			: {};
 
 		// Build a object representing the hidden state of each node
@@ -382,12 +386,12 @@ class NodeListPage extends React.Component {
 			(JSON.stringify(this.props.project.nodes) !== (JSON.stringify(nextProps.project.nodes)))) {
 			// Validate the project nodes
 			const projectValidationResults = ((nextProps.project) && (nextProps.project.nodes))
-				? yarnService.validateProjectNodes(nextProps.projectFilePath, nextProps.project.nodes)
+				? yarnService.validateProjectNodes(nextProps.projectFilePath, nextProps.project.nodes, nextProps.project.options)
 				: {};
 
 			// Get the project node links
 			const projectNodeLinks = ((nextProps.project) && (nextProps.project.nodes))
-				? yarnService.getProjectNodeLinks(nextProps.projectFilePath, nextProps.project.nodes)
+				? yarnService.getProjectNodeLinks(nextProps.projectFilePath, nextProps.project.nodes, nextProps.project.options)
 				: {};
 
 			// Build a object representing the hidden state of each node
@@ -553,6 +557,7 @@ class NodeListPage extends React.Component {
 				{...props}
 				projectNodeLinks={this.state.projectNodeLinks}
 				projectFilePath={this.props.projectFilePath}
+				projectOptions={this.props.project != null ? this.props.project.options : null}
 			/>);
 
 		return (

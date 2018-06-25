@@ -14,12 +14,13 @@ import Page from './ui/general/pages/Page';
 import VisualizationPage from './ui/domain/pages/VisualizationPage';
 import CharacterPage from './ui/domain/pages/CharacterPage';
 import DefaultPage from './ui/domain/pages/DefaultPage';
+import ExportPage from './ui/domain/pages/ExportPage';
 import FunctionPage from './ui/domain/pages/FunctionPage';
 import NodePage from './ui/domain/pages/NodePage';
+import OptionsPage from './ui/domain/pages/OptionsPage';
 import VariablePage from './ui/domain/pages/VariablePage';
 import PreviewPage from './ui/domain/pages/PreviewPage';
 import MainMenu from './ui/domain/components/MainMenu';
-
 
 import projectService from './services/projectService';
 import yarnService from './services/yarnService';
@@ -313,6 +314,14 @@ class App extends Component {
 			</BasePage>
 		);
 
+		const OptionsPageComplete = () => (
+			<BasePage title="Project Options">
+				<OptionsPage project={this.state.project}
+					onProjectUpdated={this.onProjectUpdated}
+				/>
+			</BasePage>
+		);
+
 		const FunctionPageComplete = () => (
 			<BasePage title="Functions">
 				<FunctionPage
@@ -320,6 +329,14 @@ class App extends Component {
 					projectFilePath={projectFilePath}
 					onProjectUpdated={this.onProjectUpdated}
 					onDataModified={this.onDataModified}
+				/>
+			</BasePage>
+		);
+
+		const ExportPageComplete = () => (
+			<BasePage title="Export">
+				<ExportPage
+					project={this.state.project}
 				/>
 			</BasePage>
 		);
@@ -351,10 +368,12 @@ class App extends Component {
 				<Route exact path="/" component={HomePageComplete} />
 				<Route path="/visualization" component={VisualizationPageComplete} />
 				<Route path="/characters" component={CharacterPageComplete} />
+				<Route path="/export" component={ExportPageComplete} />
 				<Route path="/functions" component={FunctionPageComplete} />
 				<Route path="/nodes" component={NodePageComplete} />
 				<Route path="/variables" component={VariablePageComplete} />
 				<Route path="/preview" component={PreviewPageComplete} />
+				<Route path="/options" component={OptionsPageComplete} />
 			</div>
 		);
 	}
