@@ -59,11 +59,14 @@ function renderBytecode() {
   const saveFunc = saveBytecode.bind(this, this.props.project, this.state.bytecode);
   return (
     <Paper className="bytecode">
-      <Typography variant="caption">Bytecode</Typography>
+      <Typography key="caption" variant="caption">Bytecode</Typography>
       <div key="options">
         {renderOption.call(this, "bytecode", "sourceMap", "Output SourceMap")}
         {renderOption.call(this, "bytecode", "debug", "Output Debug info")}
       </div>
+      <Typography key="warning">
+        Warning: this will erase any similarly named files in the selected location
+      </Typography>
       <div key="file">
         <TextField
           id="prefix"

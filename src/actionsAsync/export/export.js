@@ -1,6 +1,7 @@
 import { Parser } from 'jacquard-yarnparser';
 import { Compiler } from 'jacquard-yarncompiler';
-import { FileIO } from 'jacquard-runtime';
+
+import * as BytecodeActions from '../../actions/export/bytecode';
 
 import service from '../../services/yarnService';
 
@@ -22,7 +23,7 @@ function createOutputStream(path, prefix, extension, encoding) {
 
 export function Bytecode(path, project, options) {
   if (options.prefix.length == 0) options.prefix = "output";
-  // lock bytecode input
+  BytecodeActions.Exporting();
 
   // avoid Zalgo
   setTimeout(() => {
@@ -41,7 +42,7 @@ export function Bytecode(path, project, options) {
     }
 
     if (errors) {
-      console.error("Errors compiling");
+      BytecodeActions.Error("Error with parsing - check Preview");
       return;
     }
 
@@ -56,14 +57,14 @@ export function Bytecode(path, project, options) {
       compiler.assemble();
 
       compiler.writeBytecode(logic, dialog, sourceMap, debug)
-      .then((buffers) => {
-        console.log("done");
+      .then(() => {
+        BytecodeActions.Complete();
       })
       .catch((err) => {
-        console.error(err);
+        BytecodeActions.Error(err.toString());
       });
     } catch (err) {
-      console.error(err);
+      BytecodeActions.Error(err.toString());
       return;
     }    
 
