@@ -1,5 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
+import { Link, withRouter } from 'react-router-dom';
 
 import Divider from '@material-ui/core//Divider';
 import Drawer from '@material-ui/core/Drawer';
@@ -14,24 +16,6 @@ import { withStyles } from '@material-ui/core/styles';
 import themes from '../themes';
 import packageFile from '../../../../package.json';
 
-/* TODO: Change the links to use embedded components like so:
-class ListItemLink extends React.Component {
-  renderLink = itemProps => <Link to={this.props.to} {...itemProps} />;
-
-  render() {
-    const { icon, primary, secondary, to } = this.props;
-    return (
-      <li>
-        <ListItem button component={this.renderLink}>
-          {icon && <ListItemIcon>{icon}</ListItemIcon>}
-          <ListItemText inset primary={primary} secondary={secondary} />
-        </ListItem>
-      </li>
-    );
-  }
-}
-*/
-
 const styles = theme => ({
 	...themes.defaultTheme(theme),
 	dataChanged: {
@@ -39,87 +23,84 @@ const styles = theme => ({
 	},
 });
 
+function urlPush(url, history) {
+	return () => {
+		history.push(url);
+	}
+}
+
+function getSaveProjectClasses(modified, classes) {
+	if (modified) return { root: classes.dataChanged }
+	return {}
+};
+
+function renderProjectMenu() {
+	const { hasProject, projectIsModified, classes, onSaveProject } = this.props;
+	const { onSaveProjectAs, onExportYarnFile, onCloseProject } = this.props;
+
+	if (!hasProject) return null;
+	const saveProjectClasses = getSaveProjectClasses(projectIsModified, classes);
+
+	return (
+			<div>
+			<Divider />
+			<List>
+				<Link to="/visualization">
+					<MenuItem button>
+						<ListItemText primary="Visualization" />
+					</MenuItem>
+				</Link>
+			</List>
+			<Divider />
+			<List>
+				<Link to="/nodes">
+					<MenuItem button>
+						<ListItemText primary="Nodes" />
+					</MenuItem>
+				</Link>
+				<MenuItem button disabled={true} onClick={urlPush("/characters", this.props.history)}>
+					<ListItemText primary="Characters" />
+				</MenuItem>
+				<MenuItem button disabled={true} onClick={urlPush("/functions", this.props.history)}>
+					<ListItemText primary="Functions" />
+				</MenuItem>
+				<MenuItem button disabled={true} onClick={urlPush("/variables", this.props.history)}>
+					<ListItemText primary="Variables" />
+				</MenuItem>
+				<MenuItem button onClick={urlPush("/options", this.props.history)}>
+					<ListItemText primary="Project Options" />
+				</MenuItem>
+			</List>
+			<Divider />
+			<List>
+				<MenuItem
+					button
+					classes={saveProjectClasses}
+					onClick={onSaveProject}
+				>
+					<ListItemText primary="Save Project" />
+				</MenuItem>
+				<MenuItem button onClick={onSaveProjectAs}>
+					<ListItemText primary="Save Project As..." />
+				</MenuItem>
+				<MenuItem button onClick={onExportYarnFile}>
+					<ListItemText primary="Export Project To Yarn" />
+				</MenuItem>
+				<MenuItem button onClick={urlPush("/export", this.props.history)}>
+					<ListItemText primary="Export Project Bytecode" />
+				</MenuItem>
+				<MenuItem button onClick={onCloseProject}>
+					<ListItemText primary="Close Project" />
+				</MenuItem>
+			</List>
+		</div>
+	);
+}
+
 class MainMenu extends React.Component {
 	constructor(props) {
 		super(props);
-		this.ProjectMenu = this.ProjectMenu.bind(this);
 	}
-
-	ProjectMenu() {
-		// Determine the Save Project class based on whether the project has been
-		// modified
-		const saveProjectClasses = (this.props.projectIsModified)
-			?
-			{
-				root: this.props.classes.dataChanged,
-			}
-			:
-			{
-			};
-
-		return (this.props.hasProject)
-			? (
-				<div>
-					<Divider />
-					<List>
-						<Link to="/visualization">
-							<MenuItem button>
-								<ListItemText primary="Visualization" />
-							</MenuItem>
-						</Link>
-					</List>
-					<Divider />
-					<List>
-						<Link to="/nodes">
-							<MenuItem button>
-								<ListItemText primary="Nodes" />
-							</MenuItem>
-						</Link>
-	{/*					<Link to="/characters"> */}
-							<MenuItem button disabled={true}>
-								<ListItemText primary="Characters" />
-							</MenuItem>
-	{/*					</Link> */}
-	{/*					<Link to="/functions"> */}
-							<MenuItem button disabled={true}>
-								<ListItemText primary="Functions" />
-							</MenuItem>
-	{/*					</Link> */}
-	{/*				<Link to="/variables"> */}
-							<MenuItem button disabled={true}>
-								<ListItemText primary="Variables" />
-							</MenuItem>
-	{/*				</Link> */}
-						<Link to="/options">
-							<MenuItem button>
-								<ListItemText primary="Project Options" />
-							</MenuItem>
-						</Link>
-					</List>
-					<Divider />
-					<List>
-						<MenuItem
-							button
-							classes={saveProjectClasses}
-							onClick={this.props.onSaveProject}
-						>
-							<ListItemText primary="Save Project" />
-						</MenuItem>
-						<MenuItem button onClick={this.props.onSaveProjectAs}>
-							<ListItemText primary="Save Project As..." />
-						</MenuItem>
-						<MenuItem button onClick={this.props.onExportYarnFile}>
-							<ListItemText primary="Export Project To Yarn" />
-						</MenuItem>
-						<MenuItem button onClick={this.props.onCloseProject}>
-							<ListItemText primary="Close Project" />
-						</MenuItem>
-					</List>
-				</div>
-			)
-			: null;
-	}
-
 
 	render() {
 		const { classes } = this.props;
@@ -137,7 +118,7 @@ class MainMenu extends React.Component {
 				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
 				<Divider />
 				<Link to="/preview"><MenuItem button><ListItemText primary="Preview" /></MenuItem></Link>
-				<this.ProjectMenu />
+				{renderProjectMenu.call(this)}
 				<Divider />
 				<List>
 					<MenuItem button onClick={this.props.onCreateNewProject}>
@@ -155,4 +136,4 @@ class MainMenu extends React.Component {
 	}
 }
 
-export default withStyles(styles)(MainMenu);
+export default withRouter(withStyles(styles)(MainMenu));

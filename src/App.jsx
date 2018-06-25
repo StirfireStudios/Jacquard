@@ -14,6 +14,7 @@ import Page from './ui/general/pages/Page';
 import VisualizationPage from './ui/domain/pages/VisualizationPage';
 import CharacterPage from './ui/domain/pages/CharacterPage';
 import DefaultPage from './ui/domain/pages/DefaultPage';
+import ExportPage from './ui/domain/pages/ExportPage';
 import FunctionPage from './ui/domain/pages/FunctionPage';
 import NodePage from './ui/domain/pages/NodePage';
 import OptionsPage from './ui/domain/pages/OptionsPage';
@@ -332,6 +333,14 @@ class App extends Component {
 			</BasePage>
 		);
 
+		const ExportPageComplete = () => (
+			<BasePage title="Export">
+				<ExportPage
+					project={this.state.project}
+				/>
+			</BasePage>
+		);
+
 		const NodePageComplete = () => (
 			<BasePage title="Nodes">
 				<NodePage
@@ -359,6 +368,7 @@ class App extends Component {
 				<Route exact path="/" component={HomePageComplete} />
 				<Route path="/visualization" component={VisualizationPageComplete} />
 				<Route path="/characters" component={CharacterPageComplete} />
+				<Route path="/export" component={ExportPageComplete} />
 				<Route path="/functions" component={FunctionPageComplete} />
 				<Route path="/nodes" component={NodePageComplete} />
 				<Route path="/variables" component={VariablePageComplete} />
