@@ -26,7 +26,7 @@ function saveBytecode(project, options) {
   });
 }
 
-function changeOptionFunc(stateName, field, event, checkbox) {
+function changeOptionFunc(stateName, field, checkbox, event) {
   const newStatePart = {};
   newStatePart[stateName] = Object.assign({}, this.state[stateName]);
   if (checkbox) {
@@ -69,7 +69,7 @@ function renderBytecode() {
           id="prefix"
           label="File Prefix"
           value={this.state.bytecode.prefix}
-          onChange={changeOptionFunc.bind(this, "bytecode", "prefix")}
+          onChange={changeOptionFunc.bind(this, "bytecode", "prefix", false)}
           className="input"
           type="text"
           InputLabelProps={{
