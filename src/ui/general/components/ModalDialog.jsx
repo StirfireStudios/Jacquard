@@ -8,46 +8,52 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
+});
+
 const ModalDialog = props => (
 	<Dialog
 		open={props.open}
 		onClose={props.onCancel}
 		aria-labelledby="form-dialog-title"
 	>
-		<Grid container spacing={0} justify="center">
+		<DialogTitle id="form-dialog-title">
+			{ props.title }
+		</DialogTitle>
+		<DialogContent>
+			{ props.children }
+		</DialogContent>
+		<DialogActions className={props.classes.root}>
 			<Grid item xs={12}>
-				<DialogTitle id="form-dialog-title">
-					{ props.title }
-				</DialogTitle>
-			</Grid>
-			<Grid item xs={12}>
-				<DialogContent>
-					{ props.children }
-				</DialogContent>
-			</Grid>
-			<DialogActions>
-				<Grid item xs={6}>
-					<Button
-						onClick={props.onOK}
-						variant="raised"
-						color="primary"
-						fullWidth
-					>
-						{props.okButtonLabel}
-					</Button>
+				<Grid container spacing={10} justify="center" alignItems="center">
+					<Grid item xs={3}>
+						<Button
+							onClick={props.onOK}
+							variant="raised"
+							color="primary"
+							fullHeight
+						>
+							{props.okButtonLabel}
+						</Button>
+					</Grid>
+					<Grid item xs={3}>
+						<Button
+							onClick={props.onCancel}
+							variant="raised"
+							color="secondary"
+							fullHeight
+						>
+							{props.cancelButtonLabel}
+						</Button>
+					</Grid>
 				</Grid>
-				<Grid item xs={6}>
-					<Button
-						onClick={props.onCancel}
-						variant="raised"
-						color="secondary"
-						fullWidth
-					>
-						{props.cancelButtonLabel}
-					</Button>
-				</Grid>
-			</DialogActions>
-		</Grid>
+			</Grid>
+		</DialogActions>
 	</Dialog>
 );
 
@@ -67,4 +73,4 @@ ModalDialog.defaultProps = {
 	cancelButtonLabel: 'Cancel',
 };
 
-export default ModalDialog;
+export default withStyles(styles, { withTheme: true })(ModalDialog);

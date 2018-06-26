@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { withStyles } from '@material-ui/core//styles';
-import Button from '@material-ui/core//Button';
+import { withStyles } from '@material-ui/core/styles';
+
 import AddIcon from '@material-ui/icons/Add';
+import Button from '@material-ui/core//Button';
+import { Typography } from '@material-ui/core';
 import green from '@material-ui/core//colors/green';
 
 // import ListEditButton from '../../general/components/ListEditButton';
@@ -11,6 +13,7 @@ import green from '@material-ui/core//colors/green';
 import FieldListTable from '../components/FieldListTable';
 
 import ModalDialog from '../../general/components/ModalDialog';
+
 
 // Assumes that you are going to have a list of some sort that you can edit.
 // Takes a list of fields that you want to show, a form that will act as the add/edit form and
@@ -36,19 +39,26 @@ function deleteItemConfirm(keyPath) {
 	this.setState({ deleteModalItem: null	});
 }
 
+function typeName(type, capitalize) {
+	if (capitalize) return "Node";
+	return "node";
+}
+
 function renderDeleteConfirmModal() {
 	if (this.state.deleteModalItem === null) return null;
 	const keyPath = this.state.deleteModalItem;
+	const typeNameUpper = typeName(this.props.projectPropName, true);
+	const typeNameLower = typeName(this.props.projectPropName);
 	return (
 		<ModalDialog
 			onOK={deleteItemConfirm.bind(this, keyPath)}
 			onCancel={() => this.setState({deleteModalItem: null})}
-			title={`Confirm Node Deletion`}
+			title={`Confirm ${typeNameUpper} Deletion`}
 			open={true}
 			okButtonLabel="Yes, I'm sure"
 			cancelButtonLabel="Cancel"
 		>
-			<div>Are you sure you want to delete the "{keyPath}" node? There's no undo button for this!</div>
+			<Typography>Are you sure you want to delete the "{keyPath}" {typeNameLower}? There's no undo button for this!</Typography>
 		</ModalDialog>
 	);
 }
