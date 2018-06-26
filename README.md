@@ -1,14 +1,17 @@
 # Jacquard
 ###### *A Yarn authoring tool for narrative game development.*
 
-Jacquard is a tool for authoring [Yarn](https://github.com/thesecretlab/YarnSpinner) documents, to be used in game engines like Unity and Unreal Engine. It's built to be a spiritual successor of sorts to [Twine](http://twinery.org), so if you've used that before, Jacquard should feel familiar. Yarn syntax is inspired by [SugarCube](http://www.motoslave.net/sugarcube/2/docs/markup.html), and a full reference can be found [here](https://github.com/thesecretlab/YarnSpinner/blob/development/Documentation/YarnSpinner-Dialogue/Yarn-Syntax.md).
+<sup>_**Join the Jacquard developers in the [Narrative Game Development Slack!](http://lab.to/narrativegamedev)**_</sup>
+
+Jacquard is a tool for authoring [Yarn](https://github.com/thesecretlab/YarnSpinner/tree/development/Documentation/YarnSpinner-Dialogue) documents, to be used in game engines like Unity and Unreal Engine. It's built to be a spiritual successor of sorts to [Twine](http://twinery.org), so if you've used that before, Jacquard should feel familiar. Yarn syntax is inspired by [SugarCube](http://www.motoslave.net/sugarcube/2/docs/markup.html), and a full reference can be found [here](https://github.com/thesecretlab/YarnSpinner/tree/development/Documentation/YarnSpinner-Dialogue).
 
 **Features:**
 - Node-based drag-and-drop editing
-- Automatic syntax validation
+- Automatic Yarn syntax validation
+- Easily-readable debug tools and state inspection <sup><sup>✨NEW!✨</sup></sup>
+- Bytecode export <sup><sup>✨NEW!✨</sup></sup> 
 
 **Planned features:**
-- Bytecode export
 - Syntax highlighting
 - Localization and voiceover reference support
 - Arbitrary text segment tagging
