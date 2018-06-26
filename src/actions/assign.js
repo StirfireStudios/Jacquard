@@ -1,8 +1,9 @@
 import { assignAll } from 'redux-act';
 
+import exportAssign from './export/assign';
 import previewAssign from './preview/assign';
 
-const subtrees = [previewAssign];
+const subtrees = [exportAssign, previewAssign];
 
 const actions = [];
 

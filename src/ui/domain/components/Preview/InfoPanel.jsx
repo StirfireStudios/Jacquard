@@ -121,7 +121,7 @@ function renderStartConfirmModal() {
       okButtonLabel="Yes"
       cancelButtonLabel="No"
     >
-      Move to {this.state.nodeName}
+      Run from {this.state.nodeName}
     </ModalDialog>    
   )
 }

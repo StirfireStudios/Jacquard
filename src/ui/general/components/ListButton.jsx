@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core//styles';
 
 const styles = theme => ({
 	button: {
-		margin: theme.spacing.unit,
+		margin: theme.spacing.unit / 2,
 	},
 });
 
@@ -22,7 +22,7 @@ class ListButton extends React.Component {
 	render() {
 		const { classes } = this.props;
 		return (
-			<Button variant="fab" color={this.props.color} onClick={this.onClick} aria-label={this.props.arialabel} className={classes.button}>
+			<Button variant="fab" mini color={this.props.color} onClick={this.onClick} aria-label={this.props.arialabel} className={classes.button}>
 				{this.props.children}
 			</Button>
 		);

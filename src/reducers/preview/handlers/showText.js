@@ -1,10 +1,9 @@
 export default function handle(textArray, message) {
   for(let line of message.parts) {
-    let textString = "";
+    const part = { text: line.text }
     if (line.localizedCharacterName != null) {
-      textString += line.localizedCharacterName + ": ";
+      part.characterName = line.localizedCharacterName;
     }
-    textString += line.text;
-    textArray.push({ text: textString});  
+    textArray.push(part);  
   }
 }
