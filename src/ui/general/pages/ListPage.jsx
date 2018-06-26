@@ -43,12 +43,12 @@ function renderDeleteConfirmModal() {
 		<ModalDialog
 			onOK={deleteItemConfirm.bind(this, keyPath)}
 			onCancel={() => this.setState({deleteModalItem: null})}
-			title={`Really delete "${keyPath}"`}
+			title={`Confirm Node Deletion`}
 			open={true}
-			okButtonLabel="Delete"
+			okButtonLabel="Yes, I'm sure"
 			cancelButtonLabel="Cancel"
 		>
-			<div>Are you sure you want to delete "{keyPath}"</div>
+			<div>Are you sure you want to delete the "{keyPath}" node? There's no undo button for this!</div>
 		</ModalDialog>
 	);
 }
