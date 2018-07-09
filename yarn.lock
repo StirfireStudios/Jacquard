@@ -4671,8 +4671,8 @@ jacquard-runtime@0.3.x:
     utf-8 "^2.0.0"
 
 jacquard-yarncompiler@0.4.x:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/jacquard-yarncompiler/-/jacquard-yarncompiler-0.4.2.tgz#df57423aa3c7f413a50885959f55d0013a361c5f"
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/jacquard-yarncompiler/-/jacquard-yarncompiler-0.4.3.tgz#7e73afc6aaaccb5996ebe69a1f37ee8ad6836412"
   dependencies:
     jacquard-yarnparser "0.6.x"
 
