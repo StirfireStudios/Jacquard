@@ -58,6 +58,10 @@ export function Bytecode(path, project, options) {
 
       compiler.writeBytecode(logic, dialog, sourceMap, debug)
       .then(() => {
+        logic.close();
+        dialog.close();
+        if (debug != null) debug.close();
+        if (sourceMap != null) sourceMap.close();
         BytecodeActions.Complete();
       })
       .catch((err) => {
