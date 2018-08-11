@@ -3,7 +3,7 @@
   "author": "Stirfire Studios",
   "productName": "Jacquard",
   "description": "Yarn-based narrative tool!",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "private": true,
   "main": "public/electron.js",
   "homepage": "./",
