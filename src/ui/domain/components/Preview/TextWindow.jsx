@@ -1,4 +1,4 @@
-  import React from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -30,7 +30,7 @@ const styles = theme => ({
 })
 
 function handleText(classes, array, index, currentCharacter, text) {
-  if (text.characterName != null && text.characterName != currentCharacter) {
+  if (text.characterName != null && text.characterName !== currentCharacter) {
     array.push(
       <div key={`${index}_character`}>
         <CharacterChangeIcon className={classes.icon}/>

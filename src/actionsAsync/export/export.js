@@ -22,7 +22,7 @@ function createOutputStream(path, prefix, extension, encoding) {
 }
 
 export function Bytecode(path, project, options) {
-  if (options.prefix.length == 0) options.prefix = "output";
+  if (options.prefix.length === 0) options.prefix = "output";
   BytecodeActions.Exporting();
 
   // avoid Zalgo
