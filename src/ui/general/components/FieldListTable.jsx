@@ -24,6 +24,14 @@ const styles = theme => ({
 	},
 });
 
+function handleChangePage(event, page) {
+	this.setState({page: page});
+}
+
+function handleChangeRowsPerPage(event) {
+	this.setState({limit: event.target.value});
+}
+
 function paginate(rows, limit, page) {
 	if (rows == null) return [];
 	if (rows.length < limit * (page - 1)) return [];
@@ -53,16 +61,17 @@ function renderHeaders(fields, headerClass) {
 	);
 }
 
-function renderPagination(rows, limit, page) {	
+function renderPagination(rows, limit, page, onChangePage, onChangeRowsPerPage) {	
 	if (rows == null) return null;
 	if (rows.length - page * limit < 0) return null;
-	const pages = rows.length / limit;
 
 	return (
 		<TablePagination
 			count={rows.length}
 			rowsPerPage={limit}
 			page={page}
+			onChangePage={onChangePage}
+			onChangeRowsPerPage={onChangeRowsPerPage}
 		/>
 	)
 
@@ -121,6 +130,8 @@ class FieldListTable extends React.Component {
 			this.props.rows, 
 			this.state.limit,
 			this.state.page,
+			handleChangePage.bind(this),
+			handleChangeRowsPerPage.bind(this),
 		);
 
 		return (
@@ -132,6 +143,9 @@ class FieldListTable extends React.Component {
 				<TableBody>
 					{rows}
 				</TableBody>
+				<TableFooter>
+					{pagination}
+				</TableFooter>
 			</Table>
 		);
 	}
