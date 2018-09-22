@@ -7,11 +7,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
+import TablePagination from '@material-ui/core/TablePagination';
 
 import uuidv4 from 'uuid/v4';
 
 import ListEditButton from './ListEditButton';
 import ListDeleteButton from './ListDeleteButton';
+import { TableFooter } from '@material-ui/core';
 
 const styles = theme => ({
 	header: {
@@ -22,22 +24,58 @@ const styles = theme => ({
 	},
 });
 
-class FieldListTable extends React.Component {
-	renderHeader = () => (
-		<TableHead>
-			<TableRow>
-				{this.props.fields.map(field => (
-					<TableCell
-						className={this.props.classes.header}
-						key={field.name}
-					>
-						{field.displayName}
-					</TableCell>
-				))}
-				<TableCell className={this.props.classes.header} />
-			</TableRow>
-		</TableHead>
+function paginate(rows, limit, page) {
+	if (rows == null) return [];
+	if (rows.length < limit * (page - 1)) return [];
+	const inPage = [];
+	let index = limit * page;
+	while(index < rows.length && index < limit * (page + 1)) {
+		inPage.push(rows[index]);
+		index++;
+	}
+	return inPage;
+}
+
+function renderHeaders(fields, headerClass) {
+	const cells = fields.map(field => {
+		return (
+			<TableCell className={headerClass} key={field.name}>
+				{field.displayName}
+			</TableCell>
+		);
+	});
+
+	return (
+		<TableRow>
+			{cells}
+			<TableCell className={headerClass} key="item_actions"/>
+		</TableRow>
 	);
+}
+
+function renderPagination(rows, limit, page) {	
+	if (rows == null) return null;
+	if (rows.length - page * limit < 0) return null;
+	const pages = rows.length / limit;
+
+	return (
+		<TablePagination
+			count={rows.length}
+			rowsPerPage={limit}
+			page={page}
+		/>
+	)
+
+}
+
+class FieldListTable extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			page: 0,
+			limit: 10
+		}
+	}
 
 	renderFields = item => this.props.fields.map(field => (
 		<TableCell key={field.name}>
@@ -53,39 +91,44 @@ class FieldListTable extends React.Component {
 	));
 
 	renderRows = () => {
-		let returnValue = [];
+		if (this.props.rows == null) return null;
 
-		if (this.props.rows) {
-			returnValue = this.props.rows.map(item => (
-				<TableRow key={uuidv4()}>
-					{this.renderFields(item)}
-					<TableCell>
-						<ListEditButton
-							onClick={() => this.props.onEditItemClick(item[this.props.keyName])}
-							itemKey={item[this.props.keyName]}
-						/>
-						<ListDeleteButton
-							onClick={() => this.props.onDeleteItemClick(item[this.props.keyName])}
-							itemKey={item[this.props.keyName]}
-						/>
-					</TableCell>
-				</TableRow>
-			));
-		}
-
-		return returnValue;
+		return paginate(this.props.rows, this.state.limit, this.state.page).map(item => (
+			<TableRow key={uuidv4()}>
+				{this.renderFields(item)}
+				<TableCell>
+					<ListEditButton
+						onClick={() => this.props.onEditItemClick(item[this.props.keyName])}
+						itemKey={item[this.props.keyName]}
+					/>
+					<ListDeleteButton
+						onClick={() => this.props.onDeleteItemClick(item[this.props.keyName])}
+						itemKey={item[this.props.keyName]}
+					/>
+				</TableCell>
+			</TableRow>
+		));
 	}
 
 	render() {
 		// Render the header
-		const header = this.renderHeader();
+		const header = renderHeaders(this.props.fields, this.props.classes.header)
 
 		// Render the rows
 		const rows = this.renderRows();
 
+		const pagination = renderPagination(
+			this.props.rows, 
+			this.state.limit,
+			this.state.page,
+		);
+
 		return (
 			<Table>
-				{header}
+				<TableHead>
+					{pagination}
+					{header}					
+				</TableHead>
 				<TableBody>
 					{rows}
 				</TableBody>
