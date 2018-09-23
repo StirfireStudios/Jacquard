@@ -25,7 +25,7 @@
     "d3": "^5.4.0",
     "d3-force": "^1.1.0",
     "electron-is-dev": "^0.3.0",
-    "jacquard-runtime": "0.3.x",
+    "jacquard-runtime": "0.4.x",
     "jacquard-yarncompiler": "0.4.x",
     "jacquard-yarnparser": "0.6.x",
     "prop-types": "^15.6.0",
