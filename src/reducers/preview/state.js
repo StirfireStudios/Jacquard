@@ -6,6 +6,7 @@ import * as RuntimeActions from '../../actions/preview/runtime';
 
 import handleShowText from './handlers/showText';
 import handleCommand from './handlers/command';
+import handleDialogueSegment from './handlers/dialogueSegment';
 import handleFunction from './handlers/function';
 import handleOptions from './handlers/options';
 import handleNodeChange from './handlers/nodeChange';
@@ -56,11 +57,11 @@ function updateWithRuntimeData(state, runMode, returnValue) {
     const message = runtime.run(runMode === "step");
     if (message != null) {
       switch(message.constructor) {
+        case Messages.DialogueSegment:
+          handleDialogueSegment(newState.text, message);
+          break;
         case Messages.NodeChange:
           handleNodeChange(newState.text, message);
-          break;
-        case Messages.Text.Show:
-          handleShowText(newState.text, message);
           break;
         case Messages.Command:
           handleCommand(newState.text, message);

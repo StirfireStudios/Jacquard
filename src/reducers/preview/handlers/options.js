@@ -1,6 +1,17 @@
-import handleShowText from './showText';
 import handleCommand from './command';
+import handleShowText from './showText';
 import { Messages } from 'jacquard-runtime'
+
+function extractTextLine(message) {
+  for(let subMessage of message.messages) {
+    if (subMessage.constructor == Messages.Text.Show) {
+      const text = []
+      handleShowText(text, subMessage);
+      return text;
+    }
+  } 
+  return null;
+}
 
 export default function handle(state, message, runtime) {
   state.originalIP = runtime.currentInstructionPointer;
@@ -14,9 +25,13 @@ export default function handle(state, message, runtime) {
       const message = runtime.run();
       if (message != null) {
         switch(message.constructor) {
-          case Messages.Text.Show:
-            handleShowText(option.text, message);
-            keepRunning = false;
+          case Messages.DialogueSegment:            
+            const text = extractTextLine(message);
+            if (text != null) {
+              keepRunning = false;
+              option.text = text;
+            }
+            keepRunning = text == null;
             break;
             case Messages.Command:
             handleCommand(option.text, message);
