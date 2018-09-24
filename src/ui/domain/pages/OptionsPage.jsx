@@ -38,10 +38,10 @@ function isModified(currentOptions, savedOptions) {
   return Object.keys(currentOptions).reduce((modified, field) => {
     if (modified === true) return modified;
     if (savedOptions[field] == null) {
-      if (currentOptions[field] == true) return true; 
+      if (currentOptions[field] === true) return true; 
       return false;
     }
-    return savedOptions[field] != currentOptions[field];
+    return savedOptions[field] !== currentOptions[field];
   }, false);
 }
 

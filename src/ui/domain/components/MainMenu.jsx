@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { Link, withRouter } from 'react-router-dom';
 
@@ -98,10 +97,6 @@ function renderProjectMenu() {
 }
 
 class MainMenu extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
 	render() {
 		const { classes } = this.props;
 		return (

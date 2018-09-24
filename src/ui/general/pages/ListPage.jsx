@@ -8,8 +8,6 @@ import Button from '@material-ui/core//Button';
 import { Typography } from '@material-ui/core';
 import green from '@material-ui/core//colors/green';
 
-// import ListEditButton from '../../general/components/ListEditButton';
-// import ListDeleteButton from '../../general/components/ListDeleteButton';
 import FieldListTable from '../components/FieldListTable';
 
 import ModalDialog from '../../general/components/ModalDialog';

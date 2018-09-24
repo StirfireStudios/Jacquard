@@ -116,7 +116,7 @@ const getIncomingLinkButtons = (projectNodeLinks, classes, item, field, onAddIte
 				className={buttonClass}
 				variant="raised"
 				onClick={buttonOnClick}
-				size="Small"
+				size="small"
 			>
 				{incomingLinkKey}
 			</Button>
