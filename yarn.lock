@@ -4672,8 +4672,8 @@ items@2.x.x:
   resolved "https://registry.yarnpkg.com/items/-/items-2.1.1.tgz#8bd16d9c83b19529de5aea321acaada78364a198"
 
 jacquard-runtime@0.4.x:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/jacquard-runtime/-/jacquard-runtime-0.4.1.tgz#3693f451051beae5279c2a8cfd11872a9f210578"
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/jacquard-runtime/-/jacquard-runtime-0.4.3.tgz#ed35468d8eb20876ca56242d5ac3f16a693d8ff1"
   dependencies:
     utf-8 "^2.0.0"
 
