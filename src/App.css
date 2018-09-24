@@ -95,6 +95,12 @@
   margin: 5px;
 }
 
+.display .dialogueSegment {
+  border: 1px dashed black;
+  padding: 2px;
+  margin: 5px;
+}
+
 .buttons {
   position: fixed;
   bottom: 0;

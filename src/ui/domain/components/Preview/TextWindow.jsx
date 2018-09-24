@@ -12,8 +12,14 @@ import VarSaveIcon from '@material-ui/icons/Save';
 import VarLoadIcon from '@material-ui/icons/Unarchive';
 
 import FuncReturnDialog from './FuncReturnDialog';
+import timestamp from 'time-stamp';
 
 const styles = theme => ({
+  dialogueSegment: {
+    "border": "1px dashed black",
+    padding: "2px",
+    margin: "5px",
+  },
   icon: {
     "vertical-align": "middle",
     padding: "2px",
@@ -29,18 +35,22 @@ const styles = theme => ({
   },
 })
 
-function handleText(classes, array, index, currentCharacter, text) {
-  if (text.characterName != null && text.characterName !== currentCharacter) {
-    array.push(
-      <div key={`${index}_character`}>
-        <CharacterChangeIcon className={classes.icon}/>
-        <span className={classes.monospace}>{text.characterName}</span> says:
-      </div>
-    );
-    currentCharacter = text.characterName;
+function renderText(index, text) {
+  return (<div key={index} className="text">{text.text}</div>);
+}
+
+function renderDialogSegment(classes, array, index, currentCharacter, message) {
+  const parts = [];
+  for(let index = 0; index < message.text.length; index++) {
+    const subMessage = message.text[index];
+    parts.push(renderMessage(classes, index, subMessage));
   }
-  array.push(<div key={index} className="text">{text.text}</div>);
-  return currentCharacter;
+  array.push(
+    <div key={index} className={classes.dialogueSegment}>
+      <span key="id" className={classes.monospace}>Segment: {message.dialogSegment}</span>
+      {parts}
+    </div>
+  )
 }
 
 function renderCommand(classes, index, args) {
@@ -138,23 +148,32 @@ function renderFunctionCall(classes, index, functionData) {
   );
 }
 
+function renderMessage(classes, index, text) {
+  if (text.text != null) {
+    return renderText(index, text)
+  } else if (text.command != null) {
+    return renderCommand(classes, index, text.command);
+  } else if (text.nodeEntered != null) {
+    return renderNodeEntry(classes, index, text.nodeEntered);
+  } else if (text.optionSelected != null) {
+    return  renderSelectedOption(classes, index, text.optionSelected);
+  } else if (text.variable != null) {
+    return renderVariableChange(classes, index, text.variable);
+  } else if (text.function != null) {
+    return renderFunctionCall(classes, index, text.function);
+  }
+}
+
 function renderTextArray() {
   const renderedText = [];
   let currentCharacter = null;
   for(let index = 0; index < this.props.text.length; index++) {
     const text = this.props.text[index];
-    if (text.text != null) {
-      currentCharacter = handleText(this.props.classes, renderedText, index, currentCharacter, text);
-    } else if (text.command != null) {
-      renderedText.push(renderCommand(this.props.classes, index, text.command));
-    } else if (text.nodeEntered != null) {
-      renderedText.push(renderNodeEntry(this.props.classes, index, text.nodeEntered));
-    } else if (text.optionSelected != null) {
-      renderedText.push(renderSelectedOption(this.props.classes, index, text.optionSelected));
-    } else if (text.variable != null) {
-      renderedText.push(renderVariableChange(this.props.classes, index, text.variable));
-    } else if (text.function != null) {
-      renderedText.push(renderFunctionCall(this.props.classes, index, text.function));
+    if (text.dialogSegment != null) {
+      currentCharacter = renderDialogSegment(this.props.classes, renderedText, index, currentCharacter, text);
+    } else {
+      const output = renderMessage(this.props.classes, index, text);
+      if (output != null) renderedText.push(output);
     }
   }
   return renderedText;
