@@ -17,7 +17,8 @@ import { withStyles } from '@material-ui/core/styles';
 import themes from '../themes';
 import packageFile from '../../../../package.json';
 
-import * as ActionsAsync from '../../../actionsAsync/project/yarnimport';
+import * as FileIOActionsAsync from '../../../actionsAsync/project/fileIO';
+import * as ImportActionsAsync from '../../../actionsAsync/project/yarnimport';
 
 const electron = window.require('electron');
 const os = electron.remote.require("os");
@@ -41,7 +42,22 @@ function importYarn() {
 	}, (filePaths) => {
 		if (filePaths == null) return;
 		if (filePaths.length === 0) return;
-		ActionsAsync.Import(filePaths[0]);
+		ImportActionsAsync.Import(filePaths[0]);
+	});
+}
+
+function onSaveProjectAs(data) {
+	const extension = ['jqrd'];
+	electron.remote.dialog.showOpenDialog({
+		title: "Save Project",
+		properties: ['openDirectory'],
+		filters: [
+			{name: 'Jacquard Projects', extensions: extension},
+		],
+	}, (paths) => {
+		if (paths == null) return;
+		if (paths.length === 0) return;
+		FileIOActionsAsync.Write(paths[0], data)
 	});
 }
 
@@ -57,8 +73,8 @@ function getSaveProjectClasses(modified, classes) {
 };
 
 function renderProjectMenu() {
-	const { hasProject, projectIsModified, classes, onSaveProject } = this.props;
-	const { onSaveProjectAs, onExportYarnFile, onCloseProject } = this.props;
+	const { hasProject, classes } = this.props;
+	const { onExportYarnFile, onCloseProject } = this.props;
 
 	if (!hasProject) return null;
 	const saveProjectClasses = getSaveProjectClasses(this.props.dirty, classes);
@@ -96,13 +112,14 @@ function renderProjectMenu() {
 			<Divider />
 			<List>
 				<MenuItem
-					button
+					button					
 					classes={saveProjectClasses}
-					onClick={onSaveProject}
+					disabled={!this.props.pathSet}
+					onClick={FileIOActionsAsync.Write.bind(null, this.props.path, this.props.data)}
 				>
 					<ListItemText primary="Save Project" />
 				</MenuItem>
-				<MenuItem button onClick={onSaveProjectAs}>
+				<MenuItem button classes={saveProjectClasses} onClick={onSaveProjectAs.bind(null, this.props.data)}>
 					<ListItemText primary="Save Project As..." />
 				</MenuItem>
 				<MenuItem button onClick={onExportYarnFile}>
@@ -159,6 +176,8 @@ function mapStateToProps(state) {
 	return {
 		busy: ProjectData.busy,
 		dirty: ProjectData.dirty,
+		pathSet: ProjectData.path != null,
+		data: ProjectData,
 	}
 }
 

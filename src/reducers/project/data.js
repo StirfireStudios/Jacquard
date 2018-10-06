@@ -1,6 +1,7 @@
 import { createReducer } from 'redux-act';
 
 import * as ImportActions from '../../actions/project/import'
+import * as SaveActions from '../../actions/project/save'
 
 export default createReducer({
   [ImportActions.LoadFinish]: (state, newData) => ({
@@ -15,8 +16,19 @@ export default createReducer({
     tags: newData.tags,
     variables: newData.variables,    
   }),
+  [SaveActions.Start]: (state) => ({
+    ...state,
+    busy: true
+  }),
+  [SaveActions.Complete]: (state, path) => ({
+    ...state,
+    busy: false,
+    path: path,
+    dirty: false,
+  }),
 }, {
   busy: false,
+  path: null,
   dirty: false,
   parser: null,
   settings: {},
