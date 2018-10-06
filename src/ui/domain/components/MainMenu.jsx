@@ -15,12 +15,33 @@ import { withStyles } from '@material-ui/core/styles';
 import themes from '../themes';
 import packageFile from '../../../../package.json';
 
+import * as ActionsAsync from '../../../actionsAsync/project/yarnimport';
+
+const electron = window.require('electron');
+const os = electron.remote.require("os");
+const platform = os.platform();
+
 const styles = theme => ({
 	...themes.defaultTheme(theme),
 	dataChanged: {
 		backgroundColor: orange[500],
 	},
 });
+
+function importYarn() {
+	const extension = platform === 'darwin' ? ['txt'] : ['yarn.txt']
+	electron.remote.dialog.showOpenDialog({
+		title: "Import Yarn File",
+		properties: ['openFile'],
+		filters: [
+			{name: 'Yarn Files', extensions: extension},
+		],
+	}, (filePaths) => {
+		if (filePaths == null) return;
+		if (filePaths.length === 0) return;
+		ActionsAsync.Import(filePaths[0]);
+	});
+}
 
 function urlPush(url, history) {
 	return () => {
@@ -122,7 +143,7 @@ class MainMenu extends React.Component {
 					<MenuItem button onClick={this.props.onOpenExistingProject}>
 						<ListItemText primary="Open Existing Project" />
 					</MenuItem>
-					<MenuItem button onClick={this.props.onImportYarnFile}>
+					<MenuItem button onClick={importYarn}>
 						<ListItemText primary="Import Project From Yarn" />
 					</MenuItem>
 				</List>

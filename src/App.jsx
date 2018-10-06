@@ -192,14 +192,6 @@ class App extends Component {
 		});
 	};
 
-	onImportYarnFile = () => {
-		// Get the project file path
-		const projectFilePath = projectService.getFilePath();
-
-		// Open a project
-		ipcRenderer.send('projectImportFromYarn', projectFilePath);
-	};
-
 	onCloseProject = () => {
 		// Remove the project from storage
 		projectService.clear();
@@ -269,7 +261,6 @@ class App extends Component {
 			onSaveProject={this.onSaveProject}
 			onSaveProjectAs={this.onSaveProjectAs}
 			onOpenExistingProject={this.onOpenExistingProject}
-			onImportYarnFile={this.onImportYarnFile}
 			onExportYarnFile={this.onExportYarnFile}
 			onCloseProject={this.onCloseProject}
 		/>);
