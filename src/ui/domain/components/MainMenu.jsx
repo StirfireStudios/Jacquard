@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { connect } from 'react-redux';
+
 import { Link, withRouter } from 'react-router-dom';
 
 import Divider from '@material-ui/core//Divider';
@@ -59,7 +61,7 @@ function renderProjectMenu() {
 	const { onSaveProjectAs, onExportYarnFile, onCloseProject } = this.props;
 
 	if (!hasProject) return null;
-	const saveProjectClasses = getSaveProjectClasses(projectIsModified, classes);
+	const saveProjectClasses = getSaveProjectClasses(this.props.dirty, classes);
 
 	return (
 			<div>
@@ -152,4 +154,12 @@ class MainMenu extends React.Component {
 	}
 }
 
-export default withRouter(withStyles(styles)(MainMenu));
+function mapStateToProps(state) {
+	const ProjectData = state.Project;
+	return {
+		busy: ProjectData.busy,
+		dirty: ProjectData.dirty,
+	}
+}
+
+export default withRouter(withStyles(styles)(connect(mapStateToProps)(MainMenu)));
