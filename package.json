@@ -39,7 +39,8 @@
     "redux": "^4.0.0",
     "redux-act": "^1.7.4",
     "typeface-roboto": "^0.0.54",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "yaml": "^1.0.0"
   },
   "scripts": {
     "test": "react-app-rewired test --env=jsdom",
