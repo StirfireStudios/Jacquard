@@ -119,7 +119,10 @@ function renderProjectMenu() {
 				>
 					<ListItemText primary="Save Project" />
 				</MenuItem>
-				<MenuItem button classes={saveProjectClasses} onClick={onSaveProjectAs.bind(null, this.props.data)}>
+				<MenuItem button 
+					classes={saveProjectClasses}
+					onClick={onSaveProjectAs.bind(null, this.props.data)}
+				>
 					<ListItemText primary="Save Project As..." />
 				</MenuItem>
 				<MenuItem button onClick={onExportYarnFile}>
@@ -177,6 +180,7 @@ function mapStateToProps(state) {
 		busy: ProjectData.busy,
 		dirty: ProjectData.dirty,
 		pathSet: ProjectData.path != null,
+		path: ProjectData.path,
 		data: ProjectData,
 	}
 }
