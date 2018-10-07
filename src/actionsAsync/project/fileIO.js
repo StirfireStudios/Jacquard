@@ -115,6 +115,21 @@ export function Write(path, data) {
   }
 }
 
+function loadSettings(projectPath, data) {
+  const path = projectPath + Path.sep + "settings.yml";
+  if (!fs.existsSync(path)) {
+    throw new Error("No settings file - project path isn't a valid jacquard project");
+  }
+
+  const stat = fs.statSync(path);
+  if (!stat.isFile()) {
+    throw new Error("Settings file isn't a file - project path isn't a valid jacquard project");
+  }
+
+  const settingsData = fs.readFileSync(path, {encoding: 'utf-8'});
+  data.settings = YAML.parse(settingsData);
+}
+
 export function Read(path) {
   LoadActions.Start();
   try {
@@ -131,6 +146,8 @@ export function Read(path) {
 
     const dataObj = {}
     loadSettings(path, dataObj);
+
+    LoadActions.Complete(dataObj);
   } catch (err) {
     console.error(err);
     LoadActions.Error([err]);

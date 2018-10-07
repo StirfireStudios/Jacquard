@@ -17,6 +17,8 @@ import { withStyles } from '@material-ui/core/styles';
 import themes from '../themes';
 import packageFile from '../../../../package.json';
 
+import * as Actions from '../../../actions/project/misc';
+
 import * as FileIOActionsAsync from '../../../actionsAsync/project/fileIO';
 import * as ImportActionsAsync from '../../../actionsAsync/project/yarnimport';
 
@@ -46,6 +48,11 @@ function importYarn() {
 	});
 }
 
+function onCreateNewProject(dirty) {
+	//TODO: add "are you sure?"
+	Actions.Reset();
+}
+
 function onSaveProjectAs(data) {
 	const extension = ['jqrd'];
 	electron.remote.dialog.showOpenDialog({
@@ -59,6 +66,21 @@ function onSaveProjectAs(data) {
 		if (paths.length === 0) return;
 		FileIOActionsAsync.Write(paths[0], data)
 	});
+}
+
+function onLoadProject() {
+	const extension = ['jqrd'];
+	electron.remote.dialog.showOpenDialog({
+		title: "Load Project",
+		properties: ['openDirectory'],
+		filters: [
+			{name: 'Jacquard Projects', extensions: extension},
+		],
+	}, (paths) => {
+		if (paths == null) return;
+		if (paths.length === 0) return;
+		FileIOActionsAsync.Read(paths[0]);
+	});	
 }
 
 function urlPush(url, history) {
@@ -159,10 +181,10 @@ class MainMenu extends React.Component {
 				{renderProjectMenu.call(this)}
 				<Divider />
 				<List>
-					<MenuItem button onClick={this.props.onCreateNewProject}>
+					<MenuItem button onClick={onCreateNewProject.bind(null, this.props.dirty)}>
 						<ListItemText primary="Create New Project" />
 					</MenuItem>
-					<MenuItem button onClick={this.props.onOpenExistingProject}>
+					<MenuItem button onClick={onLoadProject}>
 						<ListItemText primary="Open Existing Project" />
 					</MenuItem>
 					<MenuItem button onClick={importYarn}>
