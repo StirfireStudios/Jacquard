@@ -1,8 +1,8 @@
 import { Parser } from 'jacquard-yarnparser';
 import YAML from 'yaml'
 
-import * as Actions from '../../actions/project/save';
-
+import * as LoadActions from '../../actions/project/load';
+import * as SaveActions from '../../actions/project/save';
 
 const electron = window.require('electron');
 const fs = electron.remote.require('fs');
@@ -94,12 +94,12 @@ function writeNodes(sectionPath, nodes) {
 }
 
 export function Write(path, data) {
-  Actions.Start();
+  SaveActions.Start();
   try {
     if (fs.existsSync(path)) {
       const stat = fs.statSync(path);
       if (!stat.isDirectory()) {
-        Actions.Error(["Exists and is not a directory!"]);
+        SaveActions.Error(["Exists and is not a directory!"]);
         return;
       }
     } else {
@@ -108,12 +108,32 @@ export function Write(path, data) {
 
     writeSettingsFile(path, data.settings);
     writeSections(path, data.sections);
-    Actions.Complete(path);
+    SaveActions.Complete(path);
   } catch (err) {
     console.error(err);
-    Actions.Error([err]);
+    SaveActions.Error([err]);
   }
 }
 
 export function Read(path) {
+  LoadActions.Start();
+  try {
+    if (!fs.existsSync(path)) {
+      LoadActions.Error([`${path} doesn't exist`]);
+      return;
+    }
+
+    const stat = fs.statSync(path);
+    if (!stat.isDirectory()) {
+      LoadActions.Error([`${path} isn't a directory`]);
+      return;
+    }
+
+    const dataObj = {}
+    loadSettings(path, dataObj);
+  } catch (err) {
+    console.error(err);
+    LoadActions.Error([err]);
+  }
+
 }

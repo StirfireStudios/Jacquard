@@ -1,6 +1,7 @@
 import { createReducer } from 'redux-act';
 
 import * as ImportActions from '../../actions/project/import'
+import * as LoadActions from '../../actions/project/load'
 import * as SaveActions from '../../actions/project/save'
 
 export default createReducer({
@@ -14,11 +15,30 @@ export default createReducer({
     settings: newData.settings,
     sections: newData.sections,
     tags: newData.tags,
-    variables: newData.variables,    
+    variables: newData.variables, 
+  }),
+  [LoadActions.Start]: (state) => ({
+    ...state,
+    busy: true,
+    errors: [],
+  }),
+  [LoadActions.Complete]: (state, newData) => ({
+    ...state,
+    busy: false,
+    dirty: false,
+    errors: [],
+    parser: newData.parser,
+    characters: newData.characters,
+    functions: newData.functions,
+    settings: newData.settings,
+    sections: newData.sections,
+    tags: newData.tags,
+    variables: newData.variables,
   }),
   [SaveActions.Start]: (state) => ({
     ...state,
-    busy: true
+    busy: true,
+    errors: [],      
   }),
   [SaveActions.Complete]: (state, path) => ({
     ...state,
@@ -28,6 +48,7 @@ export default createReducer({
   }),
 }, {
   busy: false,
+  errors: [],
   path: null,
   dirty: false,
   parser: null,
