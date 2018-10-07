@@ -2,14 +2,10 @@ import { Parser } from 'jacquard-yarnparser';
 
 import * as Actions from '../../actions/project/import';
 
+import * as Utils from './utils';
+
 const electron = window.require('electron');
 const fs = electron.remote.require('fs');
-
-function getTextFrom(lines, startLine, endLine) {
-  const outData = [];
-  for(var index = startLine; index <= endLine; index++) outData.push(lines[index]);
-  return outData.join("\n");
-}
 
 export function Import(path) {
   Actions.LoadStart();
@@ -24,10 +20,7 @@ export function Import(path) {
       if (parser.parse(data, false, path)) {
         Actions.LoadError(parser.errors);
         return;
-      }      
-
-      const dataLines = data.split(/\r\n|\n/);
-      
+      }            
       const dataObj = {
         parser: parser,
         characters: {},
@@ -60,16 +53,11 @@ export function Import(path) {
 
       nodeNames.forEach(nodeName => {
         const node = parser.nodeNamed(nodeName);
-        let section = "default";
-        if (node.attributes.sections != null) section = node.attributes.sections;
-        if (dataObj.sections[section] == null) dataObj.sections[section] = {};
-        const nodeData = {};
-        nodeData.dirty = false;
-        nodeData.parsedData = node;
-        nodeData.text = getTextFrom(dataLines, node.location.start.line - 1, node.location.end.line - 1);
-        dataObj.sections[section][nodeName] = nodeData;
-        node.tags.forEach(tag => {
-          dataObj.tags[tag].push({section: section, node: nodeName});
+        const nodeData = Utils.ParseNodeData(node, data);
+        if (dataObj.sections[nodeData.section] == null) dataObj.sections[nodeData.section] = {};
+        dataObj.sections[nodeData.section][nodeData.title] = nodeData;
+        nodeData.tags.forEach(tag => {
+          dataObj.tags[tag].push({section: nodeData.section, node: nodeData.title});
         });
       });
 

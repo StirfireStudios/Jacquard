@@ -4,6 +4,8 @@ import YAML from 'yaml'
 import * as LoadActions from '../../actions/project/load';
 import * as SaveActions from '../../actions/project/save';
 
+import * as Utils from './utils';
+
 const electron = window.require('electron');
 const fs = electron.remote.require('fs');
 const Path = electron.remote.require('path');
@@ -87,9 +89,27 @@ function writeNodes(sectionPath, nodes) {
   });
 
   nodeNames.forEach(nodeName => {
+    //TODO Handle dirty nodes!
+
     const node = nodes[nodeName];
     const path = sectionPath + Path.sep + nodeName + ".yarn.txt";
-    fs.writeFileSync(path, node.text, {encoding: 'utf-8'});
+    let yarnData = null;
+    if (node.section === "default") {
+      yarnData = `title: ${node.title}\n`;
+    } else {
+      yarnData = `title: ${node.section}-${node.title}\n`;
+    }
+
+    if (node.parsedData.tags.length > 0) {
+      yarnData += `tags: ${node.parsedData.tags.join(", ")}\n`;   
+      yarnData += `section: ${node.section}\n`;
+    }
+
+    Object.keys(node.attributes).forEach(attrName => {
+      yarnData += `${attrName}: ${node.attributes[attrName]}\n`;
+    })
+    yarnData += `---\n${node.body}===`;
+    fs.writeFileSync(path, yarnData, {encoding: 'utf-8'});
   })
 }
 
@@ -146,13 +166,13 @@ function loadSections(projectPath, data) {
     const entryPath = path + Path.sep + entry;
     const entryStat = fs.statSync(entryPath);
     if (entryStat.isDirectory()) {
-      data.sections[entry] = loadSection(entryPath, data.parser);
+      data.sections[entry] = loadSection(entryPath, entry, data.parser);
       return;
     }
   });
 }
 
-function loadSection(sectionPath, parser) {
+function loadSection(sectionPath, sectionName, parser) {
   const entries = fs.readdirSync(sectionPath, {withFileTypes: true});
   const sectionObj = {};
   entries.forEach(entry => {
@@ -161,9 +181,10 @@ function loadSection(sectionPath, parser) {
     const entryNodeName = entry.substr(0, entry.length - 9);
     sectionObj[entryNodeName] = {dirty: false};
     const text = fs.readFileSync(entryPath, {encoding: 'utf-8'});
-    sectionObj[entryNodeName].text = text;
-    parser.parse(text, false, entryPath); 
-    sectionObj[entryNodeName].parsedData = parser.nodeNamed(entryNodeName);
+    parser.parse(text, false, entryPath);
+    const nodeName = sectionName === 'default' ? entryNodeName : `${sectionName}-${entryNodeName}`;
+    const parsedNode = parser.nodeNamed(nodeName);
+    sectionObj[entryNodeName] = Utils.ParseNodeData(parsedNode, text);
   });
 
   return sectionObj;
@@ -209,5 +230,4 @@ export function Read(path) {
     console.error(err);
     LoadActions.Error([err]);
   }
-
 }
