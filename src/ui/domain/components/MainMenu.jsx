@@ -147,14 +147,8 @@ function renderProjectMenu() {
 				>
 					<ListItemText primary="Save Project As..." />
 				</MenuItem>
-				<MenuItem button onClick={onExportYarnFile}>
-					<ListItemText primary="Export Project To Yarn" />
-				</MenuItem>
 				<MenuItem button onClick={urlPush("/export", this.props.history)}>
 					<ListItemText primary="Export Project Bytecode" />
-				</MenuItem>
-				<MenuItem button onClick={onCloseProject}>
-					<ListItemText primary="Close Project" />
 				</MenuItem>
 			</List>
 		</div>

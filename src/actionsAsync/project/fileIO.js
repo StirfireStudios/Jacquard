@@ -130,6 +130,45 @@ function loadSettings(projectPath, data) {
   data.settings = YAML.parse(settingsData);
 }
 
+function loadSections(projectPath, data) {
+  const path = projectPath + Path.sep + "sections"; 
+  if (!fs.existsSync(path)) {
+    throw new Error("No sections directory - project path isn't a valid jacquard project");
+  }
+
+  const stat = fs.statSync(path);
+  if (!stat.isDirectory()) {
+    throw new Error("Sections isn't a directory - project path isn't a valid jacquard project");
+  }  
+
+  const entries = fs.readdirSync(path, {withFileTypes: true});
+  entries.forEach(entry => {
+    const entryPath = path + Path.sep + entry;
+    const entryStat = fs.statSync(entryPath);
+    if (entryStat.isDirectory()) {
+      data.sections[entry] = loadSection(entryPath, data.parser);
+      return;
+    }
+  });
+}
+
+function loadSection(sectionPath, parser) {
+  const entries = fs.readdirSync(sectionPath, {withFileTypes: true});
+  const sectionObj = {};
+  entries.forEach(entry => {
+    if (!entry.endsWith(".yarn.txt")) return;
+    const entryPath = sectionPath + Path.sep + entry;
+    const entryNodeName = entry.substr(0, entry.length - 9);
+    sectionObj[entryNodeName] = {dirty: false};
+    const text = fs.readFileSync(entryPath, {encoding: 'utf-8'});
+    sectionObj[entryNodeName].text = text;
+    parser.parse(text, false, entryPath); 
+    sectionObj[entryNodeName].parsedData = parser.nodeNamed(entryNodeName);
+  });
+
+  return sectionObj;
+}
+
 export function Read(path) {
   LoadActions.Start();
   try {
@@ -144,8 +183,26 @@ export function Read(path) {
       return;
     }
 
-    const dataObj = {}
+    const dataObj = {
+      characters: {},
+      functions: {},
+      sections: {},
+      tags: {},
+      variables: {},
+    }
+
     loadSettings(path, dataObj);
+    //TODO add settings here...
+    dataObj.parser = new Parser();
+    loadSections(path, dataObj);
+
+    dataObj.parser.functionNames.forEach(name => {
+      dataObj.functions[name] = [];
+    });
+
+    dataObj.parser.variableNames.forEach(name => {
+      dataObj.variables[name] = [];
+    });
 
     LoadActions.Complete(dataObj);
   } catch (err) {
