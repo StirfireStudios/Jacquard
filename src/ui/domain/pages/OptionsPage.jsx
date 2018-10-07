@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { connect } from 'react-redux';
+
 import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -8,6 +10,8 @@ import Paper from '@material-ui/core/Paper';
 import Switch from '@material-ui/core/Switch';
 
 import themes from '../themes';
+
+import * as Actions from '../../../actions/project/misc';
 
 const optionNames = [
   {name: "Dialog segments separated by blank space", field: "dialogSegmentsRequireBlank"},
@@ -21,16 +25,13 @@ function toggleOptionFunc(option, event) {
 }
 
 function resetOptions() {
-  const options = this.props.project.options != null ? this.props.project.options : {}
+  const options = this.props.project.settings != null ? this.props.project.settings : {}
   const newOptions = Object.assign({}, options);
   this.setState({options: newOptions});
 }
 
 function saveOptions() {
-  const options = this.props.project.options != null ? this.props.project.options : {}
-  const projectUpdate = Object.assign({}, this.props.project);
-  projectUpdate.options = Object.assign({}, options,  this.state.options);
-  this.props.onProjectUpdated(projectUpdate);
+  Actions.ChangeSettings(this.state.options);
 }
 
 function isModified(currentOptions, savedOptions) {
@@ -65,17 +66,15 @@ function renderOption(option, currentOptionValue) {
 class OptionsPage extends React.Component {
   constructor(props) {
     super();
-    if (props.project == null || props.project.options == null) {
+    if (props.project == null || props.project.settings == null) {
       this.state = { options: {} };  
     } else {
-      this.state = { options: props.project.options };
+      this.state = { options: props.project.settings };
     }
   }
 
   render() {
-    if (this.props.project == null) return <div>No project loaded</div>;
-    
-    const modified = isModified(this.state.options, this.props.project.options);
+    const modified = isModified(this.state.options, this.props.settings);
   
     return (
       <Paper>
@@ -99,4 +98,12 @@ class OptionsPage extends React.Component {
   }
 }
 
-export default withStyles(themes.defaultTheme)(OptionsPage);
+function mapStateToProps(state) {
+	const ProjectData = state.Project;
+	return {
+		busy: ProjectData.busy,
+	  settings: ProjectData.settings,
+	}
+}
+
+export default withStyles(themes.defaultTheme)(connect(mapStateToProps)(OptionsPage));

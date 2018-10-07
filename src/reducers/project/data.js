@@ -15,6 +15,14 @@ const defaultProject = {
 }
 
 export default createReducer({
+  [MiscActions.ChangeSettings]: (state, updatedSettings) => {
+    const newSettings = Object.assign({}, state.settings, updatedSettings);
+    return {
+      ...state,
+      settings: newSettings,
+      dirty: true,
+    };
+  },
   [ImportActions.LoadFinish]: (state, newData) => ({
     ...state,
     busy: false,
@@ -32,18 +40,19 @@ export default createReducer({
     busy: true,
     errors: [],
   }),
-  [LoadActions.Complete]: (state, newData) => ({
+  [LoadActions.Complete]: (state, obj) => ({
     ...state,
     busy: false,
     dirty: false,
     errors: [],
-    parser: newData.parser,
-    characters: newData.characters,
-    functions: newData.functions,
-    settings: newData.settings,
-    sections: newData.sections,
-    tags: newData.tags,
-    variables: newData.variables,
+    path: obj.path,
+    parser: obj.data.parser,
+    characters: obj.data.characters,
+    functions: obj.data.functions,
+    settings: obj.data.settings,
+    sections: obj.data.sections,
+    tags: obj.data.tags,
+    variables: obj.data.variables,
   }),
   [SaveActions.Start]: (state) => ({
     ...state,

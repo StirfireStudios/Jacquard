@@ -204,7 +204,7 @@ export function Read(path) {
       dataObj.variables[name] = [];
     });
 
-    LoadActions.Complete(dataObj);
+    LoadActions.Complete(path, dataObj);
   } catch (err) {
     console.error(err);
     LoadActions.Error([err]);
