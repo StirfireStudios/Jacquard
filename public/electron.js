@@ -24,6 +24,21 @@ const projectFilePathChangedMessage = 'project-file-path-changed';
 const projectLoadedMessage = 'project-loaded';
 const yarnLoadedMessage = 'yarn-loaded';
 
+const installExtensions = async () => {
+  const installer = require('electron-devtools-installer')
+  const forceDownload = process.env.UPGRADE_EXTENSIONS != null;
+  const extensions = [
+    'REACT_DEVELOPER_TOOLS',
+    'REDUX_DEVTOOLS'
+	]
+	
+	console.log("Force download? " + forceDownload);
+
+  return Promise
+    .all(extensions.map(name => installer.default(installer[name], forceDownload)))
+    .catch(console.log)
+}
+
 function createWindow() {
 	mainWindow = new BrowserWindow({ width: 900, height: 680 });
 	const urlBase = isDev ? 'http://localhost:3000' : `file://${__dirname}`;
@@ -54,25 +69,7 @@ function createWindow() {
 	menu.createMenu(app);
 
 	if (isDev) {
-		// open dev console in another window;
 		mainWindow.webContents.openDevTools({mode: 'undocked'});
-
-		// Install React Dev Tools
-		const { default: installExtension, REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = require('electron-devtools-installer'); // eslint-disable-line
-		installExtension(REACT_DEVELOPER_TOOLS)
-		.then((name) => {
-			console.log(`Added Extension:  ${name}`);
-		})
-		.catch((err) => {
-			console.log('An error occurred: ', err);
-		});
-		installExtension(REDUX_DEVTOOLS) 
-		.then((name) => {
-				console.log(`Added Extension:  ${name}`);
-		})
-		.catch((err) => {
-				console.log('Redux Dev Tools - An error occurred: ', err);
-		});			
 	}
 }
 
@@ -293,7 +290,10 @@ const setWindowTitle = () => {
 	mainWindow.setTitle(windowTitle);
 };
 
-app.on('ready', createWindow);
+app.on('ready', async () => {
+	if (isDev) await installExtensions();
+	createWindow();
+});
 
 app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
