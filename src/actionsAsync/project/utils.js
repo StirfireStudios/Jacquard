@@ -5,13 +5,14 @@ export function getTextFrom(lines, startLine, endLine) {
   return outData.join("\n");
 }
 
-export function ParseNodeData(node, fileData) {
-  let section = "default";
+export function ParseNodeData(node, fileData, sectionName) {
+  let section = sectionName;
   let title = node.name;
-  if (node.attributes.sections != null) {
-    section = node.attributes.sections;
-    title = title.substr(section.length+"-");
+  if (node.attributes.section != null) {
+    section = node.attributes.section;    
   }
+
+  if (title.startsWith(section)) title = title.substr(section.length + 1);
 
   const attributes = Object.assign({}, node.attributes);
   delete(attributes.section);
@@ -28,8 +29,8 @@ export function ParseNodeData(node, fileData) {
 
   if (node.statements.length > 0) {
     const fileLines = fileData.split(/\r\n|\n/);
-    const startLine = node.statements[0].location.start.line - 1;
-    const endLine = node.statements[node.statements.length - 1].location.end.line - 1;
+    const startLine = node.bodyLocation.start.line - 1;
+    const endLine = node.bodyLocation.end.line - 1;
     body = getTextFrom(fileLines, startLine, endLine);
   }
 

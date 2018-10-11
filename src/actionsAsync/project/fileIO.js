@@ -64,7 +64,7 @@ function writeSections(projectPath, sections) {
   sectionNames.forEach(sectionName => {
     const sectionPath = path + Path.sep + sectionName;
     if (!fs.existsSync(sectionPath)) fs.mkdirSync(sectionPath);
-    writeNodes(sectionPath, sections[sectionNames]);
+    writeNodes(sectionPath, sections[sectionName]);
   });
 }
 
@@ -102,13 +102,14 @@ function writeNodes(sectionPath, nodes) {
 
     if (node.parsedData.tags.length > 0) {
       yarnData += `tags: ${node.parsedData.tags.join(", ")}\n`;   
-      yarnData += `section: ${node.section}\n`;
     }
+
+    yarnData += `section: ${node.section}\n`;
 
     Object.keys(node.attributes).forEach(attrName => {
       yarnData += `${attrName}: ${node.attributes[attrName]}\n`;
     })
-    yarnData += `---\n${node.body}===`;
+    yarnData += `---\n${node.body}\n===`;
     fs.writeFileSync(path, yarnData, {encoding: 'utf-8'});
   })
 }
@@ -166,28 +167,27 @@ function loadSections(projectPath, data) {
     const entryPath = path + Path.sep + entry;
     const entryStat = fs.statSync(entryPath);
     if (entryStat.isDirectory()) {
-      data.sections[entry] = loadSection(entryPath, entry, data.parser);
+      loadSection(entryPath, entry, data.sections, data.parser);
       return;
     }
   });
 }
 
-function loadSection(sectionPath, sectionName, parser) {
+function loadSection(sectionPath, sectionName, sections, parser) {
   const entries = fs.readdirSync(sectionPath, {withFileTypes: true});
-  const sectionObj = {};
+
   entries.forEach(entry => {
     if (!entry.endsWith(".yarn.txt")) return;
     const entryPath = sectionPath + Path.sep + entry;
-    const entryNodeName = entry.substr(0, entry.length - 9);
-    sectionObj[entryNodeName] = {dirty: false};
     const text = fs.readFileSync(entryPath, {encoding: 'utf-8'});
     parser.parse(text, false, entryPath);
-    const nodeName = sectionName === 'default' ? entryNodeName : `${sectionName}-${entryNodeName}`;
-    const parsedNode = parser.nodeNamed(nodeName);
-    sectionObj[entryNodeName] = Utils.ParseNodeData(parsedNode, text);
+    parser.lastNodesParsed.forEach(nodeName => {
+      const parsedNode = parser.nodeNamed(nodeName);
+      const nodeData = Utils.ParseNodeData(parsedNode, text, sectionName);
+      if (sections[nodeData.section] == null) sections[nodeData.section] = {};
+      sections[nodeData.section][nodeData.title] = nodeData;
+    });
   });
-
-  return sectionObj;
 }
 
 export function Read(path) {
