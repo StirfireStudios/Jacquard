@@ -27,7 +27,7 @@
     "electron-is-dev": "^0.3.0",
     "jacquard-runtime": "0.4.x",
     "jacquard-yarncompiler": "0.4.x",
-    "jacquard-yarnparser": "0.6.x",
+    "jacquard-yarnparser": "0.7.x",
     "prop-types": "^15.6.0",
     "radium": "^0.24.0",
     "react": "^16.2.0",
