@@ -52,9 +52,9 @@
   "devDependencies": {
     "babel-eslint": "^8.2.3",
     "concurrently": "^3.5.1",
-    "electron": "^1.8.4",
-    "electron-builder": "^20.19.1",
-    "electron-devtools-installer": "^2.2.3",
+    "electron": "3.0.x",
+    "electron-builder": "20.x",
+    "electron-devtools-installer": "2.x",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.9.0",
