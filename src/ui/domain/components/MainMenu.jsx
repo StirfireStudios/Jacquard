@@ -6,9 +6,7 @@ import { Link, withRouter } from 'react-router-dom';
 
 import Divider from '@material-ui/core//Divider';
 import Drawer from '@material-ui/core/Drawer';
-import MenuItem from '@material-ui/core/MenuItem';
 import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
 import orange from '@material-ui/core/colors/orange';
 import Typography from '@material-ui/core/Typography';
 
@@ -22,7 +20,7 @@ import * as Actions from '../../../actions/project/misc';
 import * as FileIOActionsAsync from '../../../actionsAsync/project/fileIO';
 import * as ImportActionsAsync from '../../../actionsAsync/project/yarnimport';
 
-import JQRDMenuItem from '../../general/components/MenuLink';
+import MenuItem from '../../general/components/MenuLink';
 
 const electron = window.require('electron');
 const os = electron.remote.require("os");
@@ -105,28 +103,28 @@ function MainMenu(props) {
 			</div>
 			<Divider />
 			<List>
-				<JQRDMenuItem text="Nodes" path="/nodes"/>
-				<JQRDMenuItem text="Node Map" path="/nodeMap"/>
-				<JQRDMenuItem text="Preview" path="/preview"/>
-				<JQRDMenuItem text="Characters" path="/characters" disabled={!charactersPresent}/>
-				<JQRDMenuItem text="Functions" path="/functions" disabled={!functionsPresent}/>
-				<JQRDMenuItem text="Variables" path="/variables" disabled={!variablesPresent}/>
-				<JQRDMenuItem text="Options" path="/options"/>
+				<MenuItem text="Nodes" path="/nodes"/>
+				<MenuItem text="Node Map" path="/nodeMap"/>
+				<MenuItem text="Preview" path="/preview"/>
+				<MenuItem text="Characters" path="/characters" disabled={!charactersPresent}/>
+				<MenuItem text="Functions" path="/functions" disabled={!functionsPresent}/>
+				<MenuItem text="Variables" path="/variables" disabled={!variablesPresent}/>
+				<MenuItem text="Options" path="/options"/>
 			</List>
 			<Divider />
 			<List>
-				<JQRDMenuItem 
+				<MenuItem 
 					classes={saveProjectClasses}
 					disabled={!pathSet}
 					text="Save"
 					onClick={FileIOActionsAsync.Write.bind(null, path, data)}				
 				/>
-				<JQRDMenuItem 
+				<MenuItem 
 					classes={saveProjectClasses}
 					text="Save As..."
 					onClick={onSaveProjectAs.bind(null, data)}				
 				/>
-				<JQRDMenuItem
+				<MenuItem
 					path="/export"
 					text="Export Bytecode"
 					onClick={onSaveProjectAs.bind(null, data)}				
@@ -134,9 +132,9 @@ function MainMenu(props) {
 			</List>
 			<Divider />
 			<List>
-				<JQRDMenuItem text="Load Project" onClick={onLoadProject}/>
-				<JQRDMenuItem text="Import Yarn" onClick={importYarn} />
-				<JQRDMenuItem text="New Project" onClick={onCreateNewProject.bind(null, dirty)}/>
+				<MenuItem text="Load Project" onClick={onLoadProject}/>
+				<MenuItem text="Import Yarn" onClick={importYarn} />
+				<MenuItem text="New Project" onClick={onCreateNewProject.bind(null, dirty)}/>
 			</List>
 		</Drawer>
 	);
