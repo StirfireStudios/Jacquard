@@ -22,6 +22,8 @@ import * as Actions from '../../../actions/project/misc';
 import * as FileIOActionsAsync from '../../../actionsAsync/project/fileIO';
 import * as ImportActionsAsync from '../../../actionsAsync/project/yarnimport';
 
+import JQRDMenuItem from '../../general/components/MenuLink';
+
 const electron = window.require('electron');
 const os = electron.remote.require("os");
 const platform = os.platform();
@@ -83,121 +85,74 @@ function onLoadProject() {
 	});	
 }
 
-function urlPush(url, history) {
-	return () => {
-		history.push(url);
-	}
-}
-
 function getSaveProjectClasses(modified, classes) {
 	if (modified) return { root: classes.dataChanged }
 	return {}
 };
 
-function renderProjectMenu() {
-	const { hasProject, classes } = this.props;
-	const { onExportYarnFile, onCloseProject } = this.props;
-
-	if (!hasProject) return null;
-	const saveProjectClasses = getSaveProjectClasses(this.props.dirty, classes);
+function MainMenu(props) {
+	const { 
+		classes, charactersPresent, dirty, functionsPresent, variablesPresent, 
+		path, pathSet, data, 
+	} = props;
+	
+	const saveProjectClasses = getSaveProjectClasses(dirty, classes);
 
 	return (
+		<Drawer variant="permanent" classes={{ paper: classes.drawerPaper }}>
 			<div>
+				<Typography variant="title" align="center">Jacquard {packageFile.version}</Typography>
+			</div>
 			<Divider />
 			<List>
-				<Link to="/visualization">
-					<MenuItem button>
-						<ListItemText primary="Visualization" />
-					</MenuItem>
-				</Link>
+				<JQRDMenuItem text="Nodes" path="/nodes"/>
+				<JQRDMenuItem text="Node Map" path="/nodeMap"/>
+				<JQRDMenuItem text="Preview" path="/preview"/>
+				<JQRDMenuItem text="Characters" path="/characters" disabled={!charactersPresent}/>
+				<JQRDMenuItem text="Functions" path="/functions" disabled={!functionsPresent}/>
+				<JQRDMenuItem text="Variables" path="/variables" disabled={!variablesPresent}/>
+				<JQRDMenuItem text="Options" path="/options"/>
 			</List>
 			<Divider />
 			<List>
-				<Link to="/nodes">
-					<MenuItem button>
-						<ListItemText primary="Nodes" />
-					</MenuItem>
-				</Link>
-				<MenuItem button disabled={true} onClick={urlPush("/characters", this.props.history)}>
-					<ListItemText primary="Characters" />
-				</MenuItem>
-				<MenuItem button disabled={true} onClick={urlPush("/functions", this.props.history)}>
-					<ListItemText primary="Functions" />
-				</MenuItem>
-				<MenuItem button disabled={true} onClick={urlPush("/variables", this.props.history)}>
-					<ListItemText primary="Variables" />
-				</MenuItem>
-				<MenuItem button onClick={urlPush("/options", this.props.history)}>
-					<ListItemText primary="Project Options" />
-				</MenuItem>
-			</List>
-			<Divider />
-			<List>
-				<MenuItem
-					button					
+				<JQRDMenuItem 
 					classes={saveProjectClasses}
-					disabled={!this.props.pathSet}
-					onClick={FileIOActionsAsync.Write.bind(null, this.props.path, this.props.data)}
-				>
-					<ListItemText primary="Save Project" />
-				</MenuItem>
-				<MenuItem button 
+					disabled={!pathSet}
+					text="Save"
+					onClick={FileIOActionsAsync.Write.bind(null, path, data)}				
+				/>
+				<JQRDMenuItem 
 					classes={saveProjectClasses}
-					onClick={onSaveProjectAs.bind(null, this.props.data)}
-				>
-					<ListItemText primary="Save Project As..." />
-				</MenuItem>
-				<MenuItem button onClick={urlPush("/export", this.props.history)}>
-					<ListItemText primary="Export Project Bytecode" />
-				</MenuItem>
+					text="Save As..."
+					onClick={onSaveProjectAs.bind(null, data)}				
+				/>
+				<JQRDMenuItem
+					path="/export"
+					text="Export Bytecode"
+					onClick={onSaveProjectAs.bind(null, data)}				
+				/>
 			</List>
-		</div>
+			<Divider />
+			<List>
+				<JQRDMenuItem text="Load Project" onClick={onLoadProject}/>
+				<JQRDMenuItem text="Import Yarn" onClick={importYarn} />
+				<JQRDMenuItem text="New Project" onClick={onCreateNewProject.bind(null, dirty)}/>
+			</List>
+		</Drawer>
 	);
-}
-
-class MainMenu extends React.Component {
-	render() {
-		const { classes } = this.props;
-		return (
-			<Drawer
-				variant="permanent"
-				classes={{
-					paper: classes.drawerPaper,
-				}}
-			>
-				<div>
-					<Typography variant="title" align="center">Jacquard {packageFile.version}</Typography>
-				</div>
-				<Divider />
-				<Link to="/"><MenuItem button><ListItemText primary="Home" /></MenuItem></Link>
-				<Divider />
-				<Link to="/preview"><MenuItem button><ListItemText primary="Preview" /></MenuItem></Link>
-				{renderProjectMenu.call(this)}
-				<Divider />
-				<List>
-					<MenuItem button onClick={onCreateNewProject.bind(null, this.props.dirty)}>
-						<ListItemText primary="Create New Project" />
-					</MenuItem>
-					<MenuItem button onClick={onLoadProject}>
-						<ListItemText primary="Open Existing Project" />
-					</MenuItem>
-					<MenuItem button onClick={importYarn}>
-						<ListItemText primary="Import Project From Yarn" />
-					</MenuItem>
-				</List>
-			</Drawer>
-		);
-	}
 }
 
 function mapStateToProps(state) {
 	const ProjectData = state.Project;
-	return {
+	return {		
 		busy: ProjectData.busy,
 		dirty: ProjectData.dirty,
 		pathSet: ProjectData.path != null,
 		path: ProjectData.path,
+		charactersPresent: ProjectData.characters.length > 0,
 		data: ProjectData,
+		functionsPresent: ProjectData.functions.length > 0,
+		variablesPresent: ProjectData.variables.length > 0,
 	}
 }
 

@@ -1,15 +1,25 @@
-import { createStore } from 'redux';
+import { applyMiddleware, compose, createStore, combineReducers } from 'redux';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
 
 import reducers from '../reducers';
 
+const history = createBrowserHistory();
+
 export default function configureStore(initialState) {
+  const routedReducer = connectRouter(history)(reducers);
+  const historyMiddleware = routerMiddleware(history);
+  const middleWares = applyMiddleware(historyMiddleware);
+
   if (process.env.NODE_ENV === 'production') {
-    return createStore(reducers, initialState);
+    return { store: createStore(routedReducer, initialState, middleWares), history };
   }
-  
+
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
   const store = createStore(
-    reducers, initialState, 
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    routedReducer, initialState, 
+    composeEnhancers(middleWares)
   );
 
   if (module.hot) {
@@ -20,5 +30,5 @@ export default function configureStore(initialState) {
     })
   }
 
-  return store
+  return { store, history }
 }

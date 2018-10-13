@@ -43,23 +43,24 @@ export function Import(path) {
         dataObj.tags[tag] = [];
       });
 
-      parser.functionNames.forEach(name => {
-        dataObj.functions[name] = [];
-      });
-
-      parser.variableNames.forEach(name => {
-        dataObj.variables[name] = [];
-      });
-
       nodeNames.forEach(nodeName => {
         const node = parser.nodeNamed(nodeName);
-        const nodeData = Utils.ParseNodeData(node, data);
+        const nodeData = Utils.ParseNodeData(node, data, 'default');
         if (dataObj.sections[nodeData.section] == null) dataObj.sections[nodeData.section] = {};
         dataObj.sections[nodeData.section][nodeData.title] = nodeData;
         nodeData.tags.forEach(tag => {
           dataObj.tags[tag].push({section: nodeData.section, node: nodeData.title});
         });
       });
+
+      dataObj.functions = dataObj.parser.functionNames;
+      dataObj.functionMap = dataObj.parser.functionsNodeMap;
+  
+      dataObj.characters = dataObj.parser.characterNames;
+      dataObj.characterMap = dataObj.parser.charactersNodeMap;
+  
+      dataObj.variables = dataObj.parser.variableNames;
+      dataObj.variableMap = dataObj.parser.variablesNodeMap;
 
       Actions.LoadFinish(dataObj);
 

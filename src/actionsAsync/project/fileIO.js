@@ -213,17 +213,17 @@ export function Read(path) {
     }
 
     loadSettings(path, dataObj);
-    //TODO add settings here...
     dataObj.parser = new Parser();
     loadSections(path, dataObj);
+    
+    dataObj.functions = dataObj.parser.functionNames;
+    dataObj.functionMap = dataObj.parser.functionsNodeMap;
 
-    dataObj.parser.functionNames.forEach(name => {
-      dataObj.functions[name] = [];
-    });
+    dataObj.characters = dataObj.parser.characterNames;
+    dataObj.characterMap = dataObj.parser.charactersNodeMap;
 
-    dataObj.parser.variableNames.forEach(name => {
-      dataObj.variables[name] = [];
-    });
+    dataObj.variables = dataObj.parser.variableNames;
+    dataObj.variableMap = dataObj.parser.variablesNodeMap;
 
     LoadActions.Complete(path, dataObj);
   } catch (err) {
