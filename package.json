@@ -29,6 +29,7 @@
     "jacquard-runtime": "0.4.x",
     "jacquard-yarncompiler": "0.4.x",
     "jacquard-yarnparser": "0.7.x",
+    "mui-virtualized-table": "^2.0.0",
     "prop-types": "^15.6.0",
     "radium": "^0.24.0",
     "react": "^16.2.0",

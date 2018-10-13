@@ -1,7 +1,8 @@
 const drawerWidth = 240;
 
-const defaultTheme = function defaultTheme(theme) {
+function defaultTheme(theme) {
 	return {
+		...theme,
 		root: {
 			width: '100%',
 			height: '100%',
@@ -41,6 +42,10 @@ const defaultTheme = function defaultTheme(theme) {
 				marginTop: 64,
 			},
 		},
+		pageRoot: {
+			flexGrow: 1,
+			width: '100%',
+		}
 	};
 };
 

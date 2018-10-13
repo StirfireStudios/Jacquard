@@ -1,6 +1,5 @@
 import React from 'react';
 
-import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 
 import themes from '../../domain/themes';
@@ -11,10 +10,10 @@ import Typography from '@material-ui/core/Typography';
 
 function PageTitle(props) {
 
-  const { classes, title } = props;
+  const { title } = props;
 
   return (
-    <AppBar className={classNames(classes.appBar)}>
+    <AppBar position="static">
       <Toolbar>
         <Typography variant="title" color="inherit" noWrap>
           {title}

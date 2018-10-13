@@ -11,6 +11,8 @@ import Switch from '@material-ui/core/Switch';
 
 import themes from '../themes';
 
+import TitleBar from '../../general/components/TitleBar';
+
 import * as Actions from '../../../actions/project/misc';
 
 const optionNames = [
@@ -77,7 +79,8 @@ class OptionsPage extends React.Component {
     const modified = isModified(this.state.options, this.props.settings);
   
     return (
-      <Paper>
+      <Paper className={this.props.classes.pageRoot}>
+        <TitleBar title="Project Options"/>
         {optionNames.map(option => renderOption.call(this, option, this.state.options))}
         <Button 
           key="actionReset"
