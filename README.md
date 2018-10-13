@@ -35,4 +35,3 @@ If you'd like to help with Jacquard, the most helpful thing you can do is downlo
 - [Jacquard-YarnParser](https://github.com/StirfireStudios/Jacquard-YarnParser)
 - [Jacquard-YarnCompiler](https://github.com/StirfireStudios/Jacquard-YarnCompiler)
 - [Jacquard-js-Runtime](https://github.com/StirfireStudios/Jacquard-js-Runtime)
-- [bondage.js](https://github.com/StirfireStudios/bondage.js)
