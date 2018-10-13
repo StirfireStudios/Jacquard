@@ -7,6 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 
 import themes from '../themes';
 
+import TitleBar from '../../general/components/TitleBar';
+
 function mapStateToProps(state) {
   const Project = state.Project;  
   return {
@@ -17,7 +19,7 @@ function mapStateToProps(state) {
 function NodePage() {
   return (
     <div>
-      I am the node page      
+      <TitleBar title="Nodes"/>
     </div>
   );
 }
