@@ -115,11 +115,13 @@ function writeNodes(sectionPath, nodes) {
 }
 
 export function Write(path, data) {
+  console.time("Write to disk");
   SaveActions.Start();
   try {
     if (fs.existsSync(path)) {
       const stat = fs.statSync(path);
       if (!stat.isDirectory()) {
+        console.timeEnd("Write to disk");
         SaveActions.Error(["Exists and is not a directory!"]);
         return;
       }
@@ -129,9 +131,11 @@ export function Write(path, data) {
 
     writeSettingsFile(path, data.settings);
     writeSections(path, data.sections);
+    console.timeEnd("Write to disk");
     SaveActions.Complete(path);
   } catch (err) {
     console.error(err);
+    console.timeEnd("Write to disk");
     SaveActions.Error([err]);
   }
 }
@@ -191,16 +195,19 @@ function loadSection(sectionPath, sectionName, sections, parser) {
 }
 
 export function Read(path) {
+  console.time("Load from disk");
   LoadActions.Start();
   try {
     if (!fs.existsSync(path)) {
       LoadActions.Error([`${path} doesn't exist`]);
+      console.timeEnd("Load from disk");
       return;
     }
 
     const stat = fs.statSync(path);
     if (!stat.isDirectory()) {
       LoadActions.Error([`${path} isn't a directory`]);
+      console.timeEnd("Load from disk");
       return;
     }
 
@@ -225,8 +232,10 @@ export function Read(path) {
     dataObj.variables = dataObj.parser.variableNames;
     dataObj.variableMap = dataObj.parser.variablesNodeMap;
 
+    console.timeEnd("Load from disk");
     LoadActions.Complete(path, dataObj);
   } catch (err) {
+    console.timeEnd("Load from disk");
     console.error(err);
     LoadActions.Error([err]);
   }

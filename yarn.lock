@@ -6488,16 +6488,6 @@ ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.1.tgz#30a5864eb3ebb0a66f2ebe6d727af06a09d86e0a"
   integrity sha512-tgp+dl5cGk28utYktBsrFqA7HKgrhgPsg6Z/EfhWI4gl1Hwq8B/GmY/0oXZ6nF8hDVesS/FpnYaD/kOWhYQvyg==
 
-mui-virtualized-table@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/mui-virtualized-table/-/mui-virtualized-table-2.0.0.tgz#e2ab56dd7d0e9187562e0f91375726e987bf22a7"
-  integrity sha512-4ErGnrk9JGc56SRbp6R3AHBGn2TLtG0x0dqBj+HyTr4sVAlrxSK4q1bSReuvNHC7AfjBjIgz3Ui+VEauoPBMwQ==
-  dependencies:
-    classnames "^2.2.5"
-    prop-types "^15.6.1"
-    react-draggable "^3.0.5"
-    react-virtualized "^9.18.0"
-
 multicast-dns-service-types@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/multicast-dns-service-types/-/multicast-dns-service-types-1.1.0.tgz#899f11d9686e5e05cb91b35d5f0e63b773cfc901"
@@ -7867,14 +7857,6 @@ react-dom@^16.2.0:
     prop-types "^15.6.2"
     schedule "^0.5.0"
 
-react-draggable@^3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-3.0.5.tgz#c031e0ed4313531f9409d6cd84c8ebcec0ddfe2d"
-  integrity sha512-qo76q6+pafyGllbmfc+CgWfOkwY9v3UoJa3jp6xG2vdsRY8uJTN1kqNievLj0uVNjEqCvZ0OFiEBxlAJNj3OTg==
-  dependencies:
-    classnames "^2.2.5"
-    prop-types "^15.6.0"
-
 react-error-overlay@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-4.0.1.tgz#417addb0814a90f3a7082eacba7cee588d00da89"
@@ -8023,7 +8005,7 @@ react-transition-group@^2.2.1:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react-virtualized@^9.18.0:
+react-virtualized@^9.20.1:
   version "9.20.1"
   resolved "https://registry.yarnpkg.com/react-virtualized/-/react-virtualized-9.20.1.tgz#02dc08fe9070386b8c48e2ac56bce7af0208d22d"
   integrity sha512-xIWxBsyNAjceqD3hsE0nw5TcDVxKbIepsHhvS2XneHmNz0KlKxdLdGBmGZBM9ZesEmbZ5EO0Sw70TB1MeCmpbQ==

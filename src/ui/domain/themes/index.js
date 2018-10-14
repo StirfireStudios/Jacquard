@@ -1,3 +1,7 @@
+import orange from '@material-ui/core/colors/orange';
+import blue from '@material-ui/core/colors/blue';
+
+
 const drawerWidth = 240;
 
 function defaultTheme(theme) {
@@ -45,6 +49,12 @@ function defaultTheme(theme) {
 		pageRoot: {
 			flexGrow: 1,
 			width: '100%',
+		},
+		dataChanged: {
+			backgroundColor: orange[500],
+		},
+		selected: {
+			backgroundColor: blue[500],
 		}
 	};
 };

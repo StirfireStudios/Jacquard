@@ -2,12 +2,11 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import Divider from '@material-ui/core//Divider';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
-import orange from '@material-ui/core/colors/orange';
 import Typography from '@material-ui/core/Typography';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -25,13 +24,6 @@ import MenuItem from '../../general/components/MenuLink';
 const electron = window.require('electron');
 const os = electron.remote.require("os");
 const platform = os.platform();
-
-const styles = theme => ({
-	...themes.defaultTheme(theme),
-	dataChanged: {
-		backgroundColor: orange[500],
-	},
-});
 
 function importYarn() {
 	const extension = platform === 'darwin' ? ['txt'] : ['yarn.txt']
@@ -114,13 +106,13 @@ function MainMenu(props) {
 			<Divider />
 			<List>
 				<MenuItem 
-					classes={saveProjectClasses}
+					appendClasses={saveProjectClasses}
 					disabled={!pathSet}
 					text="Save"
 					onClick={FileIOActionsAsync.Write.bind(null, path, data)}				
 				/>
 				<MenuItem 
-					classes={saveProjectClasses}
+					appendClasses={saveProjectClasses}
 					text="Save As..."
 					onClick={onSaveProjectAs.bind(null, data)}				
 				/>
@@ -154,4 +146,4 @@ function mapStateToProps(state) {
 	}
 }
 
-export default withRouter(withStyles(styles)(connect(mapStateToProps)(MainMenu)));
+export default withRouter(withStyles(themes.defaultTheme)(connect(mapStateToProps)(MainMenu)));

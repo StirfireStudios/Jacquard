@@ -7,7 +7,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer';
 import Button from '@material-ui/core/Button'
-import MuiTable from 'mui-virtualized-table';
 import Paper from '@material-ui/core/Paper';
 
 import themes from '../themes';
@@ -31,10 +30,13 @@ function generateListData(sections) {
   const list = [];
   Object.keys(sections).forEach(sectionName => {
     Object.keys(sections[sectionName]).forEach(nodeName => {
+      const node = sections[sectionName][nodeName];
       list.push({
         section: sectionName,
         node: nodeName,
-        tags: sections[sectionName][nodeName].tags,
+        tags: node.tags,
+        outgoingLinks: node.outgoingLinks,
+        incomingLinks: node.incomingLinks,
       });
     });
   });
@@ -42,25 +44,13 @@ function generateListData(sections) {
 }
 
 function NodePage(props) {
-
   const { classes, sections } = props;
 
   const listData = generateListData(sections);
-
+  
   return (
     <Paper className={classes.pageRoot}>
       <TitleBar title="Nodes"/>
-        <AutoSizer>
-          {({ width, height }) => (
-            <MuiTable
-              data={listData}
-              columns={columns}
-              width={width}
-              maxHeight={height}
-              includeHeaders={true}
-            />
-          )}
-        </AutoSizer>
     </Paper>
   );
 }

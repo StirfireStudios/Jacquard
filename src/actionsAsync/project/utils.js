@@ -42,5 +42,10 @@ export function ParseNodeData(node, fileData, sectionName) {
     parsedData: node,
     body: body,
     tags: node.tags,
+    outgoingLinks: Object.keys(node.outgoingLinks),
+    incomingLinks: Object.keys(node.incomingLinks),
+    characters: node.characters,
+    variables: node.variables,
+    functions: node.functions,
   }
 }
