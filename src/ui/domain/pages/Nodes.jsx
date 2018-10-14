@@ -21,21 +21,15 @@ const columns = [
     cellFunc: data => {
       return (
         <div>
-          <div>
-            <Button
-              variant="fab"
-              key="edit"
-              mini
-              children={EditIcon}
-            />
+          <div key="edit">
+            <Button mini variant="fab">
+              <EditIcon/>
+            </Button>
           </div>
-          <div>
-            <Button
-              variant="fab"
-              key="delete"
-              mini
-              children={DeleteIcon}
-            />
+          <div key="delete">
+            <Button mini variant="fab">
+              <DeleteIcon/>
+            </Button>
           </div>
         </div>
       )
@@ -60,7 +54,7 @@ const columns = [
 
 function renderListButtons(list, onClick) {
   return list.map(item => (
-    <div>
+    <div key={item}>
       <Button variant="raised" size="small" onClick={onClick}>
         {item}
       </Button>
