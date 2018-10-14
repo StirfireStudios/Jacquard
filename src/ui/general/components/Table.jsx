@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { withStyles } from '@material-ui/core/styles';
+
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -7,15 +9,25 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 
-function columns(columnProps) {
-  return columnProps.map(column => {
-    return {
-      name: column.header,
-    }
-  });
-}
+const styles = theme => ({
+  tableBody: {
+    'grid-area': 'body-scrollable',
+    overflowY: 'auto',
+    height: 'calc(100%-60px)',
+  },
+  tableWrapper: {
+    overflowX: 'auto',
+    height: '100%',
+    width: '100%'
+  },
+  table: {
+    height: '100%',
+  },
+  tableHeader: {
+  }
+});
 
-function renderHeader(columns) {
+function renderHeader(columns, className) {
   const headers = [];
   columns.forEach(column => {
     headers.push(
@@ -26,7 +38,7 @@ function renderHeader(columns) {
   });
 
   return (
-    <TableHead key="head">
+    <TableHead key="head" className={className}>
       <TableRow key="headRow">
         {headers}        
       </TableRow>
@@ -49,23 +61,41 @@ function renderRows(data, columns) {
   });
 }
 
-function renderPagination(length, state) {
+function changeState(event, page) {
+  let limit = this.state.limit;
+
+  if (event != null) {
+    if (parseInt(event.target.value,10).toString() == event.target.value) {
+      limit = event.target.value;
+    }
+  }
+
+  if (typeof(page) !== 'number') page = this.state.page;
+  this.setState({...this.state, limit: limit, page: page})
+
+}
+
+function renderPagination() {
+  const length = this.props.data.length;
+  const state = this.state;
+
   return (
-  <TablePagination
-		component="div"
-		count={length}
-		rowsPerPage={state.limit}
-		rowsPerPageOptions={[10,20,30,40,50]}
-		page={state.page}
-		backIconButtonProps={{
-			'aria-label': 'Previous Page',
-		}}
-		nextIconButtonProps={{
-			'aria-label': 'Next Page',
-		}}
-//		onChangePage={bindableFetch(busy, props.limit, props.fetchAction)}
-//		onChangeRowsPerPage={bindableFetch(busy, props.limit, props.fetchAction)}
-	/>);
+    <TablePagination
+      component="div"
+      count={length}
+      rowsPerPage={state.limit}
+      rowsPerPageOptions={[5,10,20,30]}
+      page={state.page}
+      backIconButtonProps={{
+        'aria-label': 'Previous Page',
+      }}
+      nextIconButtonProps={{
+        'aria-label': 'Next Page',
+      }}
+      onChangePage={changeState.bind(this)}
+      onChangeRowsPerPage={changeState.bind(this)}
+    />
+  );
 }
 
 class JQRDTable extends React.Component {
@@ -87,17 +117,17 @@ class JQRDTable extends React.Component {
     if (this.props.options != null) Object.assign(options, this.props.options);
 
     return (
-      <div>
-        <Table>
-          {renderHeader(this.props.columns)}
-          <TableBody>
+      <div className={this.props.classes.tableWrapper}>
+        <Table className={this.props.classes.table}>
+          {renderHeader(this.props.columns, this.props.classes.tableHeader)}
+          <TableBody className={this.props.classes.tableBody}>
             {renderRows(dataToRender, this.props.columns)}
           </TableBody>
         </Table>
-        {renderPagination(this.props.data.length, this.state)}
+        {renderPagination.call(this)}
       </div>
       );
   }
 }
 
-export default JQRDTable;
+export default withStyles(styles)(JQRDTable);

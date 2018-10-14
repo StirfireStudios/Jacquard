@@ -81,21 +81,23 @@ class OptionsPage extends React.Component {
     return (
       <Paper className={this.props.classes.pageRoot}>
         <TitleBar title="Project Options"/>
-        {optionNames.map(option => renderOption.call(this, option, this.state.options))}
-        <Button 
-          key="actionReset"
-          disabled={!modified}
-          variant="raised"
-          children={"Reset"}
-          onClick={resetOptions.bind(this)}
-        />
-        <Button 
-          key="actionApply"
-          disabled={!modified}
-          variant="raised"
-          children={"Save"}
-          onClick={saveOptions.bind(this)}
-        />
+        <div className={this.props.classes.content}>
+          {optionNames.map(option => renderOption.call(this, option, this.state.options))}
+          <Button 
+            key="actionReset"
+            disabled={!modified}
+            variant="raised"
+            children={"Reset"}
+            onClick={resetOptions.bind(this)}
+          />
+          <Button 
+            key="actionApply"
+            disabled={!modified}
+            variant="raised"
+            children={"Save"}
+            onClick={saveOptions.bind(this)}
+          />
+        </div>
       </Paper>
     );    
   }

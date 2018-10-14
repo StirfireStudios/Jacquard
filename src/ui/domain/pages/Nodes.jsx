@@ -14,7 +14,6 @@ import themes from '../themes';
 
 import Table from '../../general/components/Table';
 import TitleBar from '../../general/components/TitleBar';
-import { link } from 'fs';
 
 const columns = [
   { 
@@ -99,11 +98,13 @@ function NodePage(props) {
   return (
     <Paper className={classes.pageRoot}>
       <TitleBar title="Nodes"/>
-      <Table
-        columns={columns}
-        data={listData}
-        getRowHeight={rowHeight.bind(null, listData)}
-      />
+      <div className={classes.content}>
+        <Table
+          columns={columns}
+          data={listData}
+          getRowHeight={rowHeight.bind(null, listData)}
+        />
+      </div>
     </Paper>
   );
 }
