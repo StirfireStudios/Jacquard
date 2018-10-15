@@ -1,6 +1,6 @@
 import { createReducer } from 'redux-act';
 
-import * as Actions from '../actions/misc/menu';
+import * as Actions from '../../actions/ui/menu'
 
 export default createReducer({
 	[Actions.Hide]: (state) => ({

@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
-import * as MenuActions from '../../../actions/misc/menu';
+import * as MenuActions from '../../../actions/ui/menu';
 
 const styles = theme => ({
   ...themes.defaultTheme(theme),

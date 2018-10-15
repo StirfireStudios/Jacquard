@@ -22,6 +22,8 @@ import themes from '../themes';
 import Table from '../../general/components/Table';
 import TitleBar from '../../general/components/TitleBar';
 
+import * as Actions from '../../../actions/ui/nodes';
+
 const styles = theme => ({
   ...themes.defaultTheme(theme),
   search: {
@@ -124,19 +126,31 @@ function renderListButtons(list, onClick) {
   ));
 }
 
-function generateListData(sections) {
+function matchesSearch(node, searchString) {
+  if (searchString == null) return true;
+  if (node.title.indexOf(searchString) !== -1) return true;
+  if (node.body.indexOf(searchString) !== -1) return true;
+  node.tags.forEach(tag => {
+    if (tag.indexOf(searchString) !== -1) return true;
+  });
+  return false;
+}
+
+function generateListData(sections, searchString) {
   const list = [];
   Object.keys(sections).forEach(sectionName => {
     Object.keys(sections[sectionName]).forEach(nodeName => {
       const node = sections[sectionName][nodeName];
-      list.push({
-        index: list.length,
-        section: sectionName,
-        node: nodeName,
-        tags: node.tags,
-        outgoingLinks: node.outgoingLinks,
-        incomingLinks: node.incomingLinks,
-      });
+      if (matchesSearch(node, searchString)) { 
+        list.push({
+          index: list.length,
+          section: sectionName,
+          node: nodeName,
+          tags: node.tags,
+          outgoingLinks: node.outgoingLinks,
+          incomingLinks: node.incomingLinks,
+        });
+      }
     });
   });
   return list;
@@ -146,8 +160,16 @@ function rowHeight(data, index) {
   return 40;
 }
 
+function onSearchStringChange(event) {
+  if (event.target.value.length > 0) {
+    Actions.Search(event.target.value);
+  } else {
+    Actions.Search(null);
+  }
+}
+
 function renderSearch(props) {
-  const { classes } = props;
+  const { classes, searchString } = props;
 
   return (
     <div className={classes.search} key="search">
@@ -160,6 +182,8 @@ function renderSearch(props) {
           root: classes.inputRoot,
           input: classes.inputInput,
         }}
+        value={searchString}
+        onChange={onSearchStringChange}
       />
     </div>
   );
@@ -175,9 +199,12 @@ function renderNewNode(props) {
 }
 
 function NodePage(props) {
-  const { classes, sections } = props;
+  const { classes, sections, searchString } = props;
 
-  const listData = generateListData(sections);
+  console.log("Search: ");
+  console.log(searchString);
+
+  const listData = generateListData(sections, searchString);
   
   return (
     <Paper className={classes.pageRoot}>
@@ -198,8 +225,10 @@ function NodePage(props) {
 
 function mapStateToProps(state) {
   const Project = state.Project;
+  const UI = state.UI.Nodes;
   return {
     sections: Project.sections,
+    searchString: UI.searchString,
   }
 }
 

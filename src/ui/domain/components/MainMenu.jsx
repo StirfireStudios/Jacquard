@@ -15,7 +15,7 @@ import themes from '../themes';
 import packageFile from '../../../../package.json';
 
 import * as Actions from '../../../actions/project/misc';
-import * as MenuActions from '../../../actions/misc/menu';
+import * as MenuActions from '../../../actions/ui/menu';
 
 import * as FileIOActionsAsync from '../../../actionsAsync/project/fileIO';
 import * as ImportActionsAsync from '../../../actionsAsync/project/yarnimport';
@@ -145,7 +145,7 @@ function mapStateToProps(state) {
 		data: ProjectData,
 		functionsPresent: ProjectData.functions.length > 0,
 		variablesPresent: ProjectData.variables.length > 0,
-		visible: state.Menu.visible
+		visible: state.UI.Menu.visible,
 	}
 }
 

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { withRouter } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
 
 import MenuItem from '@material-ui/core/MenuItem';
  
