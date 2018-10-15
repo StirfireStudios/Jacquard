@@ -108,13 +108,13 @@ function MainMenu(props) {
 			<Divider />
 			<List>
 				<MenuItem 
-					appendClasses={saveProjectClasses}
+					classes={saveProjectClasses}
 					disabled={!pathSet}
 					text="Save"
 					onClick={FileIOActionsAsync.Write.bind(null, path, data)}				
 				/>
 				<MenuItem 
-					appendClasses={saveProjectClasses}
+					classes={saveProjectClasses}
 					text="Save As..."
 					onClick={onSaveProjectAs.bind(null, data)}				
 				/>
