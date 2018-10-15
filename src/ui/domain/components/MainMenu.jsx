@@ -66,9 +66,6 @@ function onLoadProject() {
 	electron.remote.dialog.showOpenDialog({
 		title: "Load Project",
 		properties: ['openDirectory'],
-/*		filters: [
-			{name: 'Jacquard Projects' },
-		],*/
 	}, (paths) => {
 		if (paths == null) return;
 		if (paths.length === 0) return;
