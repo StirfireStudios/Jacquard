@@ -15,6 +15,7 @@ import themes from '../themes';
 import packageFile from '../../../../package.json';
 
 import * as Actions from '../../../actions/project/misc';
+import * as MenuActions from '../../../actions/misc/menu';
 
 import * as FileIOActionsAsync from '../../../actionsAsync/project/fileIO';
 import * as ImportActionsAsync from '../../../actionsAsync/project/yarnimport';
@@ -65,9 +66,9 @@ function onLoadProject() {
 	electron.remote.dialog.showOpenDialog({
 		title: "Load Project",
 		properties: ['openDirectory'],
-		filters: [
-			{name: 'Jacquard Projects', extensions: extension},
-		],
+/*		filters: [
+			{name: 'Jacquard Projects' },
+		],*/
 	}, (paths) => {
 		if (paths == null) return;
 		if (paths.length === 0) return;
@@ -80,16 +81,20 @@ function getSaveProjectClasses(modified, classes) {
 	return {}
 };
 
+function closeMenu() {
+	MenuActions.Hide();
+}
+
 function MainMenu(props) {
 	const { 
 		classes, charactersPresent, dirty, functionsPresent, variablesPresent, 
-		path, pathSet, data, 
+		path, pathSet, data, visible
 	} = props;
 	
 	const saveProjectClasses = getSaveProjectClasses(dirty, classes);
 
 	return (
-		<Drawer variant="permanent" classes={{ paper: classes.drawerPaper }}>
+		<Drawer anchor="left" open={visible} onClose={closeMenu} classes={{ paper: classes.drawerPaper }}>
 			<div>
 				<Typography variant="title" align="center">Jacquard {packageFile.version}</Typography>
 			</div>
@@ -143,6 +148,7 @@ function mapStateToProps(state) {
 		data: ProjectData,
 		functionsPresent: ProjectData.functions.length > 0,
 		variablesPresent: ProjectData.variables.length > 0,
+		visible: state.Menu.visible
 	}
 }
 

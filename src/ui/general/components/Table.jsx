@@ -24,14 +24,18 @@ const styles = theme => ({
     height: '100%',
   },
   tableHeader: {
+  },
+  tableCell: {
+    'padding-left': '4px',
+    'padding-right': '10px',
   }
 });
 
-function renderHeader(columns, className) {
+function renderHeader(columns, className, classes) {
   const headers = [];
   columns.forEach(column => {
     headers.push(
-      <TableCell key={column.field}>
+      <TableCell key={column.field} className={classes.tableCell}>
         {column.header}
       </TableCell>
     );
@@ -46,7 +50,7 @@ function renderHeader(columns, className) {
   );
 }
 
-function renderRows(data, columns) {
+function renderRows(data, columns, classes) {
   return data.map((item) => {
     const cells = columns.map((column => {
       let value = null;
@@ -55,7 +59,7 @@ function renderRows(data, columns) {
       } else {
         value = item[column.field];
       }
-      return <TableCell key={column.field} children={value}/>;
+      return <TableCell key={column.field} children={value} className={classes.tableCell}/>;
     }));
     return <TableRow key={item.index} children={cells}/>;
   });
@@ -119,9 +123,9 @@ class JQRDTable extends React.Component {
     return (
       <div className={this.props.classes.tableWrapper}>
         <Table className={this.props.classes.table}>
-          {renderHeader(this.props.columns, this.props.classes.tableHeader)}
+          {renderHeader(this.props.columns, this.props.classes.tableHeader, this.props.classes)}
           <TableBody className={this.props.classes.tableBody}>
-            {renderRows(dataToRender, this.props.columns)}
+            {renderRows(dataToRender, this.props.columns, this.props.classes)}
           </TableBody>
         </Table>
         {renderPagination.call(this)}

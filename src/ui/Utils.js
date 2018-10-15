@@ -1,6 +1,3 @@
-import { ListItemText } from "@material-ui/core";
-
- 
 export function composeClasses(destination, ...srcs) {
   if (srcs == null) return destination;
   srcs.forEach(src => {
